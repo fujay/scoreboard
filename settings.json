@@ -1,0 +1,32 @@
+{
+  "general": {
+    "time": 10000,
+    "db": "Local",
+    "images": "Remote",
+    "stale": 3600
+  },
+  "scraper": [
+    {
+      "url": "",
+      "titleSelector": "",
+      "selector": "",
+      "scraper": "",
+      "format": "Text",
+      "width": "",
+      "height": "",
+      "qrcode": "on"
+    },
+    {
+      "url": "",
+      "titleSelector": "",
+      "selector": "",
+      "scraper": "",
+      "format": "Screenshot",
+      "width": "",
+      "height": "",
+      "qrcode": null
+    }
+  ],
+  "date": { "clock": "Clock and Date without time" },
+  "weather": { "location": "Frankfurt", "graphic": "Classic", "qrcode": null }
+}
