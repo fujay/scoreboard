@@ -5,7 +5,8 @@ const ITEMS_PER_PAGE = 6;
 
 export async function fetchCardData() {
   try {
-    const tweetCountPromise = sql`SELECT COUNT(*) FROM tweets`;
+    // const tweetCountPromise = sql`SELECT COUNT(*) FROM tweets`;
+    const tweetCountPromise = sql`SELECT COUNT(*) FROM customers`;
 
     const data = await Promise.all([tweetCountPromise]);
 

@@ -17,8 +17,8 @@ const iconMap = {
 };
 
 export default async function CardWrapper() {
-  //   const { numberOfTweets } = await fetchCardData();
-  const numberOfTweets = 7;
+  const { numberOfTweets } = await fetchCardData();
+  // const numberOfTweets = 7;
 
   return (
     <>
