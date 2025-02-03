@@ -1,9 +1,9 @@
 {
   "general": {
-    "time": 10000,
-    "db": "Local",
+    "time": 10,
+    "db": "None",
     "images": "Remote",
-    "stale": 3600
+    "stale": 60
   },
   "scraper": [
     {
@@ -14,7 +14,7 @@
       "format": "Text",
       "width": "",
       "height": "",
-      "qrcode": "on"
+      "qrcode": false
     },
     {
       "url": "",
@@ -24,9 +24,9 @@
       "format": "Screenshot",
       "width": "",
       "height": "",
-      "qrcode": null
+      "qrcode": true
     }
   ],
   "date": { "clock": "Clock and Date without time" },
-  "weather": { "location": "Frankfurt", "graphic": "Classic", "qrcode": null }
+  "weather": { "location": "Frankfurt", "graphic": "Classic", "qrcode": false }
 }

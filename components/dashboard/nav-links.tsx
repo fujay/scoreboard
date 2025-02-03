@@ -6,7 +6,6 @@ import {
   HomeIcon,
   DocumentDuplicateIcon,
   Cog8ToothIcon,
-  ClockIcon,
   SunIcon,
   GlobeAltIcon,
   DocumentTextIcon,
@@ -14,6 +13,7 @@ import {
   CalendarDaysIcon,
   RssIcon,
 } from "@heroicons/react/24/outline";
+import { FileVideo } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -32,7 +32,7 @@ const links = [
   { name: "Scraper", href: "/dashboard/scraper", icon: GlobeAltIcon },
   { name: "Twitter", href: "/dashboard/x", icon: XIcon },
   { name: "Weather", href: "/dashboard/weather", icon: SunIcon },
-  { name: "Clock", href: "/dashboard/clock", icon: ClockIcon },
+  { name: "Multimedia", href: "/dashboard/multimedia", icon: FileVideo },
   { name: "Calendar", href: "/dashboard/calendar", icon: CalendarDaysIcon },
   { name: "Settings", href: "/dashboard/settings", icon: Cog8ToothIcon },
 ];

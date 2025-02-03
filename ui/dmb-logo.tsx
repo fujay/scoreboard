@@ -9,7 +9,11 @@ export default function DmbLogo() {
         width={50}
         height={50}
       />
-      <p className="text-xl">Dmb</p>
+      <p className="md:text-2xl ml-2">
+        Digital
+        <span className="block">Message</span>
+        <span className="block">Board</span>
+      </p>
     </div>
   );
 }

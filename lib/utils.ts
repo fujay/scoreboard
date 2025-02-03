@@ -1,4 +1,6 @@
-import { promises as fs } from "fs";
+// import { promises as fs } from "fs";
+import fs from "node:fs/promises";
+import { Settings } from "./definitions";
 
 export async function readConfig() {
   const configFileContent = await fs.readFile(
@@ -6,7 +8,7 @@ export async function readConfig() {
     // process.cwd() + "/settings.json",
     "utf-8"
   );
-  const config = JSON.parse(configFileContent);
+  const config: Settings = JSON.parse(configFileContent);
   return config;
 }
 

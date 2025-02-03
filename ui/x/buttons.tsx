@@ -28,10 +28,6 @@ export function UpdateX({ id }: { id: string }) {
 export function DeleteX({ id }: { id: string }) {
   const deleteTweetWithId = deleteX.bind(null, id);
 
-  // const deleteTweetWithId = async () => {
-  //   await deleteX(id);
-  // };
-
   return (
     <form action={deleteTweetWithId}>
       <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">

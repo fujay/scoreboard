@@ -16,6 +16,7 @@
     "@tailwindcss/postcss": "^4.0.0-beta.9",
     "@vercel/postgres": "^0.10.0",
     "cheerio": "^1.0.0",
+    "lucide-react": "^0.473.0",
     "next": "15.1.2",
     "puppeteer": "^24.0.0",
     "react": "^19.0.0",

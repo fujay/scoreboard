@@ -6,8 +6,22 @@ import * as cheerio from "cheerio";
 import puppeteer from "puppeteer";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { saveConfig } from "./utils";
 
-const FormSchema = z.object({
+const schemaGeneral = z.object({
+  time: z.number().int().min(1).max(300),
+  db: z.enum(["None", "Local", "Remote"]),
+  images: z.enum(["Local", "Remote"]),
+  stale: z.number().int().min(1).max(1440),
+  date: z.enum([
+    "Clock",
+    "Date",
+    "Clock and Date",
+    "Clock and Date without time",
+  ]),
+});
+
+const FormSchemaTweet = z.object({
   id: z.string(),
   tweetId: z
     .string()
@@ -19,12 +33,24 @@ const FormSchema = z.object({
   showUntil: z.string().datetime(),
 });
 
-const CreateX = FormSchema.omit({
+const CreateX = FormSchemaTweet.omit({
   id: true,
 });
-const UpdateX = FormSchema.omit({
+const UpdateX = FormSchemaTweet.omit({
   id: true,
 });
+
+export type StateSettings = {
+  errors?: {
+    time?: string[];
+    db?: string[];
+    images?: string[];
+    stale?: string[];
+    date?: string[];
+    weather?: string[];
+  };
+  message?: string | null;
+};
 
 export type StateX = {
   errors?: {
@@ -33,6 +59,46 @@ export type StateX = {
   };
   message?: string | null;
 };
+
+export async function saveSettings(
+  prevState: StateSettings,
+  formData: FormData
+) {
+  console.log(formData);
+
+  const validatedFields = schemaGeneral.safeParse({
+    time: formData.get("time"),
+    db: formData.get("db"),
+    images: formData.get("images"),
+    stale: formData.get("stale"),
+    date: formData.get("date"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Missing Fields. Failed to Save Settings.",
+    };
+  }
+
+  const { time, db, images, stale, date } = validatedFields.data;
+  console.log(time, db, images, stale, date);
+
+  // try {
+  //   await sql`
+  //   UPDATE settings
+  //   SET time = ${time}, db = ${db}, images = ${images}, stale = ${stale}, date = ${date}, weather = ${weather}`;
+  // } catch (error) {
+  //   return {
+  //     message: `Database Error: Failed to Save Settings (${error}).`,
+  //   };
+  // }
+
+  saveConfig({ time, db, images, stale, date }, "general");
+
+  revalidatePath("/dashboard/settings");
+  redirect("/dashboard/settings");
+}
 
 export async function createX(prevState: StateX, formData: FormData) {
   const validatedFields = CreateX.safeParse({

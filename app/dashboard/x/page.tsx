@@ -21,11 +21,11 @@ type Props = {
 };
 
 export default async function Page(props: Props) {
-  const searchParams = await props.searchParams;
-  const query = searchParams?.query || "";
-  const currentPage = Number(searchParams?.page) || 1;
+  // const searchParams = await props.searchParams;
+  // const query = searchParams?.query || "";
+  // const currentPage = Number(searchParams?.page) || 1;
 
-  const totalPages = await fetchTweetsPages(query);
+  // const totalPages = await fetchTweetsPages(query);
 
   const test = await fetchTweet("1050401946048364544");
   console.log(test);
@@ -33,18 +33,18 @@ export default async function Page(props: Props) {
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
-        <h1 className={`${lusitana.className} text-2xl`}>Invoices</h1>
+        <h1 className={`${lusitana.className} text-2xl`}>X / Tweets</h1>
       </div>
-      <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
+      {/* <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search invoices..." />
         <CreateX />
-      </div>
-      <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
+      </div> */}
+      {/* <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
         <Table query={query} currentPage={currentPage} />
-      </Suspense>
-      <div className="mt-5 flex w-full justify-center">
+      </Suspense> */}
+      {/* <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
-      </div>
+      </div> */}
     </div>
     // <div /* className="dark" */>
     //   <Tweet id="1050401946048364544" />
