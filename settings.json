@@ -1,9 +1,10 @@
 {
   "general": {
-    "time": 10,
-    "db": "None",
-    "images": "Remote",
-    "stale": 60
+    "time": 240,
+    "db": "Local",
+    "images": "Local",
+    "stale": 720,
+    "date": "Clock and Date"
   },
   "scraper": [
     {
@@ -27,6 +28,5 @@
       "qrcode": true
     }
   ],
-  "date": { "clock": "Clock and Date without time" },
   "weather": { "location": "Frankfurt", "graphic": "Classic", "qrcode": false }
 }

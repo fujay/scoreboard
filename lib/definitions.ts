@@ -31,9 +31,7 @@ export interface Settings {
     db: "None" | "Local" | "Remote";
     images: "Local" | "Remote";
     stale: number;
-  };
-  date: {
-    clock: "Clock" | "Date" | "Clock and Date" | "Clock and Date without time";
+    date: "Clock" | "Date" | "Clock and Date" | "Clock and Date without time";
   };
   weather: {
     location: string;
@@ -60,8 +58,8 @@ export const DEFAULT_SETTINGS: Settings = {
     db: "Local",
     images: "Local",
     stale: 3600,
+    date: "Clock",
   },
-  date: { clock: "Clock" },
   weather: { location: "Frankfurt", graphic: "Classic", qrcode: false },
   scraper: [
     {

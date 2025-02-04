@@ -8,9 +8,15 @@ import { Clock, GlassWater, HardDrive, Save, Timer } from "lucide-react";
 import { CloudIcon, NoSymbolIcon } from "@heroicons/react/24/outline";
 
 export default function Settings({ settings }: { settings: Settings }) {
-  const initialState: StateSettings = {
-    message: null,
-    errors: {},
+  const initialState = {
+    message: "",
+    errors: {
+      time: undefined,
+      db: undefined,
+      date: undefined,
+      images: undefined,
+      stale: undefined,
+    },
   };
   const [storage, setStorage] = useState<ReactNode>(() => {
     if (settings.general.db === "None") {
@@ -156,7 +162,7 @@ export default function Settings({ settings }: { settings: Settings }) {
             <div className="flex gap-4">
               <div className="flex items-center">
                 <input
-                  id="Local"
+                  id="local"
                   name="images"
                   type="radio"
                   value="Local"
@@ -165,7 +171,7 @@ export default function Settings({ settings }: { settings: Settings }) {
                   aria-describedby="images-error"
                 />
                 <label
-                  htmlFor="Local"
+                  htmlFor="local"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                 >
                   Local <HardDrive className="h-4 w-4" />
@@ -176,7 +182,7 @@ export default function Settings({ settings }: { settings: Settings }) {
                   id="remote"
                   name="images"
                   type="radio"
-                  value="remote"
+                  value="Remote"
                   defaultChecked={settings.general.images === "Remote"}
                   className="h-4 w-4 cursor-pointer border-gray-300 focus:ring-2"
                   aria-describedby="images-error"
@@ -246,7 +252,7 @@ export default function Settings({ settings }: { settings: Settings }) {
               id="date"
               name="date"
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              defaultValue={settings.date.clock}
+              defaultValue={settings.general.date}
               aria-describedby="date-error"
             >
               <option value="" disabled>

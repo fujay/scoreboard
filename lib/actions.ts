@@ -8,7 +8,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { saveConfig } from "./utils";
 
-const schemaGeneral = z.object({
+const FormSchemaGeneral = z.object({
   time: z.number().int().min(1).max(300),
   db: z.enum(["None", "Local", "Remote"]),
   images: z.enum(["Local", "Remote"]),
@@ -64,13 +64,11 @@ export async function saveSettings(
   prevState: StateSettings,
   formData: FormData
 ) {
-  console.log(formData);
-
-  const validatedFields = schemaGeneral.safeParse({
-    time: formData.get("time"),
+  const validatedFields = FormSchemaGeneral.safeParse({
+    time: parseInt(formData.get("time") as string),
     db: formData.get("db"),
     images: formData.get("images"),
-    stale: formData.get("stale"),
+    stale: parseInt(formData.get("stale") as string),
     date: formData.get("date"),
   });
 
@@ -82,7 +80,6 @@ export async function saveSettings(
   }
 
   const { time, db, images, stale, date } = validatedFields.data;
-  console.log(time, db, images, stale, date);
 
   // try {
   //   await sql`
