@@ -41,7 +41,7 @@ const UpdateX = FormSchemaTweet.omit({
 });
 
 export type StateSettings = {
-  errors?: {
+  errors: {
     time?: string[];
     db?: string[];
     images?: string[];
@@ -49,7 +49,7 @@ export type StateSettings = {
     date?: string[];
     weather?: string[];
   };
-  message?: string | null;
+  message: string;
 };
 
 export type StateX = {

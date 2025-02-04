@@ -8,16 +8,11 @@ import { Clock, GlassWater, HardDrive, Save, Timer } from "lucide-react";
 import { CloudIcon, NoSymbolIcon } from "@heroicons/react/24/outline";
 
 export default function Settings({ settings }: { settings: Settings }) {
-  const initialState = {
+  const initialState: StateSettings = {
     message: "",
-    errors: {
-      time: undefined,
-      db: undefined,
-      date: undefined,
-      images: undefined,
-      stale: undefined,
-    },
+    errors: {},
   };
+
   const [storage, setStorage] = useState<ReactNode>(() => {
     if (settings.general.db === "None") {
       return (
@@ -144,8 +139,8 @@ export default function Settings({ settings }: { settings: Settings }) {
             )} */}
           </div>
           <div id="db-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.time &&
-              state.errors.time.map((error) => (
+            {state.errors?.db &&
+              state.errors.db.map((error) => (
                 <p className="mt-2 text-sm text-red-500" key={error}>
                   {error}
                 </p>
