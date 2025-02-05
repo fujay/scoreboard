@@ -9,7 +9,7 @@ import { CloudIcon, NoSymbolIcon } from "@heroicons/react/24/outline";
 
 export default function Settings({ settings }: { settings: Settings }) {
   const initialState: StateSettings = {
-    message: "",
+    message: null,
     errors: {},
   };
 

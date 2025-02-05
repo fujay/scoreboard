@@ -52,14 +52,14 @@ const UpdateX = FormSchemaTweet.omit({
 });
 
 export type StateSettings = {
-  errors: {
+  errors?: {
     time?: string[];
     db?: string[];
     images?: string[];
     stale?: string[];
     date?: string[];
   };
-  message: string;
+  message?: string | null;
 };
 
 export type StateWeather = {

@@ -1,10 +1,10 @@
 {
   "general": {
-    "time": 240,
-    "db": "Local",
-    "images": "Local",
-    "stale": 720,
-    "date": "Clock and Date"
+    "time": 300,
+    "db": "Remote",
+    "images": "Remote",
+    "stale": 1440,
+    "date": "Clock and Date without time"
   },
   "scraper": [
     {
