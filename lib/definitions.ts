@@ -34,6 +34,7 @@ export interface Settings {
     date: "Clock" | "Date" | "Clock and Date" | "Clock and Date without time";
   };
   weather: {
+    active: boolean;
     location: string;
     graphic: "Classic" | "Animated";
     qrcode: boolean;
@@ -60,7 +61,12 @@ export const DEFAULT_SETTINGS: Settings = {
     stale: 3600,
     date: "Clock",
   },
-  weather: { location: "Frankfurt", graphic: "Classic", qrcode: false },
+  weather: {
+    active: true,
+    location: "Frankfurt",
+    graphic: "Classic",
+    qrcode: false,
+  },
   scraper: [
     {
       url: "",

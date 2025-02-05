@@ -21,6 +21,17 @@ const FormSchemaGeneral = z.object({
   ]),
 });
 
+const FormSchemaWeather = z.object({
+  active: z.boolean(),
+  location: z
+    .string()
+    .regex(/^((\-?|\+?)?\d+(\.\d+)?),\s*((\-?|\+?)?\d+(\.\d+)?)$/)
+    // ^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$
+    .or(z.string().min(2)),
+  qrcode: z.boolean(),
+  graphic: z.enum(["Classic", "Animated"]),
+});
+
 const FormSchemaTweet = z.object({
   id: z.string(),
   tweetId: z
@@ -47,9 +58,18 @@ export type StateSettings = {
     images?: string[];
     stale?: string[];
     date?: string[];
-    weather?: string[];
   };
   message: string;
+};
+
+export type StateWeather = {
+  errors?: {
+    active?: string[];
+    location?: string[];
+    graphic?: string[];
+    qrcode?: string[];
+  };
+  message?: string | null;
 };
 
 export type StateX = {
@@ -91,10 +111,33 @@ export async function saveSettings(
   //   };
   // }
 
-  saveConfig({ time, db, images, stale, date }, "general");
+  await saveConfig({ time, db, images, stale, date }, "general");
 
   revalidatePath("/dashboard/settings");
   redirect("/dashboard/settings");
+}
+
+export async function saveWeather(prevState: StateWeather, formData: FormData) {
+  const validatedFields = FormSchemaWeather.safeParse({
+    active: formData.get("active"),
+    location: formData.get("location"),
+    qrcode: formData.get("qrcode"),
+    graphic: formData.get("graphic"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Missing Fields. Failed to Save Weather Settings.",
+    };
+  }
+
+  const { active, location, qrcode, graphic } = validatedFields.data;
+
+  await saveConfig({ active, location, qrcode, graphic }, "weather");
+
+  revalidatePath("/dashboard/weather");
+  redirect("/dashboard/weather");
 }
 
 export async function createX(prevState: StateX, formData: FormData) {

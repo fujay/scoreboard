@@ -28,5 +28,10 @@
       "qrcode": true
     }
   ],
-  "weather": { "location": "Frankfurt", "graphic": "Classic", "qrcode": false }
+  "weather": {
+    "active": true,
+    "location": "Frankfurt",
+    "graphic": "Classic",
+    "qrcode": false
+  }
 }
