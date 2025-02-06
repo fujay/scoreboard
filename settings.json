@@ -31,7 +31,7 @@
   "weather": {
     "active": true,
     "location": "Frankfurt",
-    "graphic": "Classic",
-    "qrcode": false
+    "qrcode": true,
+    "graphic": "Classic"
   }
 }

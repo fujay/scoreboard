@@ -22,13 +22,13 @@ const FormSchemaGeneral = z.object({
 });
 
 const FormSchemaWeather = z.object({
-  active: z.boolean(),
+  active: z.coerce.boolean(),
   location: z
     .string()
     .regex(/^((\-?|\+?)?\d+(\.\d+)?),\s*((\-?|\+?)?\d+(\.\d+)?)$/)
     // ^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$
     .or(z.string().min(2)),
-  qrcode: z.boolean(),
+  qrcode: z.coerce.boolean(),
   graphic: z.enum(["Classic", "Animated"]),
 });
 
@@ -133,9 +133,8 @@ export async function saveWeather(prevState: StateWeather, formData: FormData) {
   }
 
   const { active, location, qrcode, graphic } = validatedFields.data;
-  console.log(active, location, qrcode, graphic);
 
-  // await saveConfig({ active, location, qrcode, graphic }, "weather");
+  await saveConfig({ active, location, qrcode, graphic }, "weather");
 
   revalidatePath("/dashboard/weather");
   redirect("/dashboard/weather");

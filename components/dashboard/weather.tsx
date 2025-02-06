@@ -12,8 +12,6 @@ export default function Weather({
 }: {
   settings: Settings["weather"];
 }) {
-  console.log(settings);
-
   const initialState: StateWeather = {
     message: null,
     errors: {},

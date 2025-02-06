@@ -5,7 +5,7 @@ import { lusitana } from "@/ui/fonts";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Multimedia",
+  title: "Scraper",
 };
 
 export default async function Page() {
