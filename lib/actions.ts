@@ -133,8 +133,9 @@ export async function saveWeather(prevState: StateWeather, formData: FormData) {
   }
 
   const { active, location, qrcode, graphic } = validatedFields.data;
+  console.log(active, location, qrcode, graphic);
 
-  await saveConfig({ active, location, qrcode, graphic }, "weather");
+  // await saveConfig({ active, location, qrcode, graphic }, "weather");
 
   revalidatePath("/dashboard/weather");
   redirect("/dashboard/weather");

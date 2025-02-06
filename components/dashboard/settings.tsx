@@ -240,7 +240,7 @@ export default function Settings({ settings }: { settings: Settings }) {
         {/* date */}
         <div className="mb-4">
           <label htmlFor="date" className="mb-2 block text-sm font-medium">
-            Date display
+            Date display:
           </label>
           <div className="relative">
             <select
