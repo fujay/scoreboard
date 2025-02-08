@@ -10,7 +10,7 @@
     {
       "url": "",
       "titleSelector": "",
-      "selector": "",
+      "selectors": "",
       "scraper": "",
       "format": "Text",
       "width": "",
@@ -20,7 +20,7 @@
     {
       "url": "",
       "titleSelector": "",
-      "selector": "",
+      "selectors": "",
       "scraper": "",
       "format": "Screenshot",
       "width": "",

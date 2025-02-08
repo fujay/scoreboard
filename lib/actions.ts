@@ -32,6 +32,17 @@ const FormSchemaWeather = z.object({
   graphic: z.enum(["Classic", "Animated"]),
 });
 
+const FormSchemaScraper = z.object({
+  url: z.string().url(),
+  titleSelector: z.string().trim().min(2),
+  selectors: z.array(z.string().min(1)),
+  scraper: z.enum(["Puppeteer", "Cheerio"]),
+  format: z.enum(["Text", "Screenshot"]),
+  width: z.number().int().min(320).max(1920),
+  height: z.number().int().min(240).max(1080),
+  qrCode: z.coerce.boolean(),
+});
+
 const FormSchemaTweet = z.object({
   id: z.string(),
   tweetId: z
@@ -68,6 +79,20 @@ export type StateWeather = {
     location?: string[];
     graphic?: string[];
     qrcode?: string[];
+  };
+  message?: string | null;
+};
+
+export type StateScraper = {
+  errors?: {
+    url?: string[];
+    titleSelector?: string[];
+    selectors?: string[];
+    scraper?: string[];
+    format?: string[];
+    width?: string[];
+    height?: string[];
+    qrCode?: string[];
   };
   message?: string | null;
 };
@@ -138,6 +163,67 @@ export async function saveWeather(prevState: StateWeather, formData: FormData) {
 
   revalidatePath("/dashboard/weather");
   redirect("/dashboard/weather");
+}
+
+export async function createScraper(
+  prevState: StateScraper,
+  formData: FormData
+) {
+  const validatedFields = FormSchemaScraper.safeParse({
+    url: formData.get("url"),
+    titleSelector: formData.get("titleSelector"),
+    selectors: formData.get("selectors"),
+    scraper: formData.get("scraper"),
+    format: formData.get("format"),
+    width: parseInt(formData.get("width") as string),
+    height: parseInt(formData.get("height") as string),
+    qrCode: formData.get("qrCode"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Missing Fields. Failed to Create Scraper.",
+    };
+  }
+
+  const {
+    url,
+    titleSelector,
+    selectors,
+    scraper,
+    format,
+    width,
+    height,
+    qrCode,
+  } = validatedFields.data;
+
+  await saveConfig(
+    {
+      url,
+      titleSelector,
+      selectors,
+      scraper,
+      format,
+      width,
+      height,
+      qrCode,
+    },
+    "scraper"
+  );
+
+  // try {
+  //   await sql`
+  //   INSERT INTO scrapers (url, title, selectors)
+  //   VALUES (${url}, ${title}, ${selectors})`;
+  // } catch (error) {
+  //   return {
+  //     message: `Database Error: Failed to Create Scraper (${error}).`,
+  //   };
+  // }
+
+  revalidatePath("/dashboard/scraper");
+  redirect("/dashboard/scraper");
 }
 
 export async function createX(prevState: StateX, formData: FormData) {
