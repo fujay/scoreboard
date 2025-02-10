@@ -9,7 +9,14 @@ import {
   QrCodeIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { LetterText, Library, Save, TextSelect } from "lucide-react";
+import {
+  LetterText,
+  Library,
+  MoveHorizontal,
+  MoveVertical,
+  Save,
+  TextSelect,
+} from "lucide-react";
 import Link from "next/link";
 import { ChangeEvent, useActionState, useState } from "react";
 
@@ -27,10 +34,7 @@ export default function ScraperForm() {
   const onChangeScraper = (e: ChangeEvent<HTMLSelectElement>) => {
     setScraper(e.target.value);
     if (e.target.value === "Cheerio") {
-      console.log("scraper", e.target.value, format);
-
       setFormat("Text");
-      console.log(format);
     }
   };
 
@@ -272,6 +276,92 @@ export default function ScraperForm() {
               ))}
           </div>
         </fieldset>
+
+        {/* width */}
+        <datalist id="defaultWidths">
+          <option value="800"></option>
+          <option value="1024"></option>
+          <option value="1280"></option>
+          <option value="1600"></option>
+          <option value="1920"></option>
+        </datalist>
+        <div className="mb-4">
+          <label htmlFor="width" className="mb-2 block text-sm font-medium">
+            Page width in pixels (100-2000):
+          </label>
+          <div className="relative mt-2 rounded-md">
+            <div className="relative">
+              <input
+                id="width"
+                name="width"
+                type="number"
+                step="1"
+                min="100"
+                max="2000"
+                list="defaultWidths"
+                defaultValue={1920}
+                placeholder="1920"
+                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                title="The page width in CSS pixels."
+                aria-label="The page width in CSS pixels."
+                aria-describedby="width-error"
+              />
+              <MoveHorizontal className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+            </div>
+          </div>
+
+          <div id="width-error" aria-live="polite" aria-atomic="true">
+            {state.errors?.width &&
+              state.errors.width.map((error) => (
+                <p className="mt-2 text-sm text-red-500" key={error}>
+                  {error}
+                </p>
+              ))}
+          </div>
+        </div>
+
+        {/* height */}
+        <datalist id="defaultHeights">
+          <option value="600"></option>
+          <option value="768"></option>
+          <option value="800"></option>
+          <option value="900"></option>
+          <option value="1080"></option>
+        </datalist>
+        <div className="mb-4">
+          <label htmlFor="time" className="mb-2 block text-sm font-medium">
+            Page height in pixels (100-2000):
+          </label>
+          <div className="relative mt-2 rounded-md">
+            <div className="relative">
+              <input
+                id="time"
+                name="time"
+                type="number"
+                step="1"
+                min="100"
+                max="2000"
+                list="defaultHeights"
+                defaultValue={1080}
+                placeholder="1080"
+                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                title="The page height in CSS pixels."
+                aria-label="The page height in CSS pixels."
+                aria-describedby="time-error"
+              />
+              <MoveVertical className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+            </div>
+          </div>
+
+          <div id="time-error" aria-live="polite" aria-atomic="true">
+            {state.errors?.height &&
+              state.errors.height.map((error) => (
+                <p className="mt-2 text-sm text-red-500" key={error}>
+                  {error}
+                </p>
+              ))}
+          </div>
+        </div>
 
         {/* Errors */}
         <div aria-live="polite" aria-atomic="true">
