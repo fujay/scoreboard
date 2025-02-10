@@ -2,10 +2,16 @@
 
 import { createScraper, StateScraper } from "@/lib/actions";
 import { Button } from "@/ui/button";
-import { LinkIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { LetterText, Save, TextSelect } from "lucide-react";
+import {
+  DocumentTextIcon,
+  LinkIcon,
+  PhotoIcon,
+  QrCodeIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
+import { LetterText, Library, Save, TextSelect } from "lucide-react";
 import Link from "next/link";
-import { useActionState } from "react";
+import { ChangeEvent, useActionState, useState } from "react";
 
 export default function ScraperForm() {
   const initialState: StateScraper = {
@@ -13,7 +19,25 @@ export default function ScraperForm() {
     errors: {},
   };
 
+  const [format, setFormat] = useState<string>("Text");
+  const [scraper, setScraper] = useState<string>("Puppeteer");
+
   const [state, formAction] = useActionState(createScraper, initialState);
+
+  const onChangeScraper = (e: ChangeEvent<HTMLSelectElement>) => {
+    setScraper(e.target.value);
+    if (e.target.value === "Cheerio") {
+      console.log("scraper", e.target.value, format);
+
+      setFormat("Text");
+      console.log(format);
+    }
+  };
+
+  const onChangeFormat = (e: ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.value);
+    setFormat(e.target.value);
+  };
 
   return (
     <form action={formAction}>
@@ -113,6 +137,141 @@ export default function ScraperForm() {
               ))}
           </div>
         </div>
+
+        {/* scraper */}
+        <div className="mb-4">
+          <label htmlFor="scraper" className="mb-2 block text-sm font-medium">
+            Scraper tool for parsing HTML:
+          </label>
+          <div className="relative">
+            <select
+              id="scraper"
+              name="scraper"
+              onChange={onChangeScraper}
+              className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+              title={`The scraper tool for parsing HTML.
+                -Cheerio is fast, flexible, and elegant library for parsing and manipulating HTML and XML.
+
+                -Puppeteer is a JavaScript library which provides a high-level API to control Chrome. Puppeteer runs headless (no visible UI).
+
+                --Only Puppeteer works with screenshots!`}
+              aria-describedby="scraper-error"
+            >
+              <option value="" disabled>
+                --Select a scraper option--
+              </option>
+              <option value="Puppeteer">Puppeteer</option>
+              <option value="Cheerio">Cheerio</option>
+            </select>
+            <Library className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+          </div>
+          <div id="scraper-error" aria-live="polite" aria-atomic="true">
+            {state.errors?.scraper &&
+              state.errors.scraper.map((error) => (
+                <p className="mt-2 text-sm text-red-500" key={error}>
+                  {error}
+                </p>
+              ))}
+          </div>
+        </div>
+
+        {/* format */}
+        <fieldset className="mb-4">
+          <legend className="mb-2 block text-sm font-medium">
+            Scraper output format:
+          </legend>
+          <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3">
+            <div className="flex gap-4">
+              <div className="flex items-center">
+                <input
+                  id="text"
+                  name="format"
+                  onChange={onChangeFormat}
+                  checked={format === "Text"}
+                  type="radio"
+                  value="Text"
+                  className="h-4 w-4 cursor-pointer border-gray-300 focus:ring-2"
+                  aria-describedby="format-error"
+                />
+                <label
+                  htmlFor="text"
+                  className={`ml-2 flex cursor-pointer items-center gap-1.5 rounded-full ${
+                    format === "Text" ? "bg-blue-300" : "bg-gray-100"
+                  } px-3 py-1.5 text-xs font-medium text-gray-600`}
+                >
+                  Text <DocumentTextIcon className="h-4 w-4" />
+                </label>
+              </div>
+              <div className="flex items-center">
+                <input
+                  id="screenshot"
+                  name="format"
+                  onChange={onChangeFormat}
+                  checked={format === "Screenshot"}
+                  type="radio"
+                  value="Screenshot"
+                  disabled={scraper !== "Puppeteer"}
+                  className="h-4 w-4 disabled:cursor-not-allowed cursor-pointer border-gray-300 focus:ring-2"
+                  aria-describedby="format-error"
+                />
+                <label
+                  htmlFor="screenshot"
+                  className={`ml-2 flex ${
+                    scraper !== "Puppeteer"
+                      ? "cursor-not-allowed"
+                      : "cursor-pointer"
+                  } items-center gap-1.5 rounded-full ${
+                    format === "Screenshot" ? "bg-blue-300" : "bg-gray-100"
+                  } px-3 py-1.5 text-xs font-medium text-gray-600`}
+                >
+                  Screenshot <PhotoIcon className="h-4 w-4" />
+                </label>
+              </div>
+            </div>
+          </div>
+          <div id="format-error" aria-live="polite" aria-atomic="true">
+            {state.errors?.format &&
+              state.errors.format.map((error) => (
+                <p className="mt-2 text-sm text-red-500" key={error}>
+                  {error}
+                </p>
+              ))}
+          </div>
+        </fieldset>
+
+        {/* qrcode */}
+        <fieldset className="mb-4">
+          <legend className="mb-2 block text-sm font-medium">QR Code:</legend>
+          <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3">
+            <div className="flex gap-4">
+              <div className="flex items-center">
+                <input
+                  id="qrcode"
+                  name="qrcode"
+                  type="checkbox"
+                  title="Activate to show the QR code for the website url"
+                  className="h-4 w-4 cursor-pointer border-gray-300 focus:ring-2"
+                  aria-describedby="qrcode-error"
+                  aria-label="Activate to show the QR code for the website url"
+                />
+                <label
+                  htmlFor="qrcode"
+                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
+                >
+                  QR Code <QrCodeIcon className="h-4 w-4" />
+                </label>
+              </div>
+            </div>
+          </div>
+          <div id="qrcode-error" aria-live="polite" aria-atomic="true">
+            {state.errors?.qrcode &&
+              state.errors.qrcode.map((error) => (
+                <p className="mt-2 text-sm text-red-500" key={error}>
+                  {error}
+                </p>
+              ))}
+          </div>
+        </fieldset>
 
         {/* Errors */}
         <div aria-live="polite" aria-atomic="true">

@@ -40,7 +40,7 @@ const FormSchemaScraper = z.object({
   format: z.enum(["Text", "Screenshot"]),
   width: z.number().int().min(320).max(1920),
   height: z.number().int().min(240).max(1080),
-  qrCode: z.coerce.boolean(),
+  qrcode: z.coerce.boolean(),
 });
 
 const FormSchemaTweet = z.object({
@@ -92,7 +92,7 @@ export type StateScraper = {
     format?: string[];
     width?: string[];
     height?: string[];
-    qrCode?: string[];
+    qrcode?: string[];
   };
   message?: string | null;
 };
@@ -177,7 +177,7 @@ export async function createScraper(
     format: formData.get("format"),
     width: parseInt(formData.get("width") as string),
     height: parseInt(formData.get("height") as string),
-    qrCode: formData.get("qrCode"),
+    qrcode: formData.get("qrcode"),
   });
 
   if (!validatedFields.success) {
@@ -195,7 +195,7 @@ export async function createScraper(
     format,
     width,
     height,
-    qrCode,
+    qrcode,
   } = validatedFields.data;
 
   await saveConfig(
@@ -207,7 +207,7 @@ export async function createScraper(
       format,
       width,
       height,
-      qrCode,
+      qrcode,
     },
     "scraper"
   );
