@@ -329,14 +329,14 @@ export default function ScraperForm() {
           <option value="1080"></option>
         </datalist>
         <div className="mb-4">
-          <label htmlFor="time" className="mb-2 block text-sm font-medium">
+          <label htmlFor="height" className="mb-2 block text-sm font-medium">
             Page height in pixels (100-2000):
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
               <input
-                id="time"
-                name="time"
+                id="height"
+                name="height"
                 type="number"
                 step="1"
                 min="100"
@@ -347,13 +347,13 @@ export default function ScraperForm() {
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 title="The page height in CSS pixels."
                 aria-label="The page height in CSS pixels."
-                aria-describedby="time-error"
+                aria-describedby="height-error"
               />
               <MoveVertical className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
 
-          <div id="time-error" aria-live="polite" aria-atomic="true">
+          <div id="height-error" aria-live="polite" aria-atomic="true">
             {state.errors?.height &&
               state.errors.height.map((error) => (
                 <p className="mt-2 text-sm text-red-500" key={error}>
