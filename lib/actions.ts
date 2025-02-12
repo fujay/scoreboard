@@ -35,11 +35,18 @@ const FormSchemaWeather = z.object({
 const FormSchemaScraper = z.object({
   url: z.string().url(),
   titleSelector: z.string().trim().min(2),
-  selectors: z.array(z.string().min(1)),
+  selectors: z.string().min(1),
+  // selectors: z.array(z.string().min(1)),
   scraper: z.enum(["Puppeteer", "Cheerio"]),
   format: z.enum(["Text", "Screenshot"]),
-  width: z.number().int().min(320).max(1920),
-  height: z.number().int().min(240).max(1080),
+  width: z.preprocess(
+    (val) => (val === "" || val === undefined ? 1920 : Number(val)),
+    z.number().min(100).max(2000).optional()
+  ),
+  height: z.preprocess(
+    (val) => (val === "" || val === undefined ? 1080 : Number(val)),
+    z.number().min(100).max(2000).optional()
+  ),
   qrcode: z.coerce.boolean(),
 });
 
@@ -175,8 +182,8 @@ export async function createScraper(
     selectors: formData.get("selectors"),
     scraper: formData.get("scraper"),
     format: formData.get("format"),
-    width: parseInt(formData.get("width") as string),
-    height: parseInt(formData.get("height") as string),
+    width: formData.get("width"),
+    height: formData.get("height"),
     qrcode: formData.get("qrcode"),
   });
 
