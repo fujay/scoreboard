@@ -47,7 +47,7 @@ export default async function ScrapersTable(
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
-                    <p className="text-xl font-medium">{scraper.selector}</p>
+                    <p className="text-xl font-medium">{scraper.selectors}</p>
                     <p>{formatDateToLocal(new Date().toString())}</p>
                   </div>
                   <div className="flex justify-end gap-2">
@@ -96,10 +96,7 @@ export default async function ScrapersTable(
                     {scraper.titleSelector}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {scraper.selector}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(new Date().toString())}
+                    {scraper.selectors}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {
@@ -117,6 +114,9 @@ export default async function ScrapersTable(
                         )}
                       </span>
                     }
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {formatDateToLocal(new Date().toString())}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">

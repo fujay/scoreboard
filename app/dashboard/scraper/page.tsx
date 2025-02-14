@@ -13,7 +13,8 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  // const settings = await readKeyConfig("scraper");
+  const settings = await readKeyConfig("scraper");
+  console.log(settings.length);
 
   return (
     <div className="w-full">
@@ -24,9 +25,9 @@ export default async function Page() {
         <Search placeholder="Search scrapers..." />
         <CreateScraper />
       </div>
-      {/* <Suspense fallback={<InvoicesTableSkeleton />}> */}
-      <Table />
-      {/* </Suspense> */}
+      <Suspense fallback={<InvoicesTableSkeleton />}>
+        <Table />
+      </Suspense>
       <div className="mt-5 flex w-full justify-center">
         {/* <Pagination totalPages={3} /> */}
       </div>

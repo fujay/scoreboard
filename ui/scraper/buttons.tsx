@@ -32,7 +32,7 @@ export function DeleteScraper({ index }: { index: number }) {
     <form action={deleteScraperWithId}>
       <button
         type="submit"
-        className="rounded-md border p-2 hover:text-red-500 hover:bg-gray-100"
+        className="cursor-pointer rounded-md border p-2 hover:text-red-500 hover:bg-gray-100"
       >
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-5" />

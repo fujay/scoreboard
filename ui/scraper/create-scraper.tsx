@@ -39,7 +39,6 @@ export default function ScraperForm() {
   };
 
   const onChangeFormat = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
     setFormat(e.target.value);
   };
 

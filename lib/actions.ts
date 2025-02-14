@@ -6,7 +6,7 @@ import * as cheerio from "cheerio";
 import puppeteer from "puppeteer";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { saveConfig } from "./utils";
+import { readKeyConfig, saveConfig } from "./utils";
 
 const FormSchemaGeneral = z.object({
   time: z.number().int().min(1).max(300),
@@ -205,6 +205,9 @@ export async function createScraper(
     qrcode,
   } = validatedFields.data;
 
+  const scrapersList = await readKeyConfig("scraper");
+  const scraperLength = scrapersList.length;
+
   await saveConfig(
     {
       url,
@@ -216,7 +219,8 @@ export async function createScraper(
       height,
       qrcode,
     },
-    "scraper"
+    "scraper",
+    scraperLength
   );
 
   // try {

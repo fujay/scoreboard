@@ -43,7 +43,7 @@ export interface Settings {
     {
       url: string;
       titleSelector: string;
-      selector: string;
+      selectors: string;
       scraper: string;
       format: "Text" | "Screenshot";
       width: string;
@@ -71,7 +71,7 @@ export const DEFAULT_SETTINGS: Settings = {
     {
       url: "",
       titleSelector: "",
-      selector: "",
+      selectors: "",
       scraper: "",
       format: "Text",
       width: "",
