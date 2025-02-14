@@ -233,6 +233,8 @@ export async function createScraper(
   redirect("/dashboard/scraper");
 }
 
+export async function deleteScraper(id: number) {}
+
 export async function createX(prevState: StateX, formData: FormData) {
   const validatedFields = CreateX.safeParse({
     tweetId: formData.get("tweetId"),

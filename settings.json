@@ -8,20 +8,20 @@
   },
   "scraper": [
     {
-      "url": "",
-      "titleSelector": "",
-      "selectors": "",
-      "scraper": "",
+      "url": "https://www.frankfurt-university.de/",
+      "titleSelector": "#c18317 > h2 or Semestertermine",
+      "selectors": "#c18317 > h2",
+      "scraper": "Cheerio",
       "format": "Text",
       "width": "",
       "height": "",
       "qrcode": false
     },
     {
-      "url": "",
-      "titleSelector": "",
-      "selectors": "",
-      "scraper": "",
+      "url": "https://www.frankfurt-university.de/",
+      "titleSelector": "#c18317 > h2 or Semestertermine",
+      "selectors": "#c18317 > h2",
+      "scraper": "Puppeteer",
       "format": "Screenshot",
       "width": "",
       "height": "",
