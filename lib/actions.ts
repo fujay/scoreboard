@@ -7,6 +7,7 @@ import puppeteer from "puppeteer";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { readKeyConfig, saveConfig } from "./utils";
+import { Settings } from "./definitions";
 
 const FormSchemaGeneral = z.object({
   time: z.number().int().min(1).max(300),
@@ -237,7 +238,18 @@ export async function createScraper(
   redirect("/dashboard/scraper");
 }
 
-export async function deleteScraper(id: number) {}
+export async function deleteScraper(index: number) {
+  try {
+    const scraper: Settings["scraper"] = await readKeyConfig("scraper");
+    scraper.splice(index, 1);
+
+    await saveConfig(scraper, "scraper");
+    // await sql`DELETE FROM scrapers WHERE id = ${id}`;
+    revalidatePath("/dashboard/scraper");
+  } catch (error) {
+    console.error("Error deleting scraper:", error);
+  }
+}
 
 export async function createX(prevState: StateX, formData: FormData) {
   const validatedFields = CreateX.safeParse({

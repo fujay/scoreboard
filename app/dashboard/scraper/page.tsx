@@ -14,7 +14,6 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   const settings = await readKeyConfig("scraper");
-  console.log(settings.length);
 
   return (
     <div className="w-full">

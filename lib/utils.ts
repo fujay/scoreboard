@@ -20,16 +20,18 @@ export async function readKeyConfig(key: string) {
 }
 
 export async function saveConfig(
-  newConfig: Record<string, unknown>, // newConfig: [key: string]: unknown,
+  newConfig: Record<string, unknown> | Record<string, unknown>[], // newConfig: [key: string]: unknown,
   key: string,
   index?: number
 ) {
   const configFileContent = await fs.readFile("settings.json", "utf-8");
   const config = JSON.parse(configFileContent);
+
   if (index) {
     config[key][index] = newConfig;
+  } else {
+    config[key] = newConfig;
   }
-  config[key] = newConfig;
 
   await fs.writeFile("settings.json", JSON.stringify(config));
 }
