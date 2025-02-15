@@ -10,6 +10,17 @@ export type User = {
   password: string;
 };
 
+export type Scraper = {
+  url: string;
+  titleSelector: string;
+  selectors: string;
+  scraper: string;
+  format: "Text" | "Screenshot";
+  width: string;
+  height: string;
+  qrcode: boolean;
+};
+
 export type Tweet = {
   id: string;
   tweetId: string;

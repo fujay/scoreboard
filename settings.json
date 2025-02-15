@@ -26,6 +26,16 @@
       "width": "",
       "height": "",
       "qrcode": true
+    },
+    {
+      "url": "https://erlensee-aktuell.com/",
+      "titleSelector": "https://erlensee-aktuell.com/",
+      "selectors": "https://erlensee-aktuell.com/",
+      "scraper": "Puppeteer",
+      "format": "Text",
+      "width": 1920,
+      "height": 1080,
+      "qrcode": false
     }
   ],
   "weather": {
