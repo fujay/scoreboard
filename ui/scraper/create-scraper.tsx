@@ -379,7 +379,7 @@ export default function ScraperForm() {
         </Link>
         <Button className="cursor-pointer" type="submit">
           <Save />
-          <span>Save</span>
+          <span>Create Scraper</span>
         </Button>
       </div>
     </form>

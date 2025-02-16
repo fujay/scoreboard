@@ -387,7 +387,7 @@ export default function EditScraperForm({ scraper }: { scraper: Scraper }) {
         </Link>
         <Button className="cursor-pointer" type="submit">
           <Save />
-          <span>Save</span>
+          <span>Edit Scraper</span>
         </Button>
       </div>
     </form>
