@@ -23,8 +23,8 @@
       "selectors": "#c18317 > h2",
       "scraper": "Puppeteer",
       "format": "Screenshot",
-      "width": "",
-      "height": "",
+      "width": 200,
+      "height": 200,
       "qrcode": true
     },
     {
@@ -32,10 +32,10 @@
       "titleSelector": "https://erlensee-aktuell.com/",
       "selectors": "https://erlensee-aktuell.com/",
       "scraper": "Puppeteer",
-      "format": "Text",
+      "format": "Screenshot",
       "width": 1920,
       "height": 1080,
-      "qrcode": false
+      "qrcode": true
     }
   ],
   "weather": {

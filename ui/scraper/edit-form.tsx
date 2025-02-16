@@ -27,8 +27,10 @@ export default function EditScraperForm({ scraper }: { scraper: Scraper }) {
     errors: {},
   };
 
-  const [format, setFormat] = useState<string>("Text");
-  const [selectedScraper, setSelectedScraper] = useState<string>("Puppeteer");
+  const [format, setFormat] = useState<string>(scraper.format);
+  const [selectedScraper, setSelectedScraper] = useState<string>(
+    scraper.scraper
+  );
 
   const [state, formAction] = useActionState(createScraper, initialState);
 
@@ -194,7 +196,6 @@ export default function EditScraperForm({ scraper }: { scraper: Scraper }) {
                 <input
                   id="text"
                   name="format"
-                  defaultChecked={scraper.format === "Text"}
                   onChange={onChangeFormat}
                   checked={format === "Text"}
                   type="radio"
@@ -215,7 +216,6 @@ export default function EditScraperForm({ scraper }: { scraper: Scraper }) {
                 <input
                   id="screenshot"
                   name="format"
-                  defaultChecked={scraper.format === "Screenshot"}
                   onChange={onChangeFormat}
                   checked={format === "Screenshot"}
                   type="radio"
@@ -306,7 +306,7 @@ export default function EditScraperForm({ scraper }: { scraper: Scraper }) {
                 min="100"
                 max="2000"
                 list="defaultWidths"
-                defaultValue={1920}
+                defaultValue={scraper.width}
                 placeholder="1920"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 title="The page width in CSS pixels."
@@ -349,7 +349,7 @@ export default function EditScraperForm({ scraper }: { scraper: Scraper }) {
                 min="100"
                 max="2000"
                 list="defaultHeights"
-                defaultValue={1080}
+                defaultValue={scraper.height}
                 placeholder="1080"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 title="The page height in CSS pixels."
