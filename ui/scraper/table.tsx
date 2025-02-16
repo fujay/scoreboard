@@ -4,16 +4,21 @@ import { DeleteScraper, UpdateScraper } from "@/ui/scraper/buttons";
 import { Settings } from "@/lib/definitions";
 import { DocumentTextIcon, PhotoIcon } from "@heroicons/react/24/outline";
 
-export default async function ScrapersTable(
-  {
-    //   query,
-    //   currentPage,
-    // }: {
-    //   query: string;
-    //   currentPage: number;
-  }
-) {
-  const scrapers: Settings["scraper"] = await readKeyConfig("scraper");
+export default async function ScrapersTable({
+  query,
+  currentPage,
+}: {
+  query: string;
+  currentPage: number;
+}) {
+  const scrapersList: Settings["scraper"] = await readKeyConfig("scraper");
+  const scrapers = scrapersList.filter((scraper) => {
+    return (
+      scraper.titleSelector.includes(query) ||
+      scraper.selectors.includes(query) ||
+      scraper.url.includes(query)
+    );
+  });
 
   return (
     <div className="mt-6 flow-root">

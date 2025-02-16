@@ -12,8 +12,17 @@ export const metadata: Metadata = {
   title: "Scraper",
 };
 
-export default async function Page() {
+export default async function Page(props: {
+  searchParams?: Promise<{
+    query?: string;
+    page?: string;
+  }>;
+}) {
   const settings = await readKeyConfig("scraper");
+
+  const searchParams = await props.searchParams;
+  const query = searchParams?.query || "";
+  const currentPage = Number(searchParams?.page) || 1;
 
   return (
     <div className="w-full">
@@ -24,8 +33,8 @@ export default async function Page() {
         <Search placeholder="Search scrapers..." />
         <CreateScraper />
       </div>
-      <Suspense fallback={<InvoicesTableSkeleton />}>
-        <Table />
+      <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
+        <Table query={query} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
         {/* <Pagination totalPages={3} /> */}
