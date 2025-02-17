@@ -1,7 +1,6 @@
-import Image from "next/image";
-import { formatDateToLocal, readKeyConfig } from "@/lib/utils";
+import { fetchFilteredScrapers } from "@/lib/data";
+import { formatDateToLocal } from "@/lib/utils";
 import { DeleteScraper, UpdateScraper } from "@/ui/scraper/buttons";
-import { Settings } from "@/lib/definitions";
 import { DocumentTextIcon, PhotoIcon } from "@heroicons/react/24/outline";
 
 export default async function ScrapersTable({
@@ -11,14 +10,17 @@ export default async function ScrapersTable({
   query: string;
   currentPage: number;
 }) {
-  const scrapersList: Settings["scraper"] = await readKeyConfig("scraper");
-  const scrapers = scrapersList.filter((scraper) => {
-    return (
-      scraper.titleSelector.includes(query) ||
-      scraper.selectors.includes(query) ||
-      scraper.url.includes(query)
-    );
-  });
+  // const scrapersList: Settings["scraper"] = await readKeyConfig("scraper");
+  // const scrapers = scrapersList.filter((scraper) => {
+  //   return (
+  //     scraper.titleSelector.includes(query) ||
+  //     scraper.selectors.includes(query) ||
+  //     scraper.url.includes(query) ||
+  //     scraper.format.includes(query)
+  //   );
+  // });
+
+  const scrapers = await fetchFilteredScrapers(query, currentPage);
 
   return (
     <div className="mt-6 flow-root">

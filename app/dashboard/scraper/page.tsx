@@ -1,4 +1,4 @@
-import { readKeyConfig } from "@/lib/utils";
+import { fetchScrapersPages } from "@/lib/data";
 import { lusitana } from "@/ui/fonts";
 import Pagination from "@/ui/pagination";
 import { CreateScraper } from "@/ui/scraper/buttons";
@@ -18,11 +18,11 @@ export default async function Page(props: {
     page?: string;
   }>;
 }) {
-  const settings = await readKeyConfig("scraper");
-
   const searchParams = await props.searchParams;
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
+
+  const totalPages = await fetchScrapersPages(query);
 
   return (
     <div className="w-full">
@@ -37,7 +37,7 @@ export default async function Page(props: {
         <Table query={query} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
-        {/* <Pagination totalPages={3} /> */}
+        <Pagination totalPages={totalPages} />
       </div>
     </div>
   );
