@@ -4,6 +4,7 @@ import {
   ClockIcon,
   UserGroupIcon,
   InboxIcon,
+  GlobeAltIcon,
 } from "@heroicons/react/24/outline";
 import XIcon from "./x-icon";
 import { lusitana } from "./fonts";
@@ -13,16 +14,17 @@ const iconMap = {
   customers: UserGroupIcon,
   pending: ClockIcon,
   invoices: InboxIcon,
+  scraper: GlobeAltIcon,
   tweet: XIcon,
 };
 
 export default async function CardWrapper() {
-  const { numberOfTweets } = await fetchCardData();
+  const { numberofScrapers, numberOfTweets } = await fetchCardData();
   // const numberOfTweets = 7;
 
   return (
     <>
-      <Card title="Tweets" value={numberOfTweets} type="collected" />
+      <Card title="Scrapers" value={numberofScrapers} type="scraper" />
       <Card title="Tweets" value={numberOfTweets} type="tweet" />
       <Card title="Tweets" value={numberOfTweets} type="invoices" />
       <Card title="Tweets" value={numberOfTweets} type="customers" />
@@ -37,7 +39,13 @@ export function Card({
 }: {
   title: string;
   value: number | string;
-  type: "invoices" | "customers" | "pending" | "collected" | "tweet";
+  type:
+    | "invoices"
+    | "customers"
+    | "pending"
+    | "collected"
+    | "scraper"
+    | "tweet";
 }) {
   const Icon = iconMap[type];
 

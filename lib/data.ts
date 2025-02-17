@@ -8,13 +8,18 @@ export async function fetchCardData() {
   try {
     await new Promise((resolve) => setTimeout(resolve, 3000));
     // const tweetCountPromise = sql`SELECT COUNT(*) FROM tweets`;
+    const scrapersListPromise: Promise<Settings["scraper"]> =
+      readKeyConfig("scraper");
+
     const tweetCountPromise = sql`SELECT COUNT(*) FROM customers`;
 
-    const data = await Promise.all([tweetCountPromise]);
+    const data = await Promise.all([scrapersListPromise, tweetCountPromise]);
 
-    const numberOfTweets = Number(data[0].rows[0].count ?? "0");
+    const numberofScrapers = data[0].length;
+    const numberOfTweets = Number(data[1].rows[0].count ?? "0");
 
     return {
+      numberofScrapers,
       numberOfTweets,
     };
   } catch (error) {
