@@ -1,5 +1,11 @@
 import fs from "node:fs/promises";
 import { Settings } from "./definitions";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 export async function readConfig() {
   const configFileContent = await fs.readFile(
