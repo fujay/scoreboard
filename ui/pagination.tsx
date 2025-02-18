@@ -1,10 +1,11 @@
 "use client";
 
 import { generatePagination } from "@/lib/definitions";
-import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
 // import clsx from "clsx";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
+import { ArrowLeftIcon } from "@/components/ui/arrow-left";
+import { ArrowRightIcon } from "@/components/ui/arrow-right";
 
 export default function Pagination({ totalPages }: { totalPages: number }) {
   const pathname = usePathname();
@@ -124,12 +125,7 @@ function PaginationArrow({
   //   }
   // );
 
-  const icon =
-    direction === "left" ? (
-      <ArrowLeftIcon className="w-4" />
-    ) : (
-      <ArrowRightIcon className="w-4" />
-    );
+  const icon = direction === "left" ? <ArrowLeftIcon /> : <ArrowRightIcon />;
 
   return isDisabled ? (
     <div className={className}>{icon}</div>
