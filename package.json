@@ -24,6 +24,8 @@
     "react-clock": "^5.1.0",
     "react-dom": "^19.0.0",
     "react-tweet": "^3.2.1",
+    "tailwind-merge": "^3.0.1",
+    "tailwindcss-animate": "^1.0.7",
     "use-debounce": "^10.0.4",
     "zod": "^3.24.1"
   },
@@ -36,6 +38,8 @@
     "eslint": "^9",
     "eslint-config-next": "15.1.2",
     "postcss": "^8.5.2",
+    "prettier": "^3.5.1",
+    "prettier-plugin-tailwindcss": "^0.6.11",
     "tailwindcss": "^4.0.6",
     "typescript": "^5"
   }
