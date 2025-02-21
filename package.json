@@ -16,6 +16,8 @@
     "@tailwindcss/postcss": "^4.0.6",
     "@vercel/postgres": "^0.10.0",
     "cheerio": "^1.0.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "lucide-react": "^0.473.0",
     "moment": "^2.30.1",
     "next": "15.1.2",
