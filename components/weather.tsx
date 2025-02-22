@@ -3,6 +3,7 @@ import {
   ArrowDown,
   ArrowUp,
   Droplets,
+  QrCode,
   Sun,
   ThermometerSun,
   Wind,
@@ -15,6 +16,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { convertKelvinToCelsios } from "@/lib/utils";
+import { QRCodeSVG } from "qrcode.react";
 
 export default async function Weather() {
   const city = "Frankfurt am Main";
@@ -139,6 +141,7 @@ export default async function Weather() {
             </CardContent>
           </Card> */}
 
+          {/* Max / Min Temp */}
           <Card className="bg-white/50 backdrop-blur-sm dark:bg-slate-800/50">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -169,6 +172,21 @@ export default async function Weather() {
               <p className="text-3xl font-semibold">
                 {Math.round(weather.wind.speed * 3.6)} km/h
               </p>
+            </CardContent>
+          </Card>
+
+          {/* QR Code */}
+          <Card className="bg-white/50 backdrop-blur-sm dark:bg-slate-800/50">
+            <CardHeader>
+              <CardTitle className="flex items-center justify-center gap-2 text-2xl">
+                <QrCode className="size-8 text-sky-500" />
+                QR Code
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex items-center justify-center">
+              <QRCodeSVG
+                value={`https://openweathermap.org/city/${weather.id}`}
+              />
             </CardContent>
           </Card>
         </div>
