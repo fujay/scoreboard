@@ -144,7 +144,7 @@ export default async function Weather() {
           {/* Max / Min Temp */}
           <Card className="bg-white/50 backdrop-blur-sm dark:bg-slate-800/50">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-2xl">
                 <ArrowUp className="size-8 text-red-500" />
                 <ArrowDown className="mt-4 text-blue-500" />
                 Max / <span className="mt-4">Min Temp</span>
