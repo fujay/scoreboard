@@ -140,7 +140,7 @@
   ],
   "weather": {
     "active": true,
-    "location": "Frankfurt",
+    "location": "Frankfurt am Main",
     "qrcode": true,
     "graphic": "Classic"
   }
