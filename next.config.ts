@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
+        hostname: "openweathermap.org",
+      },
+      {
         hostname: "pbs.twimg.com",
       },
     ],
