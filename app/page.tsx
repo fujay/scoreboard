@@ -30,7 +30,11 @@ export default async function Home() {
         <DateTime settings={settings["general"]} />
       </section>
       <main className="col-span-3 content-center">
-        <Weather />
+        <Weather
+          location={settings["weather"]["location"]}
+          qrcode={settings["weather"]["qrcode"]}
+          graphic={settings["weather"]["graphic"]}
+        />
       </main>
       <footer className="col-span-3 row-start-4">Progress</footer>
     </div>
