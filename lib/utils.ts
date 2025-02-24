@@ -46,7 +46,7 @@ export async function saveConfig(
  * @param tempKelvin The temperature in Kelvin.
  * @returns The temperature in Celsius.
  */
-export function convertKelvinToCelsios(tempKelvin: number): number {
+export function convertKelvinToCelsius(tempKelvin: number): number {
   const tempCelsius = tempKelvin - 273.15;
   return Math.floor(tempCelsius);
 }
