@@ -1,4 +1,3 @@
-import { WeatherData } from "@/lib/definitions";
 import {
   ArrowDown,
   ArrowUp,
@@ -10,6 +9,7 @@ import {
   CloudSnow,
   CloudSun,
   Droplets,
+  MoonStar,
   QrCode,
   Sun,
   ThermometerSun,
@@ -22,60 +22,54 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { convertKelvinToCelsios } from "@/lib/utils";
 import { QRCodeSVG } from "qrcode.react";
 import Image from "next/image";
+import { Skeleton } from "./ui/skeleton";
+import { getWeatherData } from "@/lib/weather";
 
-export default async function Weather() {
-  const city = "Frankfurt am Main";
-  const weatherData = await fetch(
-    `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.OPENWEATHERMAP_API_KEY}`,
-  );
-  const weather: WeatherData = await weatherData.json();
-  // const weather = {
-  //   coord: { lon: 8.6833, lat: 50.1167 },
-  //   weather: [
-  //     {
-  //       id: 804,
-  //       main: "Clouds",
-  //       description: "overcast clouds",
-  //       icon: "04d",
-  //     },
-  //   ],
-  //   base: "stations",
-  //   main: {
-  //     temp: 279.51,
-  //     feels_like: 278.04,
-  //     temp_min: 277.51,
-  //     temp_max: 280.91,
-  //     pressure: 1019,
-  //     humidity: 88,
-  //     sea_level: 1019,
-  //     grnd_level: 1001,
-  //   },
-  //   visibility: 9000,
-  //   wind: { speed: 2.06, deg: 70 },
-  //   clouds: { all: 100 },
-  //   dt: 1740191829,
-  //   sys: {
-  //     type: 2,
-  //     id: 2081434,
-  //     country: "DE",
-  //     sunrise: 1740205378,
-  //     sunset: 1740243293,
-  //   },
-  //   timezone: 3600,
-  //   id: 2925533,
-  //   name: "Frankfurt am Main",
-  //   cod: 200,
-  // };
-  // console.log(weather);
+export default async function Weather({
+  location,
+  qrcode,
+  graphic,
+}: {
+  location: string;
+  qrcode: boolean;
+  graphic: "Classic" | "Animated";
+}) {
+  // const weather = await getWeatherData(location);
+  const weather = {
+    coord: { lon: 8.6833, lat: 50.1167 },
+    mainWeather: "Clouds",
+    weatherDescription: "overcast clouds",
+    icon: "04d",
+    base: "stations",
+    temperature: 279.51,
+    feelsLike: 278.04,
+    tempMin: 277.51,
+    tempMax: 280.91,
+    pressure: 1019,
+    humidity: 88,
+    sea_level: 1019,
+    grnd_level: 1001,
+    visibility: 9000,
+    windSpeed: 2.06,
+    clouds: { all: 100 },
+    dt: 1740191829,
+    type: 2,
+    country: "DE",
+    sunrise: 1740205378,
+    sunset: 1740243293,
+    timezone: 3600,
+    cityId: 2925533,
+    cityName: "Frankfurt am Main",
+    cod: 200,
+  };
 
   return (
     <main className="bg-gradient-to-b from-sky-100 to-sky-50 p-4 dark:from-slate-900 dark:to-slate-800">
       <div className="mx-auto max-w-4xl">
         <h1 className="mb-8 text-center text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-          Weather in {weather.name} ({weather.weather[0].main})
+          Weather in {weather.cityName} ({weather.mainWeather})
         </h1>
 
         <div className="grid gap-4 md:grid-cols-2">
@@ -83,14 +77,11 @@ export default async function Weather() {
           <Card className="col-span-full bg-white/50 backdrop-blur-sm dark:bg-slate-800/50">
             <CardHeader className="text-center">
               <CardTitle className="flex items-center justify-center gap-2 text-3xl">
-                <WeatherIcon
-                  weather={weather.weather[0].icon}
-                  iconSet="Classic"
-                />
-                {weather.weather[0].description}
+                <WeatherIcon weather={weather.icon} iconSet={graphic} />
+                {weather.weatherDescription}
               </CardTitle>
               <CardDescription className="text-4xl font-bold text-slate-900 dark:text-slate-100">
-                {convertKelvinToCelsios(weather.main.temp)}°C
+                {weather.temperature}°C
               </CardDescription>
             </CardHeader>
           </Card>
@@ -104,9 +95,7 @@ export default async function Weather() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-semibold">
-                {convertKelvinToCelsios(weather.main.feels_like)}°C
-              </p>
+              <p className="text-3xl font-semibold">{weather.feelsLike}°C</p>
             </CardContent>
           </Card>
 
@@ -119,7 +108,7 @@ export default async function Weather() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-semibold">{weather.main.humidity}%</p>
+              <p className="text-3xl font-semibold">{weather.humidity}%</p>
             </CardContent>
           </Card>
 
@@ -162,12 +151,8 @@ export default async function Weather() {
               </CardTitle>
             </CardHeader>
             <CardContent className="flex items-center gap-2">
-              <p className="text-3xl font-semibold">
-                {convertKelvinToCelsios(weather.main.temp_max)}°C /
-              </p>
-              <p className="mt-4 text-xl font-semibold">
-                {convertKelvinToCelsios(weather.main.temp_min)}°C
-              </p>
+              <p className="text-3xl font-semibold">{weather.tempMax}°C /</p>
+              <p className="mt-4 text-xl font-semibold">{weather.tempMin}°C</p>
             </CardContent>
           </Card>
 
@@ -180,42 +165,36 @@ export default async function Weather() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-semibold">
-                {Math.round(weather.wind.speed * 3.6)} km/h
-              </p>
+              <p className="text-3xl font-semibold">{weather.windSpeed} km/h</p>
             </CardContent>
           </Card>
 
           {/* QR Code */}
-          <Card className="bg-white/50 backdrop-blur-sm dark:bg-slate-800/50">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-center gap-2 text-2xl">
-                <QrCode className="size-8 text-sky-500" />
-                QR Code
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="flex items-center justify-center">
-              <QRCodeSVG
-                value={`https://openweathermap.org/city/${weather.id}`}
-              />
-            </CardContent>
-          </Card>
+          {qrcode && (
+            <Card className="bg-white/50 backdrop-blur-sm dark:bg-slate-800/50">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-center gap-2 text-2xl">
+                  <QrCode className="size-8 text-sky-500" />
+                  QR Code
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex items-center justify-center">
+                <QRCodeSVG
+                  value={`https://openweathermap.org/city/${weather.cityId}`}
+                />
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </main>
   );
 }
 
-type WeatherIconProps = {
+export const WeatherIcon: React.FC<{
   weather: string;
-  weatherDescription?: string;
   iconSet: "Classic" | "Animated";
-};
-
-export const WeatherIcon: React.FC<WeatherIconProps> = ({
-  weather,
-  iconSet,
-}) => {
+}> = ({ weather, iconSet }) => {
   if (iconSet === "Classic") {
     switch (weather) {
       case "11d": // Thunderstorm
@@ -234,8 +213,9 @@ export const WeatherIcon: React.FC<WeatherIconProps> = ({
         return <CloudFog className="size-12 text-neutral-500" />;
 
       case "01d": // Clear Day
-      case "01n": // Clear Night
         return <Sun className="size-12 text-yellow-500" />;
+      case "01n": // Clear Night
+        return <MoonStar className="size-12 text-stone-500" />;
 
       case "02d": // few clouds
       case "02n": // few clouds
