@@ -16,15 +16,15 @@ export default function Settings({ settings }: { settings: Settings }) {
   const [storage, setStorage] = useState<ReactNode>(() => {
     if (settings.general.db === "None") {
       return (
-        <NoSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+        <NoSymbolIcon className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
       );
     } else if (settings.general.db === "Local") {
       return (
-        <HardDrive className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+        <HardDrive className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
       );
     } else if (settings.general.db === "Remote") {
       return (
-        <CloudIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+        <CloudIcon className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
       );
     }
   });
@@ -32,20 +32,19 @@ export default function Settings({ settings }: { settings: Settings }) {
   const [stale, setStale] = useState<number>(settings.general.stale);
 
   const [state, formAction] = useActionState(saveSettings, initialState);
-  console.log(settings);
 
   const handleStorageChange = (e: ChangeEvent<HTMLSelectElement>) => {
     if (e.target.value === "None") {
       setStorage(
-        <NoSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+        <NoSymbolIcon className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />,
       );
     } else if (e.target.value === "Local") {
       setStorage(
-        <HardDrive className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+        <HardDrive className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />,
       );
     } else if (e.target.value === "Remote") {
       setStorage(
-        <CloudIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+        <CloudIcon className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />,
       );
     }
   };
@@ -92,7 +91,7 @@ export default function Settings({ settings }: { settings: Settings }) {
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 aria-describedby="time-error"
               />
-              <Timer className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <Timer className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
 
@@ -208,7 +207,7 @@ export default function Settings({ settings }: { settings: Settings }) {
           </label>
           <div className="mt-2 rounded-md">
             <div className="flex items-center space-x-2">
-              <GlassWater className="h-[18px] w-[18px] pointer-events-none text-gray-500 peer-focus:text-gray-900 flex-shrink-0" />
+              <GlassWater className="pointer-events-none h-[18px] w-[18px] flex-shrink-0 text-gray-500 peer-focus:text-gray-900" />
               <input
                 id="stale"
                 name="stale"
@@ -224,7 +223,7 @@ export default function Settings({ settings }: { settings: Settings }) {
                 className="peer block w-full flex-grow rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500"
                 aria-describedby="stale-error"
               />
-              <span className="w-4 text-right flex-shrink-0">{stale}</span>
+              <span className="w-4 flex-shrink-0 text-right">{stale}</span>
             </div>
           </div>
           <div id="stale-error" aria-live="polite" aria-atomic="true">
@@ -260,7 +259,7 @@ export default function Settings({ settings }: { settings: Settings }) {
                 Clock and Date without time
               </option>
             </select>
-            <Clock className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+            <Clock className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
           </div>
           <div id="customer-error" aria-live="polite" aria-atomic="true">
             {state.errors?.date &&
