@@ -1,5 +1,5 @@
 import Settings from "@/components/dashboard/settings";
-import { readConfig } from "@/lib/utils";
+import { readKeyConfig } from "@/lib/utils";
 import { lusitana } from "@/ui/fonts";
 import { Metadata } from "next";
 
@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Settings",
 };
 export default async function Page() {
-  const settings = await readConfig();
+  const settings = await readKeyConfig("general");
 
   return (
     <div className="w-full">
