@@ -2,12 +2,6 @@ import { clsx, type ClassValue } from "clsx";
 import fs from "node:fs/promises";
 import { twMerge } from "tailwind-merge";
 import { Settings } from "./definitions";
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
