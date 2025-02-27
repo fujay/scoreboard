@@ -1,7 +1,13 @@
+import { clsx, type ClassValue } from "clsx";
 import fs from "node:fs/promises";
+import { twMerge } from "tailwind-merge";
 import { Settings } from "./definitions";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -11,7 +17,7 @@ export async function readConfig() {
   const configFileContent = await fs.readFile(
     "settings.json",
     // process.cwd() + "/settings.json",
-    "utf-8"
+    "utf-8",
   );
   const config: Settings = JSON.parse(configFileContent);
   return config;
@@ -27,7 +33,7 @@ export async function readKeyConfig(key: string) {
 export async function saveConfig(
   newConfig: Record<string, unknown> | Record<string, unknown>[], // newConfig: [key: string]: unknown,
   key: string,
-  index?: number
+  index?: number,
 ) {
   const configFileContent = await fs.readFile("settings.json", "utf-8");
   const config = JSON.parse(configFileContent);
@@ -46,14 +52,14 @@ export async function saveConfig(
  * @param tempKelvin The temperature in Kelvin.
  * @returns The temperature in Celsius.
  */
-export function convertKelvinToCelsios(tempKelvin: number): number {
+export function convertKelvinToCelsius(tempKelvin: number): number {
   const tempCelsius = tempKelvin - 273.15;
   return Math.floor(tempCelsius);
 }
 
 export const formatDateToLocal = (
   dateStr: string,
-  locale: string = "en-US"
+  locale: string = "en-US",
 ) => {
   const date = new Date(dateStr);
   const options: Intl.DateTimeFormatOptions = {

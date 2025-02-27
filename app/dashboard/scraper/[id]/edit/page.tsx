@@ -36,7 +36,7 @@ export default async function Page(props: { params: Promise<{ id: number }> }) {
           },
         ]}
       />
-      <EditScraperForm scraper={scraper} />
+      <EditScraperForm scraper={scraper} index={id} />
     </main>
   );
 }

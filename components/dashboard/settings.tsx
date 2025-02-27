@@ -7,45 +7,51 @@ import { ChangeEvent, ReactNode, useActionState, useState } from "react";
 import { Clock, GlassWater, HardDrive, Save, Timer } from "lucide-react";
 import { CloudIcon, NoSymbolIcon } from "@heroicons/react/24/outline";
 
-export default function Settings({ settings }: { settings: Settings }) {
+export default function Settings({
+  settings,
+}: {
+  settings: Settings["general"];
+}) {
   const initialState: StateSettings = {
     message: null,
     errors: {},
   };
 
   const [storage, setStorage] = useState<ReactNode>(() => {
-    if (settings.general.db === "None") {
+    if (settings.db === "None") {
       return (
-        <NoSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+        <NoSymbolIcon className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
       );
-    } else if (settings.general.db === "Local") {
+    } else if (settings.db === "Local") {
       return (
-        <HardDrive className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+        <HardDrive className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
       );
-    } else if (settings.general.db === "Remote") {
+    } else if (settings.db === "Remote") {
       return (
-        <CloudIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+        <CloudIcon className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
       );
     }
   });
 
-  const [stale, setStale] = useState<number>(settings.general.stale);
+  const [stale, setStale] = useState<number>(settings.stale);
 
-  const [state, formAction] = useActionState(saveSettings, initialState);
-  console.log(settings);
+  const [state, formAction, isPending] = useActionState(
+    saveSettings,
+    initialState,
+  );
 
   const handleStorageChange = (e: ChangeEvent<HTMLSelectElement>) => {
     if (e.target.value === "None") {
       setStorage(
-        <NoSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+        <NoSymbolIcon className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />,
       );
     } else if (e.target.value === "Local") {
       setStorage(
-        <HardDrive className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+        <HardDrive className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />,
       );
     } else if (e.target.value === "Remote") {
       setStorage(
-        <CloudIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+        <CloudIcon className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />,
       );
     }
   };
@@ -87,12 +93,12 @@ export default function Settings({ settings }: { settings: Settings }) {
                 min="1"
                 max="300"
                 list="defaultSeconds"
-                defaultValue={settings.general.time}
+                defaultValue={settings.time}
                 placeholder="Enter Seconds interval"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 aria-describedby="time-error"
               />
-              <Timer className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <Timer className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
 
@@ -117,7 +123,7 @@ export default function Settings({ settings }: { settings: Settings }) {
               id="db"
               name="db"
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              defaultValue={settings.general.db}
+              defaultValue={settings.db}
               aria-describedby="db-error"
             >
               <option value="" disabled>
@@ -161,7 +167,7 @@ export default function Settings({ settings }: { settings: Settings }) {
                   name="images"
                   type="radio"
                   value="Local"
-                  defaultChecked={settings.general.images === "Local"}
+                  defaultChecked={settings.images === "Local"}
                   className="h-4 w-4 cursor-pointer border-gray-300 focus:ring-2"
                   aria-describedby="images-error"
                 />
@@ -178,7 +184,7 @@ export default function Settings({ settings }: { settings: Settings }) {
                   name="images"
                   type="radio"
                   value="Remote"
-                  defaultChecked={settings.general.images === "Remote"}
+                  defaultChecked={settings.images === "Remote"}
                   className="h-4 w-4 cursor-pointer border-gray-300 focus:ring-2"
                   aria-describedby="images-error"
                 />
@@ -208,7 +214,7 @@ export default function Settings({ settings }: { settings: Settings }) {
           </label>
           <div className="mt-2 rounded-md">
             <div className="flex items-center space-x-2">
-              <GlassWater className="h-[18px] w-[18px] pointer-events-none text-gray-500 peer-focus:text-gray-900 flex-shrink-0" />
+              <GlassWater className="pointer-events-none h-[18px] w-[18px] flex-shrink-0 text-gray-500 peer-focus:text-gray-900" />
               <input
                 id="stale"
                 name="stale"
@@ -219,12 +225,12 @@ export default function Settings({ settings }: { settings: Settings }) {
                 // onChange={(e) => handleStaleChange(parseInt(e.target.value))}
                 onChange={handleStaleChange}
                 list="defaultStales"
-                defaultValue={settings.general.stale}
+                defaultValue={settings.stale}
                 placeholder="Enter Seconds interval"
                 className="peer block w-full flex-grow rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500"
                 aria-describedby="stale-error"
               />
-              <span className="w-4 text-right flex-shrink-0">{stale}</span>
+              <span className="w-4 flex-shrink-0 text-right">{stale}</span>
             </div>
           </div>
           <div id="stale-error" aria-live="polite" aria-atomic="true">
@@ -247,7 +253,7 @@ export default function Settings({ settings }: { settings: Settings }) {
               id="date"
               name="date"
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              defaultValue={settings.general.date}
+              defaultValue={settings.date}
               aria-describedby="date-error"
             >
               <option value="" disabled>
@@ -260,7 +266,7 @@ export default function Settings({ settings }: { settings: Settings }) {
                 Clock and Date without time
               </option>
             </select>
-            <Clock className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+            <Clock className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
           </div>
           <div id="customer-error" aria-live="polite" aria-atomic="true">
             {state.errors?.date &&
@@ -280,9 +286,9 @@ export default function Settings({ settings }: { settings: Settings }) {
         </div>
       </div>
       <div className="mt-6 flex justify-end gap-4">
-        <Button className="cursor-pointer" type="submit">
+        <Button type="submit" disabled={isPending}>
           <Save />
-          <span>Save</span>
+          <span>{isPending ? "Saving..." : "Save"}</span>
         </Button>
       </div>
     </form>

@@ -42,11 +42,11 @@ const FormSchemaScraper = z.object({
   format: z.enum(["Text", "Screenshot"]),
   width: z.preprocess(
     (val) => (val === "" || val === undefined ? 1920 : Number(val)),
-    z.number().min(100).max(2000).optional()
+    z.number().min(100).max(2000).optional(),
   ),
   height: z.preprocess(
     (val) => (val === "" || val === undefined ? 1080 : Number(val)),
-    z.number().min(100).max(2000).optional()
+    z.number().min(100).max(2000).optional(),
   ),
   qrcode: z.coerce.boolean(),
 });
@@ -115,7 +115,7 @@ export type StateX = {
 
 export async function saveSettings(
   prevState: StateSettings,
-  formData: FormData
+  formData: FormData,
 ) {
   const validatedFields = FormSchemaGeneral.safeParse({
     time: parseInt(formData.get("time") as string),
@@ -175,7 +175,7 @@ export async function saveWeather(prevState: StateWeather, formData: FormData) {
 
 export async function createScraper(
   prevState: StateScraper,
-  formData: FormData
+  formData: FormData,
 ) {
   const validatedFields = FormSchemaScraper.safeParse({
     url: formData.get("url"),
@@ -221,7 +221,7 @@ export async function createScraper(
       qrcode,
     },
     "scraper",
-    scraperLength
+    scraperLength,
   );
 
   // try {
@@ -251,7 +251,70 @@ export async function deleteScraper(index: number) {
   }
 }
 
-export async function updateScraper() {}
+export async function updateScraper(
+  index: number,
+  prevState: StateScraper,
+  formData: FormData,
+) {
+  const validatedFields = FormSchemaScraper.safeParse({
+    url: formData.get("url"),
+    titleSelector: formData.get("titleSelector"),
+    selectors: formData.get("selectors"),
+    scraper: formData.get("scraper"),
+    format: formData.get("format"),
+    width: formData.get("width"),
+    height: formData.get("height"),
+    qrcode: formData.get("qrcode"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Missing Fields. Failed to Create Scraper.",
+    };
+  }
+
+  const {
+    url,
+    titleSelector,
+    selectors,
+    scraper,
+    format,
+    width,
+    height,
+    qrcode,
+  } = validatedFields.data;
+
+  await saveConfig(
+    {
+      url,
+      titleSelector,
+      selectors,
+      scraper,
+      format,
+      width,
+      height,
+      qrcode,
+    },
+    "scraper",
+    index,
+  );
+
+  //  try {
+  //   await sql`
+  //   UPDATE invoices
+  //   SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
+  //   WHERE id = ${id}
+  //   `;
+  //   } catch (error) {
+  //     return {
+  //       message: "Database Error: Failed to Update Invoice.",
+  //     };
+  //   }
+
+  revalidatePath("/dashboard/scraper");
+  redirect("/dashboard/scraper");
+}
 
 export async function createX(prevState: StateX, formData: FormData) {
   const validatedFields = CreateX.safeParse({
@@ -290,7 +353,7 @@ export async function createX(prevState: StateX, formData: FormData) {
 export async function updateX(
   id: string,
   prevState: StateX,
-  formData: FormData
+  formData: FormData,
 ) {
   const validatedFields = UpdateX.safeParse({
     tweetId: formData.get("tweetId"),
@@ -342,7 +405,7 @@ export async function deleteX(id: string) {
 export async function scrapeViaCheerio(
   url: string,
   title: string,
-  selectors: string[]
+  selectors: string[],
 ) {
   const response = await fetch(url);
 
@@ -370,7 +433,7 @@ export async function scrapeViaPuppeteer(
   titleSelector: string,
   selectors: string[],
   width: number = 1080,
-  height: number = 768
+  height: number = 768,
 ) {
   let browser;
 
@@ -405,7 +468,7 @@ export async function scrapeViaPuppeteer(
         return { title, data };
       },
       titleSelector,
-      selectors
+      selectors,
     );
     console.log(data);
     return data;
@@ -439,7 +502,7 @@ export async function scrapeScreenshot(
   titleSelector: string,
   selector: string,
   width: number = 1080,
-  height: number = 1768
+  height: number = 1768,
 ) {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();

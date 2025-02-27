@@ -16,7 +16,10 @@ export default function Multimedia({
     errors: {},
   };
 
-  const [state, formAction] = useActionState(saveWeather, initialState);
+  const [state, formAction, isPending] = useActionState(
+    saveWeather,
+    initialState,
+  );
 
   return (
     <form action={formAction}>
@@ -47,9 +50,9 @@ export default function Multimedia({
         </div>
       </div>
       <div className="mt-6 flex justify-end gap-4">
-        <Button className="cursor-pointer" type="submit">
+        <Button type="submit" disabled={isPending}>
           <Save />
-          <span>Save</span>
+          <span>{isPending ? "Saving..." : "Save"}</span>
         </Button>
       </div>
     </form>

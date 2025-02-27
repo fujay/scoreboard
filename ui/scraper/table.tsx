@@ -38,7 +38,7 @@ export default async function ScrapersTable({
                       {scraper.titleSelector}
                     </p>
                   </div>
-                  <span className="inline-flex items-center rounded-full px-2 py-1 text-xs bg-gray-100 text-white">
+                  <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs text-white">
                     {scraper.format === "Text" ? (
                       <DocumentTextIcon
                         title={scraper.format}
@@ -83,7 +83,7 @@ export default async function ScrapersTable({
                 <th scope="col" className="px-3 py-5 font-medium">
                   Date
                 </th>
-                <th scope="col" className="relative py-3 pl-6 pr-3">
+                <th scope="col" className="relative py-3 pr-3 pl-6">
                   <span className="sr-only">Edit</span>
                 </th>
               </tr>
@@ -92,22 +92,22 @@ export default async function ScrapersTable({
               {scrapers?.map((scraper, index) => (
                 <tr
                   key={index}
-                  className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
+                  className="w-full border-b py-3 text-sm even:bg-muted last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                  <td className="py-3 pr-3 pl-6 whitespace-nowrap">
                     <div className="flex items-center gap-3">
                       <p>{scraper.url}</p>
                     </div>
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">
+                  <td className="px-3 py-3 whitespace-nowrap">
                     {scraper.titleSelector}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">
+                  <td className="px-3 py-3 whitespace-nowrap">
                     {scraper.selectors}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">
+                  <td className="px-3 py-3 whitespace-nowrap">
                     {
-                      <span className="inline-flex items-center rounded-full px-2 py-1 text-xs bg-gray-100 text-white">
+                      <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs text-white">
                         {scraper.format === "Text" ? (
                           <DocumentTextIcon
                             title={scraper.format}
@@ -122,10 +122,10 @@ export default async function ScrapersTable({
                       </span>
                     }
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">
+                  <td className="px-3 py-3 whitespace-nowrap">
                     {formatDateToLocal(new Date().toString())}
                   </td>
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                  <td className="py-3 pr-3 pl-6 whitespace-nowrap">
                     <div className="flex justify-end gap-3">
                       <UpdateScraper index={index} />
                       <DeleteScraper index={index} />

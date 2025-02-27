@@ -17,7 +17,10 @@ export default function Weather({
     errors: {},
   };
 
-  const [state, formAction] = useActionState(saveWeather, initialState);
+  const [state, formAction, isPending] = useActionState(
+    saveWeather,
+    initialState,
+  );
 
   return (
     <form action={formAction}>
@@ -67,7 +70,7 @@ export default function Weather({
                 aria-describedby="location-error"
                 aria-label="Search location via city name or coordinates"
               />
-              <MapIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <MapIcon className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
           <div id="location-error" aria-live="polite" aria-atomic="true">
@@ -135,7 +138,7 @@ export default function Weather({
               <option value="Classic">Classic</option>
               <option value="Animated">Animated</option>
             </select>
-            <SparklesIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+            <SparklesIcon className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
           </div>
           <div id="graphic-error" aria-live="polite" aria-atomic="true">
             {state.errors?.graphic &&
@@ -155,9 +158,9 @@ export default function Weather({
         </div>
       </div>
       <div className="mt-6 flex justify-end gap-4">
-        <Button className="cursor-pointer" type="submit">
+        <Button type="submit" disabled={isPending}>
           <Save />
-          <span>Save</span>
+          <span>{isPending ? "Saving..." : "Save"}</span>
         </Button>
       </div>
     </form>

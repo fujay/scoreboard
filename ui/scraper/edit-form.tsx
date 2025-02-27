@@ -1,6 +1,6 @@
 "use client";
 
-import { createScraper, StateScraper } from "@/lib/actions";
+import { StateScraper, updateScraper } from "@/lib/actions";
 import { Scraper } from "@/lib/definitions";
 import { Button } from "@/ui/button";
 import {
@@ -21,7 +21,15 @@ import {
 import Link from "next/link";
 import { ChangeEvent, useActionState, useState } from "react";
 
-export default function EditScraperForm({ scraper }: { scraper: Scraper }) {
+export default function EditScraperForm({
+  scraper,
+  index,
+}: {
+  scraper: Scraper;
+  index: number;
+}) {
+  const updateScraperWithId = updateScraper.bind(null, index);
+
   const initialState: StateScraper = {
     message: null,
     errors: {},
@@ -29,10 +37,13 @@ export default function EditScraperForm({ scraper }: { scraper: Scraper }) {
 
   const [format, setFormat] = useState<string>(scraper.format);
   const [selectedScraper, setSelectedScraper] = useState<string>(
-    scraper.scraper
+    scraper.scraper,
   );
 
-  const [state, formAction] = useActionState(createScraper, initialState);
+  const [state, formAction, isPending] = useActionState(
+    updateScraperWithId,
+    initialState,
+  );
 
   const onChangeScraper = (e: ChangeEvent<HTMLSelectElement>) => {
     setSelectedScraper(e.target.value);
@@ -67,7 +78,7 @@ export default function EditScraperForm({ scraper }: { scraper: Scraper }) {
                 aria-describedby="url-error"
                 // required
               />
-              <LinkIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <LinkIcon className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
           <div id="url-error" aria-live="polite" aria-atomic="true">
@@ -102,7 +113,7 @@ export default function EditScraperForm({ scraper }: { scraper: Scraper }) {
                 aria-describedby="titleSelector-error"
                 // required
               />
-              <LetterText className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <LetterText className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
           <div id="titleSelector-error" aria-live="polite" aria-atomic="true">
@@ -134,7 +145,7 @@ export default function EditScraperForm({ scraper }: { scraper: Scraper }) {
                 aria-describedby="selectors-error"
                 // required
               />
-              <TextSelect className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <TextSelect className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
           <div id="selectors-error" aria-live="polite" aria-atomic="true">
@@ -173,7 +184,7 @@ export default function EditScraperForm({ scraper }: { scraper: Scraper }) {
               <option value="Puppeteer">Puppeteer</option>
               <option value="Cheerio">Cheerio</option>
             </select>
-            <Library className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+            <Library className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
           </div>
           <div id="scraper-error" aria-live="polite" aria-atomic="true">
             {state.errors?.scraper &&
@@ -221,7 +232,7 @@ export default function EditScraperForm({ scraper }: { scraper: Scraper }) {
                   type="radio"
                   value="Screenshot"
                   disabled={selectedScraper !== "Puppeteer"}
-                  className="h-4 w-4 disabled:cursor-not-allowed cursor-pointer border-gray-300 focus:ring-2"
+                  className="h-4 w-4 cursor-pointer border-gray-300 focus:ring-2 disabled:cursor-not-allowed"
                   aria-describedby="format-error"
                 />
                 <label
@@ -313,7 +324,7 @@ export default function EditScraperForm({ scraper }: { scraper: Scraper }) {
                 aria-label="The page width in CSS pixels."
                 aria-describedby="width-error"
               />
-              <MoveHorizontal className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <MoveHorizontal className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
 
@@ -356,7 +367,7 @@ export default function EditScraperForm({ scraper }: { scraper: Scraper }) {
                 aria-label="The page height in CSS pixels."
                 aria-describedby="height-error"
               />
-              <MoveVertical className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <MoveVertical className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
 
@@ -382,12 +393,12 @@ export default function EditScraperForm({ scraper }: { scraper: Scraper }) {
           href="/dashboard/scraper"
           className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
         >
-          <XMarkIcon className="mr-1.5 w-6 h-6" />
+          <XMarkIcon className="mr-1.5 h-6 w-6" />
           Cancel
         </Link>
-        <Button className="cursor-pointer" type="submit">
+        <Button type="submit" disabled={isPending}>
           <Save />
-          <span>Edit Scraper</span>
+          <span>{isPending ? "Saving..." : "Edit Scraper"}</span>
         </Button>
       </div>
     </form>

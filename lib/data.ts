@@ -30,7 +30,7 @@ export async function fetchCardData() {
 
 export async function fetchFilteredScrapers(
   query: string,
-  currentPage: number
+  currentPage: number,
 ) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 

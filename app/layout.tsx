@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Script from "next/script";
 import { geistMono, geistSans, inter } from "@/ui/fonts";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: {
@@ -18,11 +20,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <Script
+        strategy="afterInteractive"
+        crossOrigin="anonymous"
+        src="//unpkg.com/react-scan/dist/auto.global.js"
+      />
       <body
         // className={`${inter.className} ${geistSans.className} ${geistMono.className} antialiased`}
         className={`${inter.className} antialiased`}
       >
         {children}
+        <Toaster />
       </body>
     </html>
   );
