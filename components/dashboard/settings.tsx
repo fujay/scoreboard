@@ -35,7 +35,10 @@ export default function Settings({
 
   const [stale, setStale] = useState<number>(settings.stale);
 
-  const [state, formAction] = useActionState(saveSettings, initialState);
+  const [state, formAction, isPending] = useActionState(
+    saveSettings,
+    initialState,
+  );
 
   const handleStorageChange = (e: ChangeEvent<HTMLSelectElement>) => {
     if (e.target.value === "None") {
@@ -283,9 +286,9 @@ export default function Settings({
         </div>
       </div>
       <div className="mt-6 flex justify-end gap-4">
-        <Button className="cursor-pointer" type="submit">
+        <Button type="submit" disabled={isPending}>
           <Save />
-          <span>Save</span>
+          <span>{isPending ? "Saving..." : "Save"}</span>
         </Button>
       </div>
     </form>

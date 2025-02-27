@@ -7,17 +7,22 @@ import {
   ClockIcon,
   CurrencyDollarIcon,
   UserCircleIcon,
+  XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { createInvoice, State } from "@/app/lib/actions";
 import { useActionState } from "react";
 import { Button } from "@/ui/button";
+import { Save } from "lucide-react";
 
 export default function Form({ customers }: { customers: CustomerField[] }) {
   const initialState: State = {
     message: null,
     errors: {},
   };
-  const [state, formAction] = useActionState(createInvoice, initialState);
+  const [state, formAction, isPending] = useActionState(
+    createInvoice,
+    initialState,
+  );
 
   return (
     <form action={formAction}>
@@ -45,7 +50,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                 </option>
               ))}
             </select>
-            <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+            <UserCircleIcon className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
           </div>
           <div id="customer-error" aria-live="polite" aria-atomic="true">
             {state.errors?.customerId &&
@@ -74,7 +79,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                 aria-describedby="amount-error"
                 // required
               />
-              <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <CurrencyDollarIcon className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
           <div id="amount-error" aria-live="polite" aria-atomic="true">
@@ -150,9 +155,13 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
           href="/dashboard/x"
           className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
         >
+          <XMarkIcon className="mr-1.5 h-6 w-6" />
           Cancel
         </Link>
-        <Button type="submit">Create Invoice</Button>
+        <Button type="submit" disabled={isPending}>
+          <Save />
+          <span>{isPending ? "Creating..." : "Create X"}</span>
+        </Button>
       </div>
     </form>
   );
