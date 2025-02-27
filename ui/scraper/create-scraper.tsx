@@ -29,7 +29,10 @@ export default function ScraperForm() {
   const [format, setFormat] = useState<string>("Text");
   const [scraper, setScraper] = useState<string>("Puppeteer");
 
-  const [state, formAction] = useActionState(createScraper, initialState);
+  const [state, formAction, isPending] = useActionState(
+    createScraper,
+    initialState,
+  );
 
   const onChangeScraper = (e: ChangeEvent<HTMLSelectElement>) => {
     setScraper(e.target.value);
@@ -63,7 +66,7 @@ export default function ScraperForm() {
                 aria-describedby="url-error"
                 // required
               />
-              <LinkIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <LinkIcon className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
           <div id="url-error" aria-live="polite" aria-atomic="true">
@@ -97,7 +100,7 @@ export default function ScraperForm() {
                 aria-describedby="titleSelector-error"
                 // required
               />
-              <LetterText className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <LetterText className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
           <div id="titleSelector-error" aria-live="polite" aria-atomic="true">
@@ -128,7 +131,7 @@ export default function ScraperForm() {
                 aria-describedby="selectors-error"
                 // required
               />
-              <TextSelect className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <TextSelect className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
           <div id="selectors-error" aria-live="polite" aria-atomic="true">
@@ -166,7 +169,7 @@ export default function ScraperForm() {
               <option value="Puppeteer">Puppeteer</option>
               <option value="Cheerio">Cheerio</option>
             </select>
-            <Library className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+            <Library className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
           </div>
           <div id="scraper-error" aria-live="polite" aria-atomic="true">
             {state.errors?.scraper &&
@@ -214,7 +217,7 @@ export default function ScraperForm() {
                   type="radio"
                   value="Screenshot"
                   disabled={scraper !== "Puppeteer"}
-                  className="h-4 w-4 disabled:cursor-not-allowed cursor-pointer border-gray-300 focus:ring-2"
+                  className="h-4 w-4 cursor-pointer border-gray-300 focus:ring-2 disabled:cursor-not-allowed"
                   aria-describedby="format-error"
                 />
                 <label
@@ -305,7 +308,7 @@ export default function ScraperForm() {
                 aria-label="The page width in CSS pixels."
                 aria-describedby="width-error"
               />
-              <MoveHorizontal className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <MoveHorizontal className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
 
@@ -348,7 +351,7 @@ export default function ScraperForm() {
                 aria-label="The page height in CSS pixels."
                 aria-describedby="height-error"
               />
-              <MoveVertical className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <MoveVertical className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
 
@@ -374,12 +377,12 @@ export default function ScraperForm() {
           href="/dashboard/scraper"
           className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
         >
-          <XMarkIcon className="mr-1.5 w-6 h-6" />
+          <XMarkIcon className="mr-1.5 h-6 w-6" />
           Cancel
         </Link>
-        <Button className="cursor-pointer" type="submit">
+        <Button type="submit" disabled={isPending}>
           <Save />
-          <span>Create Scraper</span>
+          <span>{isPending ? "Creating..." : "Create Scraper"}</span>
         </Button>
       </div>
     </form>
