@@ -4,6 +4,8 @@ import Script from "next/script";
 import { geistMono, geistSans, inter } from "@/ui/fonts";
 import { Toaster } from "sonner";
 
+import { unstable_ViewTransition as ViewTransition } from "react";
+
 export const metadata: Metadata = {
   title: {
     template: "%s Dashboard | Digital Message Board",
@@ -29,7 +31,9 @@ export default function RootLayout({
         // className={`${inter.className} ${geistSans.className} ${geistMono.className} antialiased`}
         className={`${inter.className} antialiased`}
       >
+        {/*  <ViewTransition  name="page"> */}
         {children}
+        {/* </ViewTransition> */}
         <Toaster />
       </body>
     </html>
