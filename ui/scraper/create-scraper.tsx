@@ -1,6 +1,12 @@
 "use client";
 
-import { createScraper, StateScraper } from "@/lib/actions";
+import {
+  createScraper,
+  StateScraper,
+  scrapeViaCheerio,
+  scrapeViaPuppeteer,
+  scrapeScreenshot,
+} from "@/lib/actions";
 import { Button } from "@/ui/button";
 import {
   DocumentTextIcon,
@@ -10,6 +16,7 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import {
+  Eye,
   LetterText,
   Library,
   MoveHorizontal,
@@ -17,6 +24,7 @@ import {
   Save,
   TextSelect,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { ChangeEvent, useActionState, useState } from "react";
 
@@ -28,6 +36,7 @@ export default function ScraperForm() {
 
   const [format, setFormat] = useState<string>("Text");
   const [scraper, setScraper] = useState<string>("Puppeteer");
+  const [previewResult, setPreviewResult] = useState<string | null>(null);
 
   const [state, formAction, isPending] = useActionState(
     createScraper,
@@ -43,6 +52,50 @@ export default function ScraperForm() {
 
   const onChangeFormat = (e: ChangeEvent<HTMLInputElement>) => {
     setFormat(e.target.value);
+  };
+
+  const handlePreview = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const formData = new FormData(
+      e.currentTarget.closest("form") as HTMLFormElement,
+    );
+    const url = formData.get("url") as string;
+    const titleSelector = formData.get("titleSelector") as string;
+    const selectors = (formData.get("selectors") as string).split(",");
+    const format = formData.get("format") as string;
+    const width = parseInt(formData.get("width") as string);
+    const height = parseInt(formData.get("height") as string);
+
+    if (format === "Text") {
+      let result;
+      if (scraper === "Cheerio") {
+        result = await scrapeViaCheerio(url, titleSelector, selectors);
+      } else if (scraper === "Puppeteer") {
+        result = await scrapeViaPuppeteer(
+          url,
+          titleSelector,
+          selectors,
+          width,
+          height,
+        );
+      }
+      setPreviewResult(JSON.stringify(result, null, 2));
+    } else if (format === "Screenshot") {
+      const result = await scrapeScreenshot(
+        url,
+        titleSelector,
+        selectors[0],
+        width,
+        height,
+      );
+
+      if (result) {
+        const base64Image = Buffer.from(result).toString("base64");
+        setPreviewResult(`data:image/png;base64,${base64Image}`);
+      } else {
+        setPreviewResult(null);
+      }
+    }
   };
 
   return (
@@ -371,18 +424,43 @@ export default function ScraperForm() {
             <p className="mt-2 text-sm text-red-500">{state.message}</p>
           )}
         </div>
+
+        {/* Preview */}
+        {previewResult && (
+          <div className="mt-4 rounded-md bg-gray-100 p-4">
+            <h3 className="text-sm font-medium">Preview Result:</h3>
+            {format === "Screenshot" ? (
+              <img src={previewResult} alt="Screenshot Preview" />
+            ) : (
+              <pre className="mt-2 text-xs">{previewResult}</pre>
+            )}
+          </div>
+        )}
       </div>
       <div className="mt-6 flex justify-end gap-4">
         <Link
           href="/dashboard/scraper"
           className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
         >
-          <XMarkIcon className="mr-1.5 h-6 w-6" />
-          Cancel
+          <XMarkIcon className="h-6 w-6 sm:mr-1.5" />
+          <span className="hidden sm:block">Cancel</span>
         </Link>
+        <Button
+          onClick={handlePreview}
+          className="bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground"
+          type="submit"
+          disabled={isPending}
+        >
+          <Eye />
+          <span className="hidden sm:block">
+            {isPending ? "Loading..." : "Preview"}
+          </span>
+        </Button>
         <Button type="submit" disabled={isPending}>
           <Save />
-          <span>{isPending ? "Creating..." : "Create Scraper"}</span>
+          <span className="hidden sm:block">
+            {isPending ? "Creating..." : "Create Scraper"}
+          </span>
         </Button>
       </div>
     </form>

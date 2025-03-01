@@ -423,7 +423,7 @@ export async function scrapeViaCheerio(
   });
 
   return {
-    header,
+    title: header,
     data: scrappedData,
   };
 }
@@ -471,7 +471,11 @@ export async function scrapeViaPuppeteer(
       selectors,
     );
     console.log(data);
-    return data;
+    // return data
+    return {
+      title: data.title,
+      data: data.data,
+    };
 
     //
 
@@ -522,7 +526,11 @@ export async function scrapeScreenshot(
 
   console.log(cleanedTitle);
 
-  await element?.screenshot({ path: `public/images/${cleanedTitle}.png` });
+  const screenshot = await element?.screenshot({
+    path: `public/images/${cleanedTitle}.png`,
+  });
 
   await browser.close();
+
+  return screenshot;
 }
