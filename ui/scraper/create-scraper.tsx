@@ -2,10 +2,10 @@
 
 import {
   createScraper,
-  StateScraper,
+  scrapeScreenshot,
   scrapeViaCheerio,
   scrapeViaPuppeteer,
-  scrapeScreenshot,
+  StateScraper,
 } from "@/lib/actions";
 import { Button } from "@/ui/button";
 import {
@@ -24,7 +24,6 @@ import {
   Save,
   TextSelect,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { ChangeEvent, useActionState, useState } from "react";
 
@@ -66,6 +65,12 @@ export default function ScraperForm() {
     const width = parseInt(formData.get("width") as string);
     const height = parseInt(formData.get("height") as string);
 
+    if (!url || !titleSelector || !selectors || !format) {
+      setPreviewResult("Please fill in all required fields.");
+      // state.message = "Please fill in all required fields.";
+      return;
+    }
+
     if (format === "Text") {
       let result;
       if (scraper === "Cheerio") {
@@ -79,7 +84,8 @@ export default function ScraperForm() {
           height,
         );
       }
-      setPreviewResult(JSON.stringify(result, null, 2));
+      // setPreviewResult(JSON.stringify(result, null, 2));
+      setPreviewResult(result?.data[0] || "No data found");
     } else if (format === "Screenshot") {
       const result = await scrapeScreenshot(
         url,
