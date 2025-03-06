@@ -86,7 +86,7 @@ export const cleanString = (textString: string) => {
  * @param input - The input string to check for CSS selectors.
  * @returns `true` if the input string contains CSS selectors, otherwise `false`.
  */
-export function containsCSSSelectors(input: string): boolean {
+export function containsCssSelectors(input: string): boolean {
   const cssSelectorPattern =
     /[>#\.\[]|\b(div|p|span|a|ul|li|body|html|h[1-6]|section|article|header|footer|nav|main|aside|button|input|textarea|select|label|form)\b/;
 
