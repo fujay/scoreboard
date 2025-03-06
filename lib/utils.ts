@@ -41,6 +41,13 @@ export async function saveConfig(
   await fs.writeFile("settings.json", JSON.stringify(config));
 }
 
+export async function saveImageLocal(
+  image: Uint8Array<ArrayBufferLike>,
+  fileName: string,
+) {
+  await fs.writeFile(`${process.cwd()}/public/images/${fileName}.png`, image);
+}
+
 /**
  * Converts temperature from Kelvin to Celsius and remove decimal part (keeps integer part).
  * @param tempKelvin The temperature in Kelvin.
@@ -64,3 +71,24 @@ export const formatDateToLocal = (
   const formatter = new Intl.DateTimeFormat(locale, options);
   return formatter.format(date);
 };
+
+export const cleanString = (textString: string) => {
+  return textString.replace(/[^a-zA-Z0-9]/g, "");
+};
+
+/**
+ * Checks if the given input string contains common CSS selectors.
+ *
+ * This function uses a regular expression to detect the presence of common CSS selectors
+ * such as element names (e.g., div, p, span), class selectors (.), ID selectors (#),
+ * attribute selectors ([]), and combinators (>, +, ~).
+ *
+ * @param input - The input string to check for CSS selectors.
+ * @returns `true` if the input string contains CSS selectors, otherwise `false`.
+ */
+export function containsCSSSelectors(input: string): boolean {
+  const cssSelectorPattern =
+    /[>#\.\[]|\b(div|p|span|a|ul|li|body|html|h[1-6]|section|article|header|footer|nav|main|aside|button|input|textarea|select|label|form)\b/;
+
+  return cssSelectorPattern.test(input);
+}
