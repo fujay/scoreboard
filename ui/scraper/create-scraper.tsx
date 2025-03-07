@@ -36,7 +36,10 @@ export default function ScraperForm() {
 
   const [format, setFormat] = useState<string>("Text");
   const [scraper, setScraper] = useState<string>("Puppeteer");
-  const [previewResult, setPreviewResult] = useState<string | null>(null);
+  const [previewResult, setPreviewResult] = useState<{
+    title: string;
+    data: string;
+  } | null>(null);
 
   const [state, formAction, isPending] = useActionState(
     createScraper,
@@ -67,7 +70,10 @@ export default function ScraperForm() {
     const height = parseInt(formData.get("height") as string);
 
     if (!url || !titleSelector || !selectors || !format) {
-      setPreviewResult("Please fill in all required fields.");
+      setPreviewResult({
+        title: "Error",
+        data: "Please fill in all required fields.",
+      });
       // state.message = "Please fill in all required fields.";
       return;
     }
@@ -86,7 +92,10 @@ export default function ScraperForm() {
         );
       }
       // setPreviewResult(JSON.stringify(result, null, 2));
-      setPreviewResult(result?.data[0] || "No data found");
+      setPreviewResult({
+        title: result?.title || "No title found",
+        data: result?.data[0] || "No data found",
+      });
     } else if (format === "Screenshot") {
       const result = await scrapeScreenshot(
         url,
@@ -98,9 +107,13 @@ export default function ScraperForm() {
 
       if (result.screenshot) {
         const base64Image = Buffer.from(result.screenshot).toString("base64");
-        setPreviewResult(`data:image/png;base64,${base64Image}`);
+        setPreviewResult({
+          title: result.title,
+          data: `data:image/png;base64,${base64Image}`,
+        });
       } else {
-        setPreviewResult(null);
+        // setPreviewResult(null);
+        setPreviewResult({ title: result.title, data: "" });
       }
     }
   };
@@ -435,16 +448,18 @@ export default function ScraperForm() {
         {/* Preview */}
         {previewResult && (
           <div className="mt-4 rounded-md bg-gray-100 p-4">
-            <h3 className="text-sm font-medium">Preview Result:</h3>
+            <h3 className="text-sm font-medium">
+              Preview Result: {previewResult.title}
+            </h3>
             {format === "Screenshot" ? (
               <Image
-                src={previewResult}
+                src={previewResult.data}
                 alt="Screenshot Preview"
                 width={800}
                 height={600}
               />
             ) : (
-              <pre className="mt-2 text-xs">{previewResult}</pre>
+              <pre className="mt-2 text-xs">{previewResult.data}</pre>
             )}
           </div>
         )}

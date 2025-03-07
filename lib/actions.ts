@@ -493,9 +493,9 @@ export async function scrapeViaPuppeteer(
 
     const data = await page.evaluate(
       (titleSelector, selectors) => {
-        const title = containsCssSelectors(titleSelector)
-          ? document.querySelector(titleSelector)?.textContent?.trim()
-          : titleSelector;
+        const title = document
+          .querySelector(titleSelector)
+          ?.textContent?.trim();
 
         // const data = Array.from(
         //   document.querySelectorAll(
@@ -515,7 +515,7 @@ export async function scrapeViaPuppeteer(
     console.log(data);
     // return data
     return {
-      title: data.title,
+      title: data.title || titleSelector,
       data: data.data,
     };
 
