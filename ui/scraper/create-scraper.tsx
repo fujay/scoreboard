@@ -24,6 +24,7 @@ import {
   Save,
   TextSelect,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { ChangeEvent, useActionState, useState } from "react";
 
@@ -436,7 +437,12 @@ export default function ScraperForm() {
           <div className="mt-4 rounded-md bg-gray-100 p-4">
             <h3 className="text-sm font-medium">Preview Result:</h3>
             {format === "Screenshot" ? (
-              <img src={previewResult} alt="Screenshot Preview" />
+              <Image
+                src={previewResult}
+                alt="Screenshot Preview"
+                width={800}
+                height={600}
+              />
             ) : (
               <pre className="mt-2 text-xs">{previewResult}</pre>
             )}
