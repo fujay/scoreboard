@@ -452,7 +452,12 @@ export async function scrapeViaCheerio(
 
   const scrappedData: string[] = [];
 
-  const header = $(title).text().trim();
+  let header = "";
+  if (containsCssSelectors(title)) {
+    header = $(title).text().trim();
+  } else {
+    header = title;
+  }
 
   selectors.forEach((selector) => {
     const data = $(selector).text().trim();
@@ -488,9 +493,9 @@ export async function scrapeViaPuppeteer(
 
     const data = await page.evaluate(
       (titleSelector, selectors) => {
-        const title = document
-          .querySelector(titleSelector)
-          ?.textContent?.trim();
+        const title = containsCssSelectors(titleSelector)
+          ? document.querySelector(titleSelector)?.textContent?.trim()
+          : titleSelector;
 
         // const data = Array.from(
         //   document.querySelectorAll(
