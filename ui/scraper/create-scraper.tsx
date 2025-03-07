@@ -95,8 +95,8 @@ export default function ScraperForm() {
         height,
       );
 
-      if (result) {
-        const base64Image = Buffer.from(result).toString("base64");
+      if (result.screenshot) {
+        const base64Image = Buffer.from(result.screenshot).toString("base64");
         setPreviewResult(`data:image/png;base64,${base64Image}`);
       } else {
         setPreviewResult(null);

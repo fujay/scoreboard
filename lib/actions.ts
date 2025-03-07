@@ -6,8 +6,15 @@ import * as cheerio from "cheerio";
 import puppeteer from "puppeteer";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { readKeyConfig, saveConfig } from "./utils";
+import {
+  cleanString,
+  containsCssSelectors,
+  readKeyConfig,
+  saveConfig,
+  saveImageLocal,
+} from "./utils";
 import { Settings } from "./definitions";
+import { uploadImage } from "./cloudinary";
 
 const FormSchemaGeneral = z.object({
   time: z.number().int().min(1).max(300),
@@ -224,6 +231,36 @@ export async function createScraper(
     scraperLength,
   );
 
+  const storage: Settings["general"] = await readKeyConfig("general");
+
+  if (format === "Screenshot") {
+    const imageData = await scrapeScreenshot(
+      url,
+      titleSelector,
+      selectors,
+      width,
+      height,
+    );
+    if (storage.images === "Local") {
+      if (imageData.title && imageData.screenshot) {
+        const cleanedTitle = cleanString(imageData.title);
+        await saveImageLocal(imageData.screenshot, cleanedTitle);
+      }
+    } else if (storage.images === "Remote") {
+      let imageUrl = "";
+      try {
+        if (imageData.title && imageData.screenshot) {
+          imageUrl = await uploadImage(imageData.screenshot);
+        }
+        console.log(imageUrl);
+      } catch (error) {
+        throw new Error(
+          `${error}: Image upload failed. Please try again later.`,
+        );
+      }
+    }
+  } else if (format === "Text") {
+  }
   // try {
   //   await sql`
   //   INSERT INTO scrapers (url, title, selectors)
@@ -520,17 +557,26 @@ export async function scrapeScreenshot(
 
   const element = await page.$(selector);
 
-  const title = await page.$eval(titleSelector, (el) => el.textContent?.trim());
-
-  const cleanedTitle = title?.replace(/[^a-zA-Z]/g, "");
-
-  console.log(cleanedTitle);
+  // const title = containsCssSelectors(titleSelector)
+  //   ? await page.$eval(titleSelector, (el) => el.textContent?.trim())
+  //   : titleSelector;
+  let title = "";
+  if (containsCssSelectors(titleSelector)) {
+    title =
+      (await page.$eval(titleSelector, (el) => el.textContent?.trim())) ||
+      titleSelector;
+  } else {
+    title = titleSelector;
+  }
 
   const screenshot = await element?.screenshot({
-    path: `public/images/${cleanedTitle}.png`,
+    // path: `public/images/${cleanedTitle}.png`,
   });
 
   await browser.close();
 
-  return screenshot;
+  // if (!screenshot) {
+  //   throw new Error("Screenshot could not be taken.");
+  // }
+  return { title, screenshot };
 }
