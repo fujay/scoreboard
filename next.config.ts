@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
   },
   images: {
     remotePatterns: [
+      { hostname: "res.cloudinary.com" },
       {
         hostname: "openweathermap.org",
       },
