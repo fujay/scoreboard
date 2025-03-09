@@ -249,7 +249,7 @@ export async function createScraper(
     } else if (storage.images === "Remote") {
       let imageUrl = "";
       try {
-        if (imageData.title && imageData.screenshot) {
+        if (imageData.screenshot) {
           imageUrl = await uploadImage(imageData.screenshot);
         }
         console.log(imageUrl);
