@@ -45,7 +45,7 @@ export async function saveImageLocal(
   image: Uint8Array<ArrayBufferLike>,
   fileName: string,
 ) {
-  await fs.writeFile(`${process.cwd()}/public/images/${fileName}.png`, image);
+  await fs.writeFile(`${process.cwd()}/assets/images/${fileName}.png`, image);
 }
 
 /**
