@@ -2,16 +2,14 @@
 
 import XIcon from "@/ui/x-icon";
 import {
-  UserGroupIcon,
-  HomeIcon,
-  DocumentDuplicateIcon,
-  Cog8ToothIcon,
-  SunIcon,
-  GlobeAltIcon,
-  DocumentTextIcon,
-  CloudIcon,
   CalendarDaysIcon,
+  CloudIcon,
+  Cog8ToothIcon,
+  DocumentTextIcon,
+  GlobeAltIcon,
+  HomeIcon,
   RssIcon,
+  SunIcon,
 } from "@heroicons/react/24/outline";
 import { FileVideo } from "lucide-react";
 import Link from "next/link";
@@ -20,12 +18,6 @@ import { usePathname } from "next/navigation";
 // Map of links to display in the side navigation.
 const links = [
   { name: "Home", href: "/dashboard", icon: HomeIcon },
-  {
-    name: "Invoices",
-    href: "/dashboard/invoices",
-    icon: DocumentDuplicateIcon,
-  },
-  { name: "Customers", href: "/dashboard/customers", icon: UserGroupIcon },
   { name: "Cloud", href: "/dashboard/cloud", icon: CloudIcon },
   { name: "Message", href: "/dashboard/message", icon: DocumentTextIcon },
   { name: "RSS", href: "/dashboard/rss", icon: RssIcon },
