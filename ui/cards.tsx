@@ -1,29 +1,36 @@
 import { fetchCardData } from "@/lib/data";
 import {
-  BanknotesIcon,
-  ClockIcon,
-  UserGroupIcon,
-  InboxIcon,
+  DocumentTextIcon,
   GlobeAltIcon,
+  PhotoIcon,
 } from "@heroicons/react/24/outline";
-import XIcon from "./x-icon";
 import { lusitana } from "./fonts";
+import XIcon from "./x-icon";
 
 const iconMap = {
-  collected: BanknotesIcon,
-  customers: UserGroupIcon,
-  pending: ClockIcon,
-  invoices: InboxIcon,
   scraper: GlobeAltIcon,
+  scraperText: DocumentTextIcon,
+  scraperImage: PhotoIcon,
   tweet: XIcon,
 };
 
 export default async function CardWrapper() {
-  const { numberOfScrapers } = await fetchCardData();
+  const { numberOfScrapers, numberOfScraperTexts, numberOfScraperImages } =
+    await fetchCardData();
 
   return (
     <>
       <Card title="Scrapers" value={numberOfScrapers} type="scraper" />
+      <Card
+        title="Scraper texts"
+        value={numberOfScraperTexts}
+        type="scraperText"
+      />
+      <Card
+        title="Scraper images"
+        value={numberOfScraperImages}
+        type="scraperImage"
+      />
       {/* <Card title="Tweets" value={numberOfTweets} type="tweet" />
       <Card title="Tweets" value={numberOfTweets} type="invoices" />
       <Card title="Tweets" value={numberOfTweets} type="customers" /> */}
@@ -38,13 +45,7 @@ export function Card({
 }: {
   title: string;
   value: number | string;
-  type:
-    | "invoices"
-    | "customers"
-    | "pending"
-    | "collected"
-    | "scraper"
-    | "tweet";
+  type: "scraper" | "scraperText" | "scraperImage" | "tweet";
 }) {
   const Icon = iconMap[type];
 

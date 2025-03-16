@@ -17,27 +17,37 @@ export async function fetchCardData() {
     const storage: Settings["general"] = await readKeyConfig("general");
     await new Promise((resolve) => setTimeout(resolve, 3000));
     // const tweetCountPromise = sql`SELECT COUNT(*) FROM tweets`;
-    if (storage.db === "Local") {
-      const scrapersListPromise: Promise<Settings["scraper"]> =
-        readKeyConfig("scraper");
-      const data = await Promise.all([scrapersListPromise]);
-      const numberOfScrapers = data[0].length;
-      return {
-        numberOfScrapers,
-      };
-    } else if (storage.db === "Remote") {
-      const scrapersListPromise = sql`SELECT COUNT(*) FROM scrapers`;
-      const data = await Promise.all([scrapersListPromise]);
+    // if (storage.db === "Local") {
+    //   const scrapersListPromise: Promise<Settings["scraper"]> =
+    //     readKeyConfig("scraper");
+    //   const data = await Promise.all([scrapersListPromise]);
+    //   const numberOfScrapers = data[0].length;
+    //   return {
+    //     numberOfScrapers,
+    //   };
+    // } else if (storage.db === "Remote") {
+    const scrapersListPromise = sql`SELECT COUNT(*) FROM scrapers`;
+    const scrapersTextListPromise = sql`SELECT COUNT(*) FROM scrapers WHERE format = 'Text'`;
+    const scrapersImageListPromise = sql`SELECT COUNT(*) FROM scrapers WHERE format = 'Screenshot'`;
+    const data = await Promise.all([
+      scrapersListPromise,
+      scrapersTextListPromise,
+      scrapersImageListPromise,
+    ]);
 
-      const numberOfScrapers = data[0][0].count ?? "0";
-      return {
-        numberOfScrapers,
-      };
-    } else {
-      return {
-        numberOfScrapers: 0,
-      };
-    }
+    const numberOfScrapers = data[0][0].count ?? "0";
+    const numberOfScraperTexts = data[1][0].count ?? "0";
+    const numberOfScraperImages = data[2][0].count ?? "0";
+    return {
+      numberOfScrapers,
+      numberOfScraperTexts,
+      numberOfScraperImages,
+    };
+    // } else {
+    //   return {
+    //     numberOfScrapers: 0,
+    //   };
+    // }
 
     // const tweetCountPromise = sql`SELECT COUNT(*) FROM customers`;
 
@@ -150,21 +160,21 @@ export async function fetchFilteredScrapers(
 export async function fetchScrapersPages(query: string) {
   try {
     const storage: Settings["general"] = await readKeyConfig("general");
-    if (storage.db === "Local") {
-      const scrapersList: Settings["scraper"] = await readKeyConfig("scraper");
-      const countedScrapers = scrapersList.filter((scraper) => {
-        return (
-          scraper.url.includes(query) ||
-          scraper.titleSelector.includes(query) ||
-          scraper.selectors.includes(query) ||
-          scraper.format.includes(query)
-        );
-      });
-      const totalPages = Math.ceil(countedScrapers.length / ITEMS_PER_PAGE);
+    // if (storage.db === "Local") {
+    //   const scrapersList: Settings["scraper"] = await readKeyConfig("scraper");
+    //   const countedScrapers = scrapersList.filter((scraper) => {
+    //     return (
+    //       scraper.url.includes(query) ||
+    //       scraper.titleSelector.includes(query) ||
+    //       scraper.selectors.includes(query) ||
+    //       scraper.format.includes(query)
+    //     );
+    //   });
+    //   const totalPages = Math.ceil(countedScrapers.length / ITEMS_PER_PAGE);
 
-      return totalPages;
-    } else if (storage.db === "Remote") {
-      const data = await sql`SELECT COUNT(*)
+    //   return totalPages;
+    // } else if (storage.db === "Remote") {
+    const data = await sql`SELECT COUNT(*)
       from scrapers
       JOIN scraper_data ON scrapers.scraper_data_id = scraper_data.id
       WHERE
@@ -182,11 +192,11 @@ export async function fetchScrapersPages(query: string) {
         scraper_data.date::text ILIKE ${`%${query}%`}
       `;
 
-      const totalPages = Math.ceil(Number(data[0].count) / ITEMS_PER_PAGE);
-      return totalPages;
-    } else {
-      return 0;
-    }
+    const totalPages = Math.ceil(Number(data[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+    // } else {
+    //   return 0;
+    // }
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch total number of scrapers.");
