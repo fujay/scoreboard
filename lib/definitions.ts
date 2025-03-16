@@ -11,14 +11,46 @@ export type User = {
 };
 
 export type Scraper = {
+  id: string;
   url: string;
   titleSelector: string;
   selectors: string;
-  scraper: string;
+  scraper: "Puppeteer" | "Cheerio";
   format: "Text" | "Screenshot";
-  width: string;
-  height: string;
+  width: number;
+  height: number;
   qrcode: boolean;
+};
+
+export type ScrapersTable = {
+  id: string;
+  scraper_data_id: string;
+  url: string;
+  title_selector: string;
+  selectors: string;
+  scraper: "Puppeteer" | "Cheerio";
+  format: "Text" | "Screenshot";
+  width: number;
+  height: number;
+  qrcode: boolean;
+  created_at: string;
+};
+
+export type ScraperForm = {
+  id: string;
+  scraper_data_id: string;
+  url: string;
+  title_selector: string;
+  selectors: string;
+  scraper: "Puppeteer" | "Cheerio";
+  format: "Text" | "Screenshot";
+  width: number;
+  height: number;
+  qrcode: boolean;
+  created_at: string;
+  title: string;
+  data: string;
+  date: string;
 };
 
 export type Tweet = {
@@ -96,14 +128,20 @@ export interface Settings {
   };
   scraper: [
     {
+      id: string;
+      scraper_data_id: string;
       url: string;
       titleSelector: string;
       selectors: string;
-      scraper: string;
+      scraper: "Puppeteer" | "Cheerio";
       format: "Text" | "Screenshot";
-      width: string;
-      height: string;
+      width: number;
+      height: number;
       qrcode: boolean;
+      createdAt: string;
+      title: string;
+      data: string;
+      date: string;
     },
   ];
 }
@@ -124,14 +162,20 @@ export const DEFAULT_SETTINGS: Settings = {
   },
   scraper: [
     {
+      id: "",
+      scraper_data_id: "",
       url: "",
       titleSelector: "",
       selectors: "",
-      scraper: "",
+      scraper: "Puppeteer",
       format: "Text",
-      width: "",
-      height: "",
+      width: 0,
+      height: 0,
       qrcode: false,
+      createdAt: new Date().toISOString(),
+      title: "",
+      data: "",
+      date: new Date().toISOString(),
     },
   ],
 };

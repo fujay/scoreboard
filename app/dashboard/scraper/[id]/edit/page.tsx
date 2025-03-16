@@ -1,5 +1,4 @@
-import { Settings } from "@/lib/definitions";
-import { readKeyConfig } from "@/lib/utils";
+import { fetchScraperById } from "@/lib/data";
 import Breadcrumbs from "@/ui/breadcumbs";
 import EditScraperForm from "@/ui/scraper/edit-form";
 import { Metadata } from "next";
@@ -9,13 +8,19 @@ export const metadata: Metadata = {
   title: "Edit Scraper",
 };
 
-export default async function Page(props: { params: Promise<{ id: number }> }) {
+export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const id = params.id;
 
-  const scraperList: Settings["scraper"] = await readKeyConfig("scraper");
+  // const storage: Settings["general"] = await readKeyConfig("general");
+  // let scraper: ScraperForm | null = null;
+  // if (storage.db === "Local") {
+  //   const scraperList: Settings["scraper"] = await readKeyConfig("scraper");
 
-  const scraper = scraperList[id];
+  //   scraper = scraperList[Number(id)];
+  // } else if (storage.db === "Remote") {
+  const scraper = await fetchScraperById(id);
+  // }
 
   if (!scraper) {
     notFound();
@@ -36,7 +41,7 @@ export default async function Page(props: { params: Promise<{ id: number }> }) {
           },
         ]}
       />
-      <EditScraperForm scraper={scraper} index={id} />
+      <EditScraperForm scraper={scraper} />
     </main>
   );
 }

@@ -14,10 +14,10 @@ export function CreateScraper() {
   );
 }
 
-export function UpdateScraper({ index }: { index: number }) {
+export function UpdateScraper({ id }: { id: string }) {
   return (
     <Link
-      href={`/dashboard/scraper/${index}/edit`}
+      href={`/dashboard/scraper/${id}/edit`}
       className="rounded-md border p-2 hover:bg-gray-100"
     >
       <PencilIcon className="w-5" />
@@ -25,14 +25,14 @@ export function UpdateScraper({ index }: { index: number }) {
   );
 }
 
-export function DeleteScraper({ index }: { index: number }) {
-  const deleteScraperWithId = deleteScraper.bind(null, index);
+export function DeleteScraper({ id }: { id: string }) {
+  const deleteScraperWithId = deleteScraper.bind(null, id);
 
   return (
     <form action={deleteScraperWithId}>
       <button
         type="submit"
-        className="cursor-pointer rounded-md border p-2 hover:text-red-500 hover:bg-gray-100"
+        className="cursor-pointer rounded-md border p-2 hover:bg-gray-100 hover:text-red-500"
       >
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-5" />

@@ -48,6 +48,22 @@ export async function saveImageLocal(
   await fs.writeFile(`${process.cwd()}/assets/images/${fileName}.png`, image);
 }
 
+// export async function saveDataLocal(
+//   scraperData: Record<string, unknown> | Record<string, unknown>[],
+// ) {
+//   const scraperDataFile = await fs.readFile(
+//     `${process.cwd()}/assets/storage/scraper_data.json`,
+//     "utf-8",
+//   );
+//   const scraperDataJson = JSON.parse(scraperDataFile);
+//   const newScraperDataJson = { ...scraperDataJson, scraperData };
+
+//   await fs.writeFile(
+//     `${process.cwd()}/assets/storage/scraper_data.json`,
+//     JSON.stringify(newScraperDataJson),
+//   );
+// }
+
 /**
  * Converts temperature from Kelvin to Celsius and remove decimal part (keeps integer part).
  * @param tempKelvin The temperature in Kelvin.
@@ -58,6 +74,17 @@ export function convertKelvinToCelsius(tempKelvin: number): number {
   return Math.floor(tempCelsius);
 }
 
+/**
+ * Formats a date string to a more human-readable format.
+ *
+ * This function takes a date string and formats it to a more human-readable format
+ * using the Intl.DateTimeFormat API. The default locale is set to "en-US", but it can
+ * be overridden by passing a different locale as an argument.
+ *
+ * @param dateStr - The date string to be formatted.
+ * @param locale - The locale to use for formatting (default is "en-US").
+ * @returns A formatted date string in the specified locale.
+ */
 export const formatDateToLocal = (
   dateStr: string,
   locale: string = "en-US",
@@ -72,6 +99,16 @@ export const formatDateToLocal = (
   return formatter.format(date);
 };
 
+/**
+ * Cleans a string by removing all non-alphanumeric characters.
+ *
+ * This function uses a regular expression to replace all characters that are not
+ * letters (a-z, A-Z) or digits (0-9) with an empty string. The resulting string
+ * will only contain alphanumeric characters.
+ *
+ * @param textString - The input string to be cleaned.
+ * @returns A new string containing only alphanumeric characters.
+ */
 export const cleanString = (textString: string) => {
   return textString.replace(/[^a-zA-Z0-9]/g, "");
 };

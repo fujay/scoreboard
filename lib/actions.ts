@@ -1,20 +1,16 @@
 "use server";
 
-import { sql } from "@vercel/postgres";
-import { z } from "zod";
 import * as cheerio from "cheerio";
-import puppeteer from "puppeteer";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import {
-  cleanString,
-  containsCssSelectors,
-  readKeyConfig,
-  saveConfig,
-  saveImageLocal,
-} from "./utils";
-import { Settings } from "./definitions";
+import postgres from "postgres";
+import puppeteer from "puppeteer";
+import { z } from "zod";
 import { uploadImage } from "./cloudinary";
+import { Settings } from "./definitions";
+import { containsCssSelectors, readKeyConfig, saveConfig } from "./utils";
+
+const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
 const FormSchemaGeneral = z.object({
   time: z.number().int().min(1).max(300),
@@ -49,11 +45,11 @@ const FormSchemaScraper = z.object({
   format: z.enum(["Text", "Screenshot"]),
   width: z.preprocess(
     (val) => (val === "" || val === undefined ? 1920 : Number(val)),
-    z.number().min(100).max(2000).optional(),
+    z.number().min(100).max(2000),
   ),
   height: z.preprocess(
     (val) => (val === "" || val === undefined ? 1080 : Number(val)),
-    z.number().min(100).max(2000).optional(),
+    z.number().min(100).max(2000),
   ),
   qrcode: z.coerce.boolean(),
 });
@@ -141,16 +137,6 @@ export async function saveSettings(
 
   const { time, db, images, stale, date } = validatedFields.data;
 
-  // try {
-  //   await sql`
-  //   UPDATE settings
-  //   SET time = ${time}, db = ${db}, images = ${images}, stale = ${stale}, date = ${date}, weather = ${weather}`;
-  // } catch (error) {
-  //   return {
-  //     message: `Database Error: Failed to Save Settings (${error}).`,
-  //   };
-  // }
-
   await saveConfig({ time, db, images, stale, date }, "general");
 
   revalidatePath("/dashboard/settings");
@@ -213,25 +199,11 @@ export async function createScraper(
     qrcode,
   } = validatedFields.data;
 
-  const scrapersList = await readKeyConfig("scraper");
-  const scraperLength = scrapersList.length;
+  // const storage: Settings["general"] = await readKeyConfig("general");
 
-  await saveConfig(
-    {
-      url,
-      titleSelector,
-      selectors,
-      scraper,
-      format,
-      width,
-      height,
-      qrcode,
-    },
-    "scraper",
-    scraperLength,
-  );
-
-  const storage: Settings["general"] = await readKeyConfig("general");
+  const date = new Date().toISOString().split("T")[0];
+  let result_remote_scraper_data;
+  // const scraperUUID = crypto.randomUUID();
 
   if (format === "Screenshot") {
     const imageData = await scrapeScreenshot(
@@ -241,47 +213,130 @@ export async function createScraper(
       width,
       height,
     );
-    if (storage.images === "Local") {
-      if (imageData.title && imageData.screenshot) {
-        const cleanedTitle = cleanString(imageData.title);
-        await saveImageLocal(imageData.screenshot, cleanedTitle);
+    // if (storage.images === "Local") {
+    //   if (imageData.screenshot) {
+    //     const cleanedTitle = cleanString(imageData.title);
+    //     await saveImageLocal(imageData.screenshot, cleanedTitle);
+    //     await saveDataLocal({
+    //       id: scraperUUID,
+    //       title: imageData.title,
+    //       data: cleanedTitle,
+    //       date: new Date().toISOString().split("T")[0],
+    //     });
+    //   }
+    // } else if (storage.images === "Remote") {
+    let imageUrl = "";
+    try {
+      if (imageData.screenshot) {
+        imageUrl = await uploadImage(imageData.screenshot);
       }
-    } else if (storage.images === "Remote") {
-      let imageUrl = "";
-      try {
-        if (imageData.screenshot) {
-          imageUrl = await uploadImage(imageData.screenshot);
-        }
-        console.log(imageUrl);
-      } catch (error) {
-        throw new Error(
-          `${error}: Image upload failed. Please try again later.`,
-        );
-      }
+    } catch (error) {
+      throw new Error(`${error}: Image upload failed. Please try again later.`);
     }
+
+    try {
+      result_remote_scraper_data = await sql`
+        INSERT INTO scraper_data (title, data, date)
+        VALUES (${imageData.title}, ${imageUrl}, ${date})
+        returning id`;
+    } catch (error) {
+      return {
+        message: `Database Error: Failed to Create Scraper data (${error}).`,
+      };
+    }
+    // }
   } else if (format === "Text") {
+    let scrappedData;
+    if (scraper === "Puppeteer") {
+      scrappedData = await scrapeViaPuppeteer(
+        url,
+        titleSelector,
+        [selectors],
+        width,
+        height,
+      );
+    } else if (scraper === "Cheerio") {
+      scrappedData = await scrapeViaCheerio(url, titleSelector, [selectors]);
+    }
+
+    try {
+      result_remote_scraper_data = await sql`
+        INSERT INTO scraper_data (title, data, date)
+        VALUES (${scrappedData?.title ?? ""}, ${scrappedData?.data?.join(", ") ?? ""}, ${date})
+        returning id`;
+    } catch (error) {
+      return {
+        message: `Database Error: Failed to Create Scraper data (${error}).`,
+      };
+    }
   }
-  // try {
-  //   await sql`
-  //   INSERT INTO scrapers (url, title, selectors)
-  //   VALUES (${url}, ${title}, ${selectors})`;
-  // } catch (error) {
-  //   return {
-  //     message: `Database Error: Failed to Create Scraper (${error}).`,
-  //   };
+
+  // if (storage.db === "Local") {
+  //   const scrapersList = await readKeyConfig("scraper");
+  //   const scraperLength = scrapersList.length;
+
+  //   await saveConfig(
+  //     {
+  //       id: scraperUUID,
+  //       url,
+  //       titleSelector,
+  //       selectors,
+  //       scraper,
+  //       format,
+  //       width,
+  //       height,
+  //       qrcode,
+  //     },
+  //     "scraper",
+  //     scraperLength,
+  //   );
+
+  //   await saveDataLocal({
+  //     id: scraperUUID,
+  //     title: scrappedData?.title,
+  //     data: scrappedData?.data,
+  //     date: new Date().toISOString().split("T")[0],
+  //   });
+  // } else if (storage.db === "Remote") {
+  const scraper_data_id = result_remote_scraper_data
+    ? result_remote_scraper_data[0].id
+    : null;
+  if (!scraper_data_id) {
+    return {
+      message:
+        "Failed to create scraper data. No data returned from the database.",
+    };
+  }
+  try {
+    await sql`
+        INSERT INTO scrapers (url, title_selector, selectors, scraper, format, width, height, scraper_data_id, qrcode, created_at)
+        VALUES (${url}, ${titleSelector}, ${selectors}, ${scraper}, ${format}, ${width}, ${height}, ${scraper_data_id}, ${qrcode}, ${date})
+      `;
+  } catch (error) {
+    return {
+      message: `${error}: Database Error: Failed to create scraper.`,
+    };
+  }
   // }
 
   revalidatePath("/dashboard/scraper");
   redirect("/dashboard/scraper");
 }
 
-export async function deleteScraper(index: number) {
+export async function deleteScraper(id: string) {
   try {
-    const scraper: Settings["scraper"] = await readKeyConfig("scraper");
-    scraper.splice(index, 1);
+    // const storage: Settings["general"] = await readKeyConfig("general");
 
-    await saveConfig(scraper, "scraper");
-    // await sql`DELETE FROM scrapers WHERE id = ${id}`;
+    // if (storage.db === "Local") {
+    //   const scraper: Settings["scraper"] = await readKeyConfig("scraper");
+    //   scraper.splice(id, 1);
+
+    //   await saveConfig(scraper, "scraper");
+    // } else if (storage.db === "Remote") {
+    const result = await sql`DELETE FROM scrapers WHERE id = ${id}`;
+    const scaper_data_id = result[0].scaper_data_id;
+    await sql`DELETE FROM scraper_data WHERE id = ${scaper_data_id}`;
+    // }
     revalidatePath("/dashboard/scraper");
   } catch (error) {
     console.error("Error deleting scraper:", error);
@@ -289,7 +344,7 @@ export async function deleteScraper(index: number) {
 }
 
 export async function updateScraper(
-  index: number,
+  id: string,
   prevState: StateScraper,
   formData: FormData,
 ) {
@@ -307,7 +362,7 @@ export async function updateScraper(
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing Fields. Failed to Create Scraper.",
+      message: "Missing Fields. Failed to create Scraper.",
     };
   }
 
@@ -322,32 +377,36 @@ export async function updateScraper(
     qrcode,
   } = validatedFields.data;
 
-  await saveConfig(
-    {
-      url,
-      titleSelector,
-      selectors,
-      scraper,
-      format,
-      width,
-      height,
-      qrcode,
-    },
-    "scraper",
-    index,
-  );
+  const storage: Settings["general"] = await readKeyConfig("general");
 
-  //  try {
-  //   await sql`
-  //   UPDATE invoices
-  //   SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
-  //   WHERE id = ${id}
-  //   `;
-  //   } catch (error) {
-  //     return {
-  //       message: "Database Error: Failed to Update Invoice.",
-  //     };
-  //   }
+  if (storage.db === "Local") {
+    await saveConfig(
+      {
+        url,
+        titleSelector,
+        selectors,
+        scraper,
+        format,
+        width,
+        height,
+        qrcode,
+      },
+      "scraper",
+      Number(id),
+    );
+  } else if (storage.db === "Remote") {
+    try {
+      await sql`
+     UPDATE scrapers
+     SET url = ${url}, title_selector = ${titleSelector}, selectors = ${selectors}, scraper = ${scraper}, format = ${format}, width = ${width}, height = ${height}, qrcode = ${qrcode}
+     WHERE id = ${id}
+     `;
+    } catch (error) {
+      return {
+        message: `${error}: Database Error: Failed to update Scraper.`,
+      };
+    }
+  }
 
   revalidatePath("/dashboard/scraper");
   redirect("/dashboard/scraper");

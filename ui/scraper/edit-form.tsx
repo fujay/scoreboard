@@ -1,7 +1,7 @@
 "use client";
 
 import { StateScraper, updateScraper } from "@/lib/actions";
-import { Scraper } from "@/lib/definitions";
+import { ScraperForm } from "@/lib/definitions";
 import { Button } from "@/ui/button";
 import {
   DocumentTextIcon,
@@ -18,17 +18,12 @@ import {
   Save,
   TextSelect,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { ChangeEvent, useActionState, useState } from "react";
 
-export default function EditScraperForm({
-  scraper,
-  index,
-}: {
-  scraper: Scraper;
-  index: number;
-}) {
-  const updateScraperWithId = updateScraper.bind(null, index);
+export default function EditScraperForm({ scraper }: { scraper: ScraperForm }) {
+  const updateScraperWithId = updateScraper.bind(null, scraper.id);
 
   const initialState: StateScraper = {
     message: null,
@@ -105,7 +100,7 @@ export default function EditScraperForm({
                 id="titleSelector"
                 name="titleSelector"
                 type="text"
-                defaultValue={scraper.titleSelector}
+                defaultValue={scraper.title_selector}
                 placeholder="#c18317 > h2 or Semestertermine"
                 title="The selector for the title element on the website, e.g. #c18317 > h2."
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
@@ -385,6 +380,18 @@ export default function EditScraperForm({
         <div aria-live="polite" aria-atomic="true">
           {state.message && (
             <p className="mt-2 text-sm text-red-500">{state.message}</p>
+          )}
+        </div>
+
+        {/* Preview */}
+        <div className="mt-4 rounded-md bg-gray-100 p-4">
+          <h3 className="text-sm font-medium">
+            Preview Result: {scraper.title}
+          </h3>
+          {scraper.format === "Screenshot" ? (
+            <Image src={scraper.data} alt="Preview" width={800} height={600} />
+          ) : (
+            <pre className="mt-2 text-xs">{scraper.data}</pre>
           )}
         </div>
       </div>

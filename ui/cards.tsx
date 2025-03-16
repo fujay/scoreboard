@@ -19,14 +19,14 @@ const iconMap = {
 };
 
 export default async function CardWrapper() {
-  const { numberofScrapers, numberOfTweets } = await fetchCardData();
+  const { numberOfScrapers } = await fetchCardData();
 
   return (
     <>
-      <Card title="Scrapers" value={numberofScrapers} type="scraper" />
-      <Card title="Tweets" value={numberOfTweets} type="tweet" />
+      <Card title="Scrapers" value={numberOfScrapers} type="scraper" />
+      {/* <Card title="Tweets" value={numberOfTweets} type="tweet" />
       <Card title="Tweets" value={numberOfTweets} type="invoices" />
-      <Card title="Tweets" value={numberOfTweets} type="customers" />
+      <Card title="Tweets" value={numberOfTweets} type="customers" /> */}
     </>
   );
 }

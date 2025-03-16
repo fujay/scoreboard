@@ -27,15 +27,18 @@ export default async function ScrapersTable({
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">
-            {scrapers?.map((scraper, index) => (
-              <div key={index} className="mb-2 w-full rounded-md bg-white p-4">
+            {scrapers?.map((scraper) => (
+              <div
+                key={scraper.id}
+                className="mb-2 w-full rounded-md bg-white p-4"
+              >
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 items-center">
                       <p>{scraper.url}</p>
                     </div>
                     <p className="text-sm text-gray-500">
-                      {scraper.titleSelector}
+                      {scraper.title_selector}
                     </p>
                   </div>
                   <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs text-white">
@@ -55,11 +58,11 @@ export default async function ScrapersTable({
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
                     <p className="text-xl font-medium">{scraper.selectors}</p>
-                    <p>{formatDateToLocal(new Date().toString())}</p>
+                    <p>{formatDateToLocal(scraper.created_at)}</p>
                   </div>
                   <div className="flex justify-end gap-2">
-                    <UpdateScraper index={index} />
-                    <DeleteScraper index={index} />
+                    <UpdateScraper id={scraper.id} />
+                    <DeleteScraper id={scraper.id} />
                   </div>
                 </div>
               </div>
@@ -89,9 +92,9 @@ export default async function ScrapersTable({
               </tr>
             </thead>
             <tbody className="bg-white">
-              {scrapers?.map((scraper, index) => (
+              {scrapers?.map((scraper) => (
                 <tr
-                  key={index}
+                  key={scraper.id}
                   className="w-full border-b py-3 text-sm even:bg-muted last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="py-3 pr-3 pl-6 whitespace-nowrap">
@@ -100,7 +103,7 @@ export default async function ScrapersTable({
                     </div>
                   </td>
                   <td className="px-3 py-3 whitespace-nowrap">
-                    {scraper.titleSelector}
+                    {scraper.title_selector}
                   </td>
                   <td className="px-3 py-3 whitespace-nowrap">
                     {scraper.selectors}
@@ -123,12 +126,12 @@ export default async function ScrapersTable({
                     }
                   </td>
                   <td className="px-3 py-3 whitespace-nowrap">
-                    {formatDateToLocal(new Date().toString())}
+                    {formatDateToLocal(scraper.created_at)}
                   </td>
                   <td className="py-3 pr-3 pl-6 whitespace-nowrap">
                     <div className="flex justify-end gap-3">
-                      <UpdateScraper index={index} />
-                      <DeleteScraper index={index} />
+                      <UpdateScraper id={scraper.id} />
+                      <DeleteScraper id={scraper.id} />
                     </div>
                   </td>
                 </tr>

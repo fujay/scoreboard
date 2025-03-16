@@ -1,30 +1,80 @@
-import { sql } from "@vercel/postgres";
-import { Settings, Tweet, TweetTable } from "./definitions";
+import postgres from "postgres";
+import {
+  ScraperForm,
+  ScrapersTable,
+  Settings,
+  Tweet,
+  TweetTable,
+} from "./definitions";
 import { readKeyConfig } from "./utils";
+
+const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
 const ITEMS_PER_PAGE = 6;
 
 export async function fetchCardData() {
   try {
+    const storage: Settings["general"] = await readKeyConfig("general");
     await new Promise((resolve) => setTimeout(resolve, 3000));
     // const tweetCountPromise = sql`SELECT COUNT(*) FROM tweets`;
-    const scrapersListPromise: Promise<Settings["scraper"]> =
-      readKeyConfig("scraper");
+    if (storage.db === "Local") {
+      const scrapersListPromise: Promise<Settings["scraper"]> =
+        readKeyConfig("scraper");
+      const data = await Promise.all([scrapersListPromise]);
+      const numberOfScrapers = data[0].length;
+      return {
+        numberOfScrapers,
+      };
+    } else if (storage.db === "Remote") {
+      const scrapersListPromise = sql`SELECT COUNT(*) FROM scrapers`;
+      const data = await Promise.all([scrapersListPromise]);
 
-    const tweetCountPromise = sql`SELECT COUNT(*) FROM customers`;
+      const numberOfScrapers = data[0][0].count ?? "0";
+      return {
+        numberOfScrapers,
+      };
+    } else {
+      return {
+        numberOfScrapers: 0,
+      };
+    }
 
-    const data = await Promise.all([scrapersListPromise, tweetCountPromise]);
+    // const tweetCountPromise = sql`SELECT COUNT(*) FROM customers`;
 
-    const numberofScrapers = data[0].length;
-    const numberOfTweets = Number(data[1].rows[0].count ?? "0");
-
-    return {
-      numberofScrapers,
-      numberOfTweets,
-    };
+    // const numberOfTweets = Number(data[1].rows[0].count ?? "0");
   } catch (error) {
     console.error("Database Error: ", error);
     throw new Error("Failed to fetch card data.");
+  }
+}
+
+export async function fetchScraperById(id: string) {
+  try {
+    const scraper = await sql<ScraperForm[]>`
+      SELECT
+        scrapers.id,
+        scrapers.url,
+        scrapers.title_selector,
+        scrapers.selectors,
+        scrapers.scraper,
+        scrapers.format,
+        scrapers.width,
+        scrapers.height,
+        scrapers.scraper_data_id,
+        scrapers.qrcode,
+        scrapers.created_at,
+        scraper_data.title,
+        scraper_data.data,
+        scraper_data.date
+      FROM scrapers
+      JOIN scraper_data ON scrapers.scraper_data_id = scraper_data.id
+      WHERE scrapers.id = ${id};
+    `;
+
+    return scraper[0];
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch scraper.");
   }
 }
 
@@ -35,27 +85,62 @@ export async function fetchFilteredScrapers(
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
-    const scrapersList: Settings["scraper"] = await readKeyConfig("scraper");
+    // const storage: Settings["general"] = await readKeyConfig("general");
+    // if (storage.db === "Local") {
+    //   const scrapersList: Settings["scraper"] = await readKeyConfig("scraper");
 
-    const filteredScrapers = scrapersList.filter((scraper) => {
-      return (
-        scraper.url.includes(query) ||
-        scraper.titleSelector.includes(query) ||
-        scraper.selectors.includes(query) ||
-        scraper.format.includes(query)
-      );
-    });
+    //   const filteredScrapers = scrapersList.filter((scraper) => {
+    //     return (
+    //       scraper.url.includes(query) ||
+    //       scraper.titleSelector.includes(query) ||
+    //       scraper.selectors.includes(query) ||
+    //       scraper.format.includes(query)
+    //     );
+    //   });
 
-    const length = filteredScrapers.length;
+    //   const length = filteredScrapers.length;
 
-    const start = Math.min(length - 1, offset);
-    const end = Math.min(length, offset + ITEMS_PER_PAGE);
+    //   const start = Math.min(length - 1, offset);
+    //   const end = Math.min(length, offset + ITEMS_PER_PAGE);
 
-    return filteredScrapers.slice(start, end);
+    //   return filteredScrapers.slice(start, end);
+    // } else if (storage.db === "Remote") {
+    const scrapers = await sql<ScrapersTable[]>`
+      SELECT
+        scrapers.id,
+        scrapers.url,
+        scrapers.title_selector,
+        scrapers.selectors,
+        scrapers.scraper,
+        scrapers.format,
+        scrapers.width,
+        scrapers.height,
+        scrapers.qrcode,
+        scrapers.created_at,
+        scraper_data.title,
+        scraper_data.data,
+        scraper_data.date
+      FROM scrapers
+      JOIN scraper_data ON scrapers.scraper_data_id = scraper_data.id
+      WHERE
+        scrapers.url ILIKE ${`%${query}%`} OR
+        scrapers.title_selector ILIKE ${`%${query}%`} OR
+        scrapers.selectors ILIKE ${`%${query}%`} OR
+        scrapers.scraper ILIKE ${`%${query}%`} OR
+        scrapers.format ILIKE ${`%${query}%`} OR
+        scrapers.width::text ILIKE ${`%${query}%`} OR
+        scrapers.height::text ILIKE ${`%${query}%`} OR
+        scrapers.qrcode::text ILIKE ${`%${query}%`} OR
+        scrapers.created_at::text ILIKE ${`%${query}%`} OR
+        scraper_data.title ILIKE ${`%${query}%`} OR
+        scraper_data.data ILIKE ${`%${query}%`} OR
+        scraper_data.date::text ILIKE ${`%${query}%`}
+      ORDER BY scraper_data.date DESC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+      `;
 
-    // const tweets =
-    //   await sql<TweetTable>`SELECT * FROM tweets WHERE content ILIKE ${`%${query}%`} LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}`;
-    // return tweets.rows;
+    return scrapers;
+    // }
   } catch (error) {
     console.error("Database Error: ", error);
     throw new Error("Failed to fetch scrapers.");
@@ -64,22 +149,44 @@ export async function fetchFilteredScrapers(
 
 export async function fetchScrapersPages(query: string) {
   try {
-    const scrapersList: Settings["scraper"] = await readKeyConfig("scraper");
-    const countedScrapers = scrapersList.filter((scraper) => {
-      return (
-        scraper.url.includes(query) ||
-        scraper.titleSelector.includes(query) ||
-        scraper.selectors.includes(query) ||
-        scraper.format.includes(query)
-      );
-    });
-    const totalPages = Math.ceil(countedScrapers.length / ITEMS_PER_PAGE);
+    const storage: Settings["general"] = await readKeyConfig("general");
+    if (storage.db === "Local") {
+      const scrapersList: Settings["scraper"] = await readKeyConfig("scraper");
+      const countedScrapers = scrapersList.filter((scraper) => {
+        return (
+          scraper.url.includes(query) ||
+          scraper.titleSelector.includes(query) ||
+          scraper.selectors.includes(query) ||
+          scraper.format.includes(query)
+        );
+      });
+      const totalPages = Math.ceil(countedScrapers.length / ITEMS_PER_PAGE);
 
-    // const count =
-    //   await sql`SELECT COUNT(*) FROM scrapers WHERE content ILIKE ${`%${query}%`}`;
-    // const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+      return totalPages;
+    } else if (storage.db === "Remote") {
+      const data = await sql`SELECT COUNT(*)
+      from scrapers
+      JOIN scraper_data ON scrapers.scraper_data_id = scraper_data.id
+      WHERE
+        scrapers.url ILIKE ${`%${query}%`} OR
+        scrapers.title_selector ILIKE ${`%${query}%`} OR
+        scrapers.selectors ILIKE ${`%${query}%`} OR
+        scrapers.scraper ILIKE ${`%${query}%`} OR
+        scrapers.format ILIKE ${`%${query}%`} OR
+        scrapers.width::text ILIKE ${`%${query}%`} OR
+        scrapers.height::text ILIKE ${`%${query}%`} OR
+        scrapers.qrcode::text ILIKE ${`%${query}%`} OR
+        scrapers.created_at::text ILIKE ${`%${query}%`} OR
+        scraper_data.title ILIKE ${`%${query}%`} OR
+        scraper_data.data ILIKE ${`%${query}%`} OR
+        scraper_data.date::text ILIKE ${`%${query}%`}
+      `;
 
-    return totalPages;
+      const totalPages = Math.ceil(Number(data[0].count) / ITEMS_PER_PAGE);
+      return totalPages;
+    } else {
+      return 0;
+    }
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch total number of scrapers.");
@@ -88,8 +195,8 @@ export async function fetchScrapersPages(query: string) {
 
 export async function fetchTweets() {
   try {
-    const data = await sql<Tweet>`SELECT * FROM tweets`;
-    return data.rows;
+    const tweets = await sql<Tweet[]>`SELECT * FROM tweets`;
+    return tweets;
   } catch (error) {
     console.error("Database Error: ", error);
     throw new Error("Failed to fetch tweet data.");
@@ -100,9 +207,10 @@ export async function fetchFilteredTweets(query: string, currentPage: number) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
-    const tweets =
-      await sql<TweetTable>`SELECT * FROM tweets WHERE content ILIKE ${`%${query}%`} LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}`;
-    return tweets.rows;
+    const tweets = await sql<
+      TweetTable[]
+    >`SELECT * FROM tweets WHERE content ILIKE ${`%${query}%`} LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}`;
+    return tweets;
   } catch (error) {
     console.error("Database Error: ", error);
     throw new Error("Failed to fetch tweets.");
@@ -111,22 +219,21 @@ export async function fetchFilteredTweets(query: string, currentPage: number) {
 
 export async function fetchTweetsPages(query: string) {
   try {
-    const count =
+    const data =
       await sql`SELECT COUNT(*) FROM tweets WHERE content ILIKE ${`%${query}%`}`;
 
-    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    const totalPages = Math.ceil(Number(data[0].count) / ITEMS_PER_PAGE);
     return totalPages;
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to fetch total number of invoices.");
+    throw new Error("Failed to fetch total number of tweets.");
   }
 }
 
 export async function fetchTweetById(id: string) {
   try {
-    const data = await sql<Tweet>`SELECT * FROM tweets WHERE id = ${id}`;
+    const tweet = await sql<Tweet[]>`SELECT * FROM tweets WHERE id = ${id}`;
 
-    const tweet = data.rows[0];
     return tweet;
   } catch (error) {
     console.error("Database Error:", error);
