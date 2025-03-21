@@ -10,7 +10,7 @@ export default async function Home() {
   const settings = await readConfig();
 
   return (
-    <div className="flex h-screen flex-col">
+    <div className="flex h-screen flex-col overflow-hidden">
       <div className="mx-3 my-2 flex flex-row justify-between gap-2">
         <section className="">
           <Link href="/dashboard">
