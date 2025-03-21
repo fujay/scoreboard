@@ -61,7 +61,7 @@ export default async function Weather({
     sunset: 1740243293,
     timezone: 3600,
     cityId: 2925533,
-    cityName: "Frankfurt am Main",
+    cityName: location, // "Frankfurt am Main",
     cod: 200,
   };
 
