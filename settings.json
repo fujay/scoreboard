@@ -3,7 +3,7 @@
     "time": 300,
     "db": "Remote",
     "images": "Remote",
-    "stale": 1440,
+    "stale": 60,
     "date": "Clock and Date without time"
   },
   "weather": {

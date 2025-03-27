@@ -68,7 +68,7 @@ export type TweetTable = {
   showUntil: string;
 };
 
-export type WeatherData = {
+export type OpenWeatherData = {
   coord: {
     lon: number;
     lat: number;
@@ -110,6 +110,21 @@ export type WeatherData = {
   id: number;
   name: string;
   cod: number;
+};
+
+export type WeatherData = {
+  cityName: string;
+  cityId: number;
+  mainWeather: string;
+  weatherDescription: string;
+  icon: string;
+  temperature: number;
+  feelsLike: number;
+  tempMax: number;
+  tempMin: number;
+  humidity: number;
+  windSpeed: number;
+  timestamp: number;
 };
 
 export interface Settings {
