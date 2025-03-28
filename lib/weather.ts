@@ -1,3 +1,4 @@
+"use server";
 import type { OpenWeatherData, Settings, WeatherData } from "./definitions";
 import { readKeyConfig } from "./config";
 
