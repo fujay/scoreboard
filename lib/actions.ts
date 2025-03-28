@@ -8,7 +8,8 @@ import puppeteer from "puppeteer";
 import { z } from "zod";
 import { uploadImage } from "./cloudinary";
 import { Settings } from "./definitions";
-import { containsCssSelectors, readKeyConfig, saveConfig } from "./utils";
+import { containsCssSelectors } from "./utils";
+import { readKeyConfig, saveConfig } from "./config";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 

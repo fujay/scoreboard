@@ -3,8 +3,9 @@ import Link from "next/link";
 
 import logo from "@/assets/logo.png";
 import DateTime from "@/components/date-time";
-import { readConfig } from "@/lib/utils";
+import { readConfig } from "@/lib/config";
 import Weather from "@/components/weather";
+import WeatherDisplay from "@/components/weather-display";
 
 export default async function Home() {
   const settings = await readConfig();
@@ -34,6 +35,7 @@ export default async function Home() {
           qrcode={settings["weather"]["qrcode"]}
           graphic={settings["weather"]["graphic"]}
         />
+        {/* <WeatherDisplay /> */}
       </main>
       <footer className="">Progress</footer>
     </div>

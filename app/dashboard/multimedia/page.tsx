@@ -1,6 +1,5 @@
 import Multimedia from "@/components/dashboard/multimedia";
-import Weather from "@/components/dashboard/weather";
-import { readKeyConfig } from "@/lib/utils";
+import { readKeyConfig } from "@/lib/config";
 import { lusitana } from "@/ui/fonts";
 import { Metadata } from "next";
 

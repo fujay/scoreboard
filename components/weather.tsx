@@ -19,6 +19,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -36,34 +37,34 @@ export default async function Weather({
   qrcode: boolean;
   graphic: "Classic" | "Animated";
 }) {
-  // const weather = await getWeatherData(location);
-  const weather = {
-    coord: { lon: 8.6833, lat: 50.1167 },
-    mainWeather: "Clouds",
-    weatherDescription: "overcast clouds",
-    icon: "04d",
-    base: "stations",
-    temperature: 279.51,
-    feelsLike: 278.04,
-    tempMin: 277.51,
-    tempMax: 280.91,
-    pressure: 1019,
-    humidity: 88,
-    sea_level: 1019,
-    grnd_level: 1001,
-    visibility: 9000,
-    windSpeed: 2.06,
-    clouds: { all: 100 },
-    dt: 1740191829,
-    type: 2,
-    country: "DE",
-    sunrise: 1740205378,
-    sunset: 1740243293,
-    timezone: 3600,
-    cityId: 2925533,
-    cityName: location, // "Frankfurt am Main",
-    cod: 200,
-  };
+  const weather = await getWeatherData(location);
+  // const weather = {
+  //   coord: { lon: 8.6833, lat: 50.1167 },
+  //   mainWeather: "Clouds",
+  //   weatherDescription: "overcast clouds",
+  //   icon: "04d",
+  //   base: "stations",
+  //   temperature: 279.51,
+  //   feelsLike: 278.04,
+  //   tempMin: 277.51,
+  //   tempMax: 280.91,
+  //   pressure: 1019,
+  //   humidity: 88,
+  //   sea_level: 1019,
+  //   grnd_level: 1001,
+  //   visibility: 9000,
+  //   windSpeed: 2.06,
+  //   clouds: { all: 100 },
+  //   dt: 1740191829,
+  //   type: 2,
+  //   country: "DE",
+  //   sunrise: 1740205378,
+  //   sunset: 1740243293,
+  //   timezone: 3600,
+  //   cityId: 2925533,
+  //   cityName: location, // "Frankfurt am Main",
+  //   cod: 200,
+  // };
 
   return (
     <main className="bg-gradient-to-b from-sky-100 to-sky-50 p-4 dark:from-slate-900 dark:to-slate-800">
@@ -84,6 +85,11 @@ export default async function Weather({
                 {weather.temperature}°C
               </CardDescription>
             </CardHeader>
+            <CardFooter>
+              <p className="text-sm text-gray-500">
+                Last updated: {new Date(weather.timestamp).toLocaleTimeString()}
+              </p>
+            </CardFooter>
           </Card>
 
           {/* Weather Feels like */}

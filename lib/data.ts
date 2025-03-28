@@ -6,7 +6,7 @@ import {
   Tweet,
   TweetTable,
 } from "./definitions";
-import { readKeyConfig } from "./utils";
+import { readKeyConfig } from "./config";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 

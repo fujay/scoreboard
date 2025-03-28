@@ -1,68 +1,49 @@
 import { clsx, type ClassValue } from "clsx";
-import fs from "node:fs/promises";
 import { twMerge } from "tailwind-merge";
-import { Settings } from "./definitions";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export async function readConfig() {
-  const configFileContent = await fs.readFile(
-    "settings.json",
-    // process.cwd() + "/settings.json",
-    "utf-8",
-  );
-  const config: Settings = JSON.parse(configFileContent);
-  return config;
-}
-
-export async function readKeyConfig(key: string) {
-  const configFileContent = await fs.readFile("settings.json", "utf-8");
-  const config = JSON.parse(configFileContent);
-  const keyConfig = config[key];
-  return keyConfig;
-}
-
-export async function saveConfig(
-  newConfig: Record<string, unknown> | Record<string, unknown>[], // newConfig: [key: string]: unknown,
-  key: string,
-  index?: number,
-) {
-  const configFileContent = await fs.readFile("settings.json", "utf-8");
-  const config = JSON.parse(configFileContent);
-
-  if (index) {
-    config[key][index] = newConfig;
-  } else {
-    config[key] = newConfig;
+/**
+ * Generates an array of page numbers for pagination.
+ *
+ * @param currentPage - The current active page number.
+ * @param totalPages - The total number of pages available.
+ * @returns An array of page numbers for pagination.
+ */
+export const generatePagination = (currentPage: number, totalPages: number) => {
+  // If the total number of pages is 7 or less,
+  // display all pages without any ellipsis.
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
   }
 
-  await fs.writeFile("settings.json", JSON.stringify(config));
-}
+  // If the current page is among the first 3 pages,
+  // show the first 3, an ellipsis, and the last 2 pages.
+  if (currentPage <= 3) {
+    return [1, 2, 3, "...", totalPages - 1, totalPages];
+  }
 
-export async function saveImageLocal(
-  image: Uint8Array<ArrayBufferLike>,
-  fileName: string,
-) {
-  await fs.writeFile(`${process.cwd()}/assets/images/${fileName}.png`, image);
-}
+  // If the current page is among the last 3 pages,
+  // show the first 2, an ellipsis, and the last 3 pages.
+  if (currentPage >= totalPages - 2) {
+    return [1, 2, "...", totalPages - 2, totalPages - 1, totalPages];
+  }
 
-// export async function saveDataLocal(
-//   scraperData: Record<string, unknown> | Record<string, unknown>[],
-// ) {
-//   const scraperDataFile = await fs.readFile(
-//     `${process.cwd()}/assets/storage/scraper_data.json`,
-//     "utf-8",
-//   );
-//   const scraperDataJson = JSON.parse(scraperDataFile);
-//   const newScraperDataJson = { ...scraperDataJson, scraperData };
-
-//   await fs.writeFile(
-//     `${process.cwd()}/assets/storage/scraper_data.json`,
-//     JSON.stringify(newScraperDataJson),
-//   );
-// }
+  // If the current page is somewhere in the middle,
+  // show the first page, an ellipsis, the current page and its neighbors,
+  // another ellipsis, and the last page.
+  return [
+    1,
+    "...",
+    currentPage - 1,
+    currentPage,
+    currentPage + 1,
+    "...",
+    totalPages,
+  ];
+};
 
 /**
  * Converts temperature from Kelvin to Celsius and remove decimal part (keeps integer part).
