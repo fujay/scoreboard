@@ -26,18 +26,18 @@ export default async function Home() {
         </section>
         <section className="">Status</section>
         <section className="">
-          <DateTime settings={settings["general"]} />
+          <DateTime settings={settings.general} />
         </section>
       </div>
       <main className="flex-1">
-        <Weather
+        {/* <Weather
           location={settings["weather"]["location"]}
           qrcode={settings["weather"]["qrcode"]}
           graphic={settings["weather"]["graphic"]}
-        />
-        {/* <WeatherDisplay /> */}
+        /> */}
+        <WeatherDisplay interval={settings.general.time} />
       </main>
-      <footer className="">Progress</footer>
+      {/* <footer className="">Progress</footer> */}
     </div>
 
     // <div className="grid h-screen grid-cols-3 grid-rows-3 gap-4 overflow-hidden p-4">
