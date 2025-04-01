@@ -31,9 +31,9 @@ export default async function Home() {
       </div>
       <main className="flex-1">
         {/* <Weather
-          location={settings["weather"]["location"]}
-          qrcode={settings["weather"]["qrcode"]}
-          graphic={settings["weather"]["graphic"]}
+          location={settings.weather.location}
+          qrcode={settings.weather.qrcode}
+          graphic={settings.weather.graphic}
         /> */}
         <WeatherDisplay interval={settings.general.time} />
       </main>

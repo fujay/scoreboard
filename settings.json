@@ -1,6 +1,6 @@
 {
   "general": {
-    "time": 60,
+    "time": 15,
     "db": "Remote",
     "images": "Remote",
     "stale": 10,
