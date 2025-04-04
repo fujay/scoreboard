@@ -2,14 +2,22 @@
 
 import { ProgressBar } from "@/ui/progress-bar";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Weather from "./weather";
 
 type MessageConfig = {
   component: React.ReactNode;
 };
 
-export default function WeatherDisplay({ interval }: { interval: number }) {
+export default function BillboardDisplay({ interval }: { interval: number }) {
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+
+  const handleDataLoaded = useCallback(() => {
+    setIsDataLoaded(true);
+  }, []);
+
   const messages: MessageConfig[] = [
     {
       component: (
@@ -17,29 +25,38 @@ export default function WeatherDisplay({ interval }: { interval: number }) {
           location="Frankfurt am Main"
           qrcode={true}
           graphic={"Classic"}
+          onDataLoaded={handleDataLoaded}
         />
       ),
     },
     {
       component: (
-        <Weather location="Maintal" qrcode={true} graphic={"Animated"} />
+        <Weather
+          location="Maintal"
+          qrcode={true}
+          graphic={"Animated"}
+          onDataLoaded={handleDataLoaded}
+        />
       ),
     },
   ];
 
-  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
-  const [progress, setProgress] = useState(0);
-
   const currentConfig = messages[currentMessageIndex];
   const CurrentMessage = currentConfig.component;
-
   const transitionIntervalMs = interval * 1000;
   const progressUpdateInterval = transitionIntervalMs / 100;
 
+  // Reset progress and data loaded flag when changing slides
   useEffect(() => {
     setProgress(0);
+    setIsDataLoaded(false);
+  }, [currentMessageIndex]);
 
-    // Set up progress animation
+  // Set up the progress bar and slide transition
+  useEffect(() => {
+    // Don't start progress until data is loaded
+    if (!isDataLoaded) return;
+
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) return 100;
@@ -47,17 +64,16 @@ export default function WeatherDisplay({ interval }: { interval: number }) {
       });
     }, progressUpdateInterval);
 
-    // Set up interval to switch slide every interval
-    const intervalId = setInterval(() => {
+    const transitionInterval = setInterval(() => {
       setCurrentMessageIndex((prevIndex) => (prevIndex + 1) % messages.length);
     }, transitionIntervalMs);
 
     return () => {
-      clearInterval(intervalId);
       clearInterval(progressInterval);
+      clearInterval(transitionInterval);
     };
   }, [
-    currentMessageIndex,
+    isDataLoaded,
     progressUpdateInterval,
     transitionIntervalMs,
     messages.length,
@@ -76,12 +92,20 @@ export default function WeatherDisplay({ interval }: { interval: number }) {
         className="w-full"
       >
         <>{CurrentMessage}</>
-        <div className="mt-6">
-          <p className="mb-1 text-xs text-gray-500">
-            Next slide in {secondsRemaining} seconds
-          </p>
-          <ProgressBar progress={progress} />
-        </div>
+        {/* <Weather
+          location={currentConfig.location}
+          qrcode={currentConfig.qrcode}
+          graphic={currentConfig.graphic}
+          onDataLoaded={handleDataLoaded}
+        /> */}
+        {isDataLoaded && (
+          <div className="mt-6">
+            <p className="mb-1 text-xs text-gray-500">
+              Next slide in {secondsRemaining} seconds
+            </p>
+            <ProgressBar progress={progress} />
+          </div>
+        )}
       </motion.div>
     </AnimatePresence>
   );
