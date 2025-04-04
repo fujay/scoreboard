@@ -4,8 +4,7 @@ import Link from "next/link";
 import logo from "@/assets/logo.png";
 import DateTime from "@/components/date-time";
 import { readConfig } from "@/lib/config";
-import Weather from "@/components/weather";
-import WeatherDisplay from "@/components/weather-display";
+import BillboardDisplay from "@/components/billboard-display";
 
 export default async function Home() {
   const settings = await readConfig();
@@ -30,12 +29,7 @@ export default async function Home() {
         </section>
       </div>
       <main className="flex-1">
-        {/* <Weather
-          location={settings.weather.location}
-          qrcode={settings.weather.qrcode}
-          graphic={settings.weather.graphic}
-        /> */}
-        <WeatherDisplay interval={settings.general.time} />
+        <BillboardDisplay interval={settings.general.time} />
       </main>
       {/* <footer className="">Progress</footer> */}
     </div>
