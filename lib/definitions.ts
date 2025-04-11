@@ -13,13 +13,37 @@ export type User = {
 export type Scraper = {
   id: string;
   url: string;
-  titleSelector: string;
+  title_selector: string;
   selectors: string;
   scraper: "Puppeteer" | "Cheerio";
   format: "Text" | "Screenshot";
   width: number;
   height: number;
   qrcode: boolean;
+};
+
+export type ScraperDataAction =
+  | {
+      title: string;
+      data:
+        | string
+        | Uint8Array<ArrayBufferLike>
+        | undefined
+        | (string | undefined)[];
+      url: string;
+      format: "Text" | "Screenshot";
+      qrcode: boolean;
+      date: string;
+    }
+  | undefined;
+
+export type ScraperData = {
+  title: string;
+  data: string;
+  url: string;
+  format: "Text" | "Screenshot";
+  qrcode: boolean;
+  date: string;
 };
 
 export type ScrapersTable = {

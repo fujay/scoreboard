@@ -1,5 +1,7 @@
 import postgres from "postgres";
 import {
+  Scraper,
+  ScraperData,
   ScraperForm,
   ScrapersTable,
   Settings,
@@ -200,6 +202,50 @@ export async function fetchScrapersPages(query: string) {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch total number of scrapers.");
+  }
+}
+
+export async function fetchScrapers() {
+  try {
+    const scrapers = await sql<Scraper[]>`
+    SELECT
+    scrapers.id,
+    scrapers.url,
+    scrapers.title_selector,
+    scrapers.selectors,
+    scrapers.scraper,
+    scrapers.format,
+    scrapers.width,
+    scrapers.height,
+    scrapers.qrcode
+    FROM scrapers
+    `;
+
+    return scrapers;
+  } catch (error) {
+    console.error("Database Error: ", error);
+    throw new Error("Failed to fetch scrapers");
+  }
+}
+
+export async function fetchScrapersData() {
+  try {
+    const scrapersData = await sql<ScraperData[]>`
+      SELECT
+      scrapers.url,
+      scrapers.qrcode,
+      scrapers.format,
+      scraper_data.title,
+      scraper_data.data,
+      scraper_data.date
+      FROM scrapers
+      JOIN scraper_data ON scrapers.scraper_data_id = scraper_data.id
+    `;
+
+    return scrapersData;
+  } catch (error) {
+    console.error("Database Error: ", error);
+    throw new Error("Failed to fetch scrapers data");
   }
 }
 

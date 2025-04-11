@@ -29,7 +29,13 @@ export default async function Home() {
         </section>
       </div>
       <main className="flex-1">
-        <BillboardDisplay interval={settings.general.time} />
+        <BillboardDisplay
+          active={settings.weather.active}
+          location={settings.weather.location}
+          qrcode={settings.weather.qrcode}
+          graphic={settings.weather.graphic}
+          interval={settings.general.time}
+        />
       </main>
       {/* <footer className="">Progress</footer> */}
     </div>

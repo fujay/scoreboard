@@ -3,13 +3,27 @@
 import { ProgressBar } from "@/ui/progress-bar";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState, useCallback } from "react";
-import Weather from "./weather";
+import Weather from "@/components/weather";
+import Scraper from "@/components/scraper";
+import { Settings } from "@/lib/definitions";
 
 type MessageConfig = {
   component: React.ReactNode;
 };
 
-export default function BillboardDisplay({ interval }: { interval: number }) {
+export default function BillboardDisplay({
+  active,
+  location,
+  qrcode,
+  graphic,
+  interval,
+}: {
+  active: boolean;
+  location: string;
+  qrcode: boolean;
+  graphic: Settings["weather"]["graphic"];
+  interval: number;
+}) {
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
@@ -22,22 +36,35 @@ export default function BillboardDisplay({ interval }: { interval: number }) {
     {
       component: (
         <Weather
-          location="Frankfurt am Main"
-          qrcode={true}
-          graphic={"Classic"}
+          location={location}
+          qrcode={qrcode}
+          graphic={graphic}
           onDataLoaded={handleDataLoaded}
         />
       ),
     },
+    // {
+    //   component: (
+    //     <Weather
+    //       location="Erlensee"
+    //       qrcode={true}
+    //       graphic={"Animated"}
+    //       onDataLoaded={handleDataLoaded}
+    //     />
+    //   ),
+    // },
+    // {
+    //   component: (
+    //     <Weather
+    //       location="Maintal"
+    //       qrcode={true}
+    //       graphic={"Classic"}
+    //       onDataLoaded={handleDataLoaded}
+    //     />
+    //   ),
+    // },
     {
-      component: (
-        <Weather
-          location="Maintal"
-          qrcode={true}
-          graphic={"Animated"}
-          onDataLoaded={handleDataLoaded}
-        />
-      ),
+      component: <Scraper onDataLoaded={handleDataLoaded} />,
     },
   ];
 
