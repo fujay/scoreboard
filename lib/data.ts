@@ -17,7 +17,6 @@ const ITEMS_PER_PAGE = 6;
 export async function fetchCardData() {
   try {
     const storage: Settings["general"] = await readKeyConfig("general");
-    await new Promise((resolve) => setTimeout(resolve, 3000));
     // const tweetCountPromise = sql`SELECT COUNT(*) FROM tweets`;
     // if (storage.db === "Local") {
     //   const scrapersListPromise: Promise<Settings["scraper"]> =
