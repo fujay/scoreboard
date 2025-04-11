@@ -68,12 +68,13 @@ export function convertKelvinToCelsius(tempKelvin: number): number {
  */
 export const formatDateToLocal = (
   dateStr: string,
+  monthLength: "short" | "long" = "short",
   locale: string = "en-US",
 ) => {
   const date = new Date(dateStr);
   const options: Intl.DateTimeFormatOptions = {
     day: "numeric",
-    month: "short",
+    month: monthLength,
     year: "numeric",
   };
   const formatter = new Intl.DateTimeFormat(locale, options);
