@@ -58,7 +58,7 @@ export default function Scraper({
           </h1>
 
           <div className="grid gap-4 md:grid-cols-2">
-            {/* Main  Card */}
+            {/* Main Card */}
             <Card className="col-span-full bg-white/50 backdrop-blur-sm dark:bg-slate-800/50">
               <CardHeader className="text-center">
                 <CardTitle className="flex items-center justify-center gap-2 text-3xl">
