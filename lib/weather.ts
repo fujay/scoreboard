@@ -41,7 +41,7 @@ export async function getWeatherData(location: string) {
   try {
     const response = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${process.env.OPENWEATHERMAP_API_KEY}&units=metric`,
-      { next: { revalidate: CACHE_DURATION / 1000 } },
+      { cache: "force-cache", next: { revalidate: CACHE_DURATION / 1000 } },
     );
 
     if (!response.ok) {
