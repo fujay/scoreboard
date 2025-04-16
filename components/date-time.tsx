@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import Clock from "react-clock";
 import "react-clock/dist/Clock.css";
 
-const DateTime = ({ settings }: { settings: Settings["general"] }) => {
+const DateTime = ({ settings }: { settings: Settings["general"]["date"] }) => {
   const [date, setDate] = useState<Date>(new Date());
 
   useEffect(() => {
@@ -22,17 +22,17 @@ const DateTime = ({ settings }: { settings: Settings["general"] }) => {
   return (
     // <Clock renderNumbers={true} value={date} locale="en-EN" />
     <>
-      {settings.date === "Clock" && (
+      {settings === "Clock" && (
         <div className="flex justify-center">
           <Clock renderNumbers={true} value={date} locale="en-EN" />
         </div>
       )}
-      {settings.date === "Date" && (
+      {settings === "Date" && (
         <div className="text-xl">
           {moment().format("MMMM Do YYYY, hh:mm a")}
         </div>
       )}
-      {settings.date === "Clock and Date" && (
+      {settings === "Clock and Date" && (
         <>
           <div className="flex justify-center">
             <Clock renderNumbers={true} value={date} locale="en-EN" />
@@ -42,7 +42,7 @@ const DateTime = ({ settings }: { settings: Settings["general"] }) => {
           </div>
         </>
       )}
-      {settings.date === "Clock and Date without time" && (
+      {settings === "Clock and Date without time" && (
         <>
           <div className="flex justify-center">
             <Clock renderNumbers={true} value={date} locale="en-EN" />
