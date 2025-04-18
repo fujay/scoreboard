@@ -10,13 +10,15 @@ export type User = {
   password: string;
 };
 
+export type ContentType = { type: string; data: WeatherData | ScraperData };
+
 export type Scraper = {
   id: string;
   url: string;
   title_selector: string;
   selectors: string;
-  scraper: "Puppeteer" | "Cheerio";
-  format: "Text" | "Screenshot";
+  scraper: scraperTypes;
+  format: scraperFormats;
   width: number;
   height: number;
   qrcode: boolean;
@@ -31,7 +33,7 @@ export type ScraperDataAction =
         | undefined
         | (string | undefined)[];
       url: string;
-      format: "Text" | "Screenshot";
+      format: scraperFormats;
       qrcode: boolean;
       date: string;
     }
@@ -41,7 +43,7 @@ export type ScraperData = {
   title: string;
   data: string;
   url: string;
-  format: "Text" | "Screenshot";
+  format: scraperFormats;
   qrcode: boolean;
   date: string;
 };
@@ -52,8 +54,8 @@ export type ScrapersTable = {
   url: string;
   title_selector: string;
   selectors: string;
-  scraper: "Puppeteer" | "Cheerio";
-  format: "Text" | "Screenshot";
+  scraper: scraperTypes;
+  format: scraperFormats;
   width: number;
   height: number;
   qrcode: boolean;
@@ -66,8 +68,8 @@ export type ScraperForm = {
   url: string;
   title_selector: string;
   selectors: string;
-  scraper: "Puppeteer" | "Cheerio";
-  format: "Text" | "Screenshot";
+  scraper: scraperTypes;
+  format: scraperFormats;
   width: number;
   height: number;
   qrcode: boolean;
@@ -149,7 +151,12 @@ export type WeatherData = {
   humidity: number;
   windSpeed: number;
   timestamp: number;
+  qrcode: boolean;
+  graphic: "Classic" | "Animated";
 };
+
+export type scraperTypes = "Puppeteer" | "Cheerio";
+export type scraperFormats = "Text" | "Screenshot";
 
 export interface Settings {
   general: {
@@ -172,8 +179,8 @@ export interface Settings {
       url: string;
       titleSelector: string;
       selectors: string;
-      scraper: "Puppeteer" | "Cheerio";
-      format: "Text" | "Screenshot";
+      scraper: scraperTypes;
+      format: scraperFormats;
       width: number;
       height: number;
       qrcode: boolean;

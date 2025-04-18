@@ -1,47 +1,30 @@
 "use server";
-import type { OpenWeatherData, Settings, WeatherData } from "./definitions";
-import { readKeyConfig } from "./config";
+import type { OpenWeatherData, WeatherData } from "./definitions";
+import { readConfig } from "./config";
 
-// Cache structure to store weather data with timestamps
-interface CacheWeatherItem {
-  data: WeatherData;
-  timestamp: number;
-}
+const settings = await readConfig();
 
-const settings: Settings["general"] = await readKeyConfig("general");
-const staleTime = settings.stale || 60;
-
-// In-memory cache
-const cache: Record<string, CacheWeatherItem> = {};
-
-// Cache duration in milliseconds (minutes -> seconds -> milliseconds)
-const CACHE_DURATION = staleTime * 60 * 1000;
+const staleTime = settings.general.stale || 60;
 
 /**
- * Fetches weather data for a specified location.
- * Implements caching to reduce API calls
- * @param location - The location for which to fetch weather data (city name or coordinates).
- * @returns An object containing weather data for the specified location.
+ * Fetches current weather data for a given location using the OpenWeatherMap API.
+ *
+ * @param location - The name of the city or location to fetch weather data for.
+ * @returns A promise that resolves to a `WeatherData` object containing weather information for the specified location.
+ * @throws Will throw an error if the OpenWeatherMap API key is not configured, if the fetch request fails, or if the response is not OK.
  */
 export async function getWeatherData(location: string) {
-  const cacheKey = location.toLowerCase();
-  const now = Date.now();
-
-  if (cache[cacheKey] && now - cache[cacheKey].timestamp < CACHE_DURATION) {
-    console.log(`Using cached weather data for ${location}`);
-    return cache[cacheKey].data;
-  }
-
-  if (!process.env.OPENWEATHERMAP_API_KEY) {
-    throw new Error("OpenWeather API key is not configured");
-  }
-
-  console.log(`Fetching weather data for ${location}`);
-
   try {
+    const now = Date.now();
+    if (!process.env.OPENWEATHERMAP_API_KEY) {
+      throw new Error("OpenWeather API key is not configured");
+    }
+
+    console.log(`Fetching weather data for ${location}`);
+
     const response = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${process.env.OPENWEATHERMAP_API_KEY}&units=metric`,
-      { cache: "force-cache", next: { revalidate: CACHE_DURATION / 1000 } },
+      { cache: "force-cache", next: { revalidate: staleTime * 60 } },
     );
 
     if (!response.ok) {
@@ -65,12 +48,8 @@ export async function getWeatherData(location: string) {
       humidity: data.main.humidity,
       windSpeed: Math.round(data.wind.speed * 3.6), // Convert m/s to km/h
       timestamp: now,
-    };
-
-    // Update cache
-    cache[cacheKey] = {
-      data: weatherData,
-      timestamp: now,
+      qrcode: settings.weather.qrcode,
+      graphic: settings.weather.graphic,
     };
 
     return weatherData;

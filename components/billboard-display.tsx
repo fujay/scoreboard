@@ -1,88 +1,103 @@
 "use client";
 
-import { ProgressBar } from "@/ui/progress-bar";
+import ContentDisplay from "@/components/content-display";
+import type { ContentType } from "@/lib/definitions";
+import { getScraperData } from "@/lib/scraper";
+import { getWeatherData } from "@/lib/weather";
+import { ProgressBar, ProgressBarNew } from "@/ui/progress-bar";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState, useCallback } from "react";
-import Weather from "@/components/weather";
-import Scraper from "@/components/scraper";
-import { Settings } from "@/lib/definitions";
-
-type MessageConfig = {
-  component: React.ReactNode;
-};
+import { useEffect, useState } from "react";
 
 export default function BillboardDisplay({
   active,
   location,
-  qrcode,
-  graphic,
   interval,
+  stale,
 }: {
   active: boolean;
   location: string;
-  qrcode: boolean;
-  graphic: Settings["weather"]["graphic"];
   interval: number;
+  stale: number;
 }) {
-  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+  const [contentItems, setContentItems] = useState<ContentType[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [timeRemaining, setTimeRemaining] = useState(interval);
   const [progress, setProgress] = useState(0);
-  const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleDataLoaded = useCallback(() => {
-    setIsDataLoaded(true);
-  }, []);
-
-  const messages: MessageConfig[] = [
-    {
-      component: (
-        <Weather
-          location={location}
-          qrcode={qrcode}
-          graphic={graphic}
-          onDataLoaded={handleDataLoaded}
-        />
-      ),
-    },
-    // {
-    //   component: (
-    //     <Weather
-    //       location="Erlensee"
-    //       qrcode={true}
-    //       graphic={"Animated"}
-    //       onDataLoaded={handleDataLoaded}
-    //     />
-    //   ),
-    // },
-    // {
-    //   component: (
-    //     <Weather
-    //       location="Maintal"
-    //       qrcode={true}
-    //       graphic={"Classic"}
-    //       onDataLoaded={handleDataLoaded}
-    //     />
-    //   ),
-    // },
-    {
-      component: <Scraper onDataLoaded={handleDataLoaded} />,
-    },
-  ];
-
-  const currentConfig = messages[currentMessageIndex];
-  const CurrentMessage = currentConfig.component;
   const transitionIntervalMs = interval * 1000;
   const progressUpdateInterval = transitionIntervalMs / 100;
 
-  // Reset progress and data loaded flag when changing slides
+  // Fetch initial data
   useEffect(() => {
-    setProgress(0);
-    setIsDataLoaded(false);
-  }, [currentMessageIndex]);
+    const loadInitialData = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
 
-  // Set up the progress bar and slide transition
+        // Fetch weather data
+        const weatherData = await getWeatherData(location);
+        console.log("Weather data:", weatherData);
+
+        // Fetch scraper data
+        const scraperData = await getScraperData();
+        console.log("Scraper data:", scraperData);
+
+        if (!scraperData || scraperData.length === 0) {
+          console.warn("No scraper data found");
+        }
+
+        // Combine content to a single array
+        const allContent = [
+          { type: "weather", data: weatherData },
+          ...scraperData.map((scraperDataItem) => ({
+            type: "scraper",
+            data: scraperDataItem,
+          })),
+        ];
+
+        if (allContent.length === 0) {
+          setError(
+            "No content available. Please check your database and API connections.",
+          );
+        } else {
+          setContentItems(allContent);
+        }
+
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error loading initial data:", error);
+        setError("Failed to load content. Please check your API connections.");
+        setIsLoading(false);
+      }
+    };
+
+    loadInitialData();
+
+    // Refresh data every interval
+    const refreshInterval = setInterval(loadInitialData, stale * 60 * 1000);
+
+    return () => clearInterval(refreshInterval);
+  }, [location, stale]);
+
+  // Handle content rotation and progress bar
   useEffect(() => {
-    // Don't start progress until data is loaded
-    if (!isDataLoaded) return;
+    if (contentItems.length === 0) return;
+
+    const timer = setInterval(() => {
+      setTimeRemaining((prevTime) => {
+        if (prevTime <= 1) {
+          // Move to the next content item //(prevIndex + 1) % contentItems.length);
+          setCurrentIndex((prevIndex) =>
+            prevIndex === contentItems.length - 1 ? 0 : prevIndex + 1,
+          );
+          setProgress(0); // Reset progress bar
+          return interval; // Reset timer
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
 
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
@@ -91,49 +106,56 @@ export default function BillboardDisplay({
       });
     }, progressUpdateInterval);
 
-    const transitionInterval = setInterval(() => {
-      setCurrentMessageIndex((prevIndex) => (prevIndex + 1) % messages.length);
-    }, transitionIntervalMs);
-
     return () => {
+      clearInterval(timer);
       clearInterval(progressInterval);
-      clearInterval(transitionInterval);
     };
-  }, [
-    isDataLoaded,
-    progressUpdateInterval,
-    transitionIntervalMs,
-    messages.length,
-  ]);
+  }, [contentItems.length, interval, progressUpdateInterval]);
 
-  const secondsRemaining = Math.ceil(((100 - progress) * interval) / 100);
+  // Current content to display
+  const currentContent = contentItems[currentIndex];
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={currentMessageIndex}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        transition={{ duration: 0.5 }}
-        className="w-full"
-      >
-        <>{CurrentMessage}</>
-        {/* <Weather
-          location={currentConfig.location}
-          qrcode={currentConfig.qrcode}
-          graphic={currentConfig.graphic}
-          onDataLoaded={handleDataLoaded}
-        /> */}
-        {isDataLoaded && (
-          <div className="mt-6">
-            <p className="mb-1 text-xs text-gray-500">
-              Next slide in {secondsRemaining} seconds
-            </p>
-            <ProgressBar progress={progress} />
+    <>
+      <AnimatePresence mode="wait">
+        <motion.main
+          key={currentIndex}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.5 }}
+          className="flex-1"
+        >
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center">
+              <div className="mb-4 h-12 w-12 animate-spin rounded-full border-t-2 border-b-2 border-white"></div>
+              <div className="text-2xl">Loading content...</div>
+            </div>
+          ) : error ? (
+            <div className="max-w-md text-center text-2xl text-red-400">
+              <p className="mb-4">⚠️ {error}</p>
+              <p className="text-lg opacity-80">
+                Check your environment variables and try again.
+              </p>
+            </div>
+          ) : contentItems.length > 0 ? (
+            <ContentDisplay content={currentContent} />
+          ) : (
+            <div className="text-2xl">No content available</div>
+          )}
+        </motion.main>
+      </AnimatePresence>
+      <footer>
+        {!isLoading && !error && contentItems.length > 0 && (
+          <div className="p-6">
+            <ProgressBar progress={progress} interval={interval} />
+            <ProgressBarNew
+              timeRemaining={timeRemaining}
+              totalTime={interval}
+            />
           </div>
         )}
-      </motion.div>
-    </AnimatePresence>
+      </footer>
+    </>
   );
 }
