@@ -132,7 +132,7 @@ export default function BillboardDisplay({
               <div className="text-2xl">Loading content...</div>
             </div>
           ) : error ? (
-            <div className="max-w-md text-center text-2xl text-red-400">
+            <div className="text-center text-2xl text-red-400">
               <p className="mb-4">⚠️ {error}</p>
               <p className="text-lg opacity-80">
                 Check your environment variables and try again.
