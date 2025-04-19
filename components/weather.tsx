@@ -192,8 +192,7 @@ export default function Weather({
               </CardHeader>
               <CardFooter>
                 <p className="text-sm text-gray-500">
-                  Last updated:{" "}
-                  {new Date(weatherData.timestamp).toLocaleTimeString()}
+                  Last updated: {weatherData.dataTime}
                 </p>
               </CardFooter>
             </Card>
