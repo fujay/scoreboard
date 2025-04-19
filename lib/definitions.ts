@@ -94,6 +94,24 @@ export type TweetTable = {
   showUntil: string;
 };
 
+/**
+ * Represents the response data structure from the OpenWeather API for current weather information.
+ *
+ * @property coord - Geographic coordinates of the location.
+ * @property weather - Array of weather condition objects.
+ * @property base - Internal parameter used by the API.
+ * @property main - Main weather metrics such as temperature, pressure, and humidity.
+ * @property visibility - Visibility in meters.
+ * @property wind - Wind speed and direction.
+ * @property clouds - Cloudiness percentage.
+ * @property dt - Time of data calculation (Unix, UTC).
+ * @property sys - Additional system data such as country, sunrise, and sunset times.
+ * @property timezone - Shift in seconds from UTC.
+ * @property id - City ID.
+ * @property name - City name.
+ * @property cod - Internal parameter used by the API.
+ * @see https://openweathermap.org/current for more details.
+ */
 export type OpenWeatherData = {
   coord: {
     lon: number;
@@ -138,6 +156,24 @@ export type OpenWeatherData = {
   cod: number;
 };
 
+/**
+ * Represents weather data for a specific city.
+ *
+ * @property cityName - The name of the city.
+ * @property cityId - The unique identifier for the city.
+ * @property mainWeather - The main weather condition (e.g., "Clear", "Rain").
+ * @property weatherDescription - A detailed description of the weather.
+ * @property icon - The icon code representing the weather condition.
+ * @property temperature - The current temperature in degrees Celsius.
+ * @property feelsLike - The perceived temperature in degrees Celsius.
+ * @property tempMax - The maximum temperature recorded.
+ * @property tempMin - The minimum temperature recorded.
+ * @property humidity - The humidity percentage.
+ * @property windSpeed - The wind speed in meters per second.
+ * @property dataTime - The timestamp of the weather data (in UNIX format).
+ * @property qrcode - Indicates if a QR code is associated with the data.
+ * @property graphic - The type of graphic representation ("Classic" or "Animated").
+ */
 export type WeatherData = {
   cityName: string;
   cityId: number;
@@ -150,7 +186,7 @@ export type WeatherData = {
   tempMin: number;
   humidity: number;
   windSpeed: number;
-  timestamp: number;
+  dataTime: number;
   qrcode: boolean;
   graphic: "Classic" | "Animated";
 };
