@@ -186,7 +186,7 @@ export type WeatherData = {
   tempMin: number;
   humidity: number;
   windSpeed: number;
-  dataTime: number;
+  dataTime: string;
   qrcode: boolean;
   graphic: "Classic" | "Animated";
 };

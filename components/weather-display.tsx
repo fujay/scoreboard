@@ -49,7 +49,7 @@ export default function WeatherDisplay({ data }: { data: WeatherData }) {
             </CardHeader>
             <CardFooter>
               <p className="text-sm text-gray-500">
-                Last updated: {new Date(data.timestamp).toLocaleTimeString()}
+                Last updated: {data.dataTime}
               </p>
             </CardFooter>
           </Card>

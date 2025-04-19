@@ -1,4 +1,5 @@
 "use server";
+
 import type { OpenWeatherData, WeatherData } from "./definitions";
 import { readConfig } from "./config";
 
@@ -15,7 +16,6 @@ const staleTime = settings.general.stale || 60;
  */
 export async function getWeatherData(location: string) {
   try {
-    const now = Date.now();
     if (!process.env.OPENWEATHERMAP_API_KEY) {
       throw new Error("OpenWeather API key is not configured");
     }
@@ -47,7 +47,7 @@ export async function getWeatherData(location: string) {
       tempMin: Math.round(data.main.temp_min),
       humidity: data.main.humidity,
       windSpeed: Math.round(data.wind.speed * 3.6), // Convert m/s to km/h
-      timestamp: now,
+      dataTime: new Date(data.dt * 1000).toLocaleTimeString(),
       qrcode: settings.weather.qrcode,
       graphic: settings.weather.graphic,
     };
