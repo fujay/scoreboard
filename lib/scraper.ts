@@ -4,25 +4,19 @@ import {
   scrapeScreenshot,
   scrapeViaCheerio,
   scrapeViaPuppeteer,
-} from "./actions";
-import { readKeyConfig } from "./config";
-import { fetchScrapers, fetchScrapersData } from "./data";
-import type { ScraperData, ScraperDataAction, Settings } from "./definitions";
-
-interface CacheScraperDataItem {
-  data: ScraperData[];
-  timestamp: number;
-}
+} from "@/lib/actions";
+import { readKeyConfig } from "@/lib/config";
+import { fetchScrapers, fetchScrapersData } from "@/lib/data";
+import type {
+  ScraperData,
+  ScraperDataAction,
+  Settings,
+} from "@/lib/definitions";
+// import { unstable_cache } from "next/cache";
 
 const settings: Settings["general"] = await readKeyConfig("general");
-const staleTime = settings.stale || 60;
+// const staleTime = settings.stale || 60;
 const isNoCache = settings.db === "None";
-
-// In-memory cache
-const cache: Record<string, CacheScraperDataItem> = {};
-
-// Cache duration in milliseconds (minutes -> seconds -> milliseconds)
-const CACHE_DURATION = staleTime * 60 * 1000;
 
 /**
  * Fetches scraper data based on the caching mechanism and scraper configurations.
@@ -106,26 +100,19 @@ export async function getScraperData(): Promise<ScraperData[]> {
 
     return filteredScraperData;
   } else {
-    const cacheKey = "scraperData";
-    const now = Date.now();
-
-    if (cache[cacheKey] && now - cache[cacheKey].timestamp < CACHE_DURATION) {
-      console.log(`Using cached scraper data`);
-      return cache[cacheKey].data;
-    }
-
-    console.log(`Fetching new scraper data`);
+    // const scraperData = unstable_cache(
+    //   async () => {
+    //     return await fetchScrapersData();
+    //   },
+    //   ["scraperData"],
+    //   { revalidate: staleTime * 60 },
+    // );
 
     const scraperData = await fetchScrapersData();
     if (!scraperData) {
       throw new Error("No scraper data found in the database.");
     }
 
-    // Update cache
-    cache[cacheKey] = {
-      data: scraperData,
-      timestamp: now,
-    };
     console.log(scraperData);
 
     return scraperData;

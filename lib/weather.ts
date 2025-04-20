@@ -1,7 +1,7 @@
 "use server";
 
-import type { OpenWeatherData, WeatherData } from "./definitions";
-import { readConfig } from "./config";
+import type { OpenWeatherData, WeatherData } from "@/lib/definitions";
+import { readConfig } from "@/lib/config";
 
 const settings = await readConfig();
 
