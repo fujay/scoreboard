@@ -334,9 +334,11 @@ export async function deleteScraper(id: string) {
 
     //   await saveConfig(scraper, "scraper");
     // } else if (storage.db === "Remote") {
-    const result = await sql`DELETE FROM scrapers WHERE id = ${id}`;
-    const scaper_data_id = result[0].scaper_data_id;
-    await sql`DELETE FROM scraper_data WHERE id = ${scaper_data_id}`;
+    const result =
+      await sql`DELETE FROM scrapers WHERE id = ${id} returning scraper_data_id`;
+
+    const scraper_data_id = result[0].scraper_data_id;
+    await sql`DELETE FROM scraper_data WHERE id = ${scraper_data_id}`;
     // }
     revalidatePath("/dashboard/scraper");
   } catch (error) {
