@@ -11,7 +11,7 @@ import {
   RssIcon,
   SunIcon,
 } from "@heroicons/react/24/outline";
-import { FileVideo } from "lucide-react";
+import { FileVideo, Info } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -19,6 +19,7 @@ import { usePathname } from "next/navigation";
 const links = [
   { name: "Home", href: "/dashboard", icon: HomeIcon },
   { name: "Cloud", href: "/dashboard/cloud", icon: CloudIcon },
+  { name: "Announcement", href: "/dashboard/announcement", icon: Info },
   { name: "Message", href: "/dashboard/message", icon: DocumentTextIcon },
   { name: "RSS", href: "/dashboard/rss", icon: RssIcon },
   { name: "Scraper", href: "/dashboard/scraper", icon: GlobeAltIcon },
