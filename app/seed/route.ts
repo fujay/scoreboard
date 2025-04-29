@@ -14,6 +14,18 @@ async function seedAdmin() {
   `;
 }
 
+async function createNewsTable() {
+  await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+  await sql`
+    CREATE TABLE IF NOT EXISTS news (
+      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      title TEXT NOT NULL,
+      content TEXT NOT NULL,
+      display_until DATE
+    );
+  `;
+}
+
 async function createScraperTable() {
   await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
@@ -53,6 +65,7 @@ export async function GET() {
       // seedAdmin(),
       createScraperDataTable(),
       createScraperTable(),
+      createNewsTable(),
     ]);
 
     return Response.json({ message: "Database created successfully" });
