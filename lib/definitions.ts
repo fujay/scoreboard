@@ -12,13 +12,20 @@ export type User = {
 
 export type ContentType = { type: string; data: WeatherData | ScraperData };
 
+export type NewsData = {
+  id: string;
+  title: string;
+  content: string;
+  show_until: string;
+};
+
 export type Scraper = {
   id: string;
   url: string;
   title_selector: string;
   selectors: string;
-  scraper: scraperTypes;
-  format: scraperFormats;
+  scraper: ScraperTypes;
+  format: ScraperFormats;
   width: number;
   height: number;
   qrcode: boolean;
@@ -33,7 +40,7 @@ export type ScraperDataAction =
         | undefined
         | (string | undefined)[];
       url: string;
-      format: scraperFormats;
+      format: ScraperFormats;
       qrcode: boolean;
       date: string;
     }
@@ -43,7 +50,7 @@ export type ScraperData = {
   title: string;
   data: string;
   url: string;
-  format: scraperFormats;
+  format: ScraperFormats;
   qrcode: boolean;
   date: string;
 };
@@ -54,8 +61,8 @@ export type ScrapersTable = {
   url: string;
   title_selector: string;
   selectors: string;
-  scraper: scraperTypes;
-  format: scraperFormats;
+  scraper: ScraperTypes;
+  format: ScraperFormats;
   width: number;
   height: number;
   qrcode: boolean;
@@ -68,8 +75,8 @@ export type ScraperForm = {
   url: string;
   title_selector: string;
   selectors: string;
-  scraper: scraperTypes;
-  format: scraperFormats;
+  scraper: ScraperTypes;
+  format: ScraperFormats;
   width: number;
   height: number;
   qrcode: boolean;
@@ -188,24 +195,50 @@ export type WeatherData = {
   windSpeed: number;
   dataTime: string;
   qrcode: boolean;
-  graphic: "Classic" | "Animated";
+  graphic: WeatherGraphicTypes;
 };
 
-export type scraperTypes = "Puppeteer" | "Cheerio";
-export type scraperFormats = "Text" | "Screenshot";
+export type ScraperTypes = "Puppeteer" | "Cheerio";
+export type ScraperFormats = "Text" | "Screenshot";
+
+export type DbTypes = "None" | "Local" | "Remote";
+
+export type ImagesTypes = "Local" | "Remote";
+
+export type DateTypes =
+  | "Clock"
+  | "Date"
+  | "Clock and Date"
+  | "Clock and Date without time";
+
+export type NewsType = "carousel" | "infinite";
+
+export type ProgressbarTypes =
+  | "None"
+  | "ProgressBar"
+  | "Countdown"
+  | "ProgressBar and Countdown";
+
+export type WeatherGraphicTypes =
+  | "OpenWeatherMap"
+  | "Lucide Icons"
+  | "Animated"
+  | "3D";
 
 export interface Settings {
   general: {
     time: number;
-    db: "None" | "Local" | "Remote";
-    images: "Local" | "Remote";
+    db: DbTypes;
+    images: ImagesTypes;
     stale: number;
-    date: "Clock" | "Date" | "Clock and Date" | "Clock and Date without time";
+    date: DateTypes;
+    news: NewsType;
+    progressbar: ProgressbarTypes;
   };
   weather: {
     active: boolean;
     location: string;
-    graphic: "Classic" | "Animated";
+    graphic: WeatherGraphicTypes;
     qrcode: boolean;
   };
   scraper: [
@@ -215,8 +248,8 @@ export interface Settings {
       url: string;
       titleSelector: string;
       selectors: string;
-      scraper: scraperTypes;
-      format: scraperFormats;
+      scraper: ScraperTypes;
+      format: ScraperFormats;
       width: number;
       height: number;
       qrcode: boolean;
@@ -235,11 +268,13 @@ export const DEFAULT_SETTINGS: Settings = {
     images: "Local",
     stale: 3600,
     date: "Clock",
+    news: "carousel",
+    progressbar: "ProgressBar and Countdown",
   },
   weather: {
     active: true,
     location: "Frankfurt",
-    graphic: "Classic",
+    graphic: "OpenWeatherMap",
     qrcode: false,
   },
   scraper: [
