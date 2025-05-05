@@ -6,17 +6,23 @@ import {
 } from "@heroicons/react/24/outline";
 import { lusitana } from "./fonts";
 import XIcon from "./x-icon";
+import { NewspaperIcon } from "lucide-react";
 
 const iconMap = {
   scraper: GlobeAltIcon,
   scraperText: DocumentTextIcon,
   scraperImage: PhotoIcon,
+  news: NewspaperIcon,
   tweet: XIcon,
 };
 
 export default async function CardWrapper() {
-  const { numberOfScrapers, numberOfScraperTexts, numberOfScraperImages } =
-    await fetchCardData();
+  const {
+    numberOfScrapers,
+    numberOfScraperTexts,
+    numberOfScraperImages,
+    numberOfNews,
+  } = await fetchCardData();
 
   return (
     <>
@@ -31,6 +37,7 @@ export default async function CardWrapper() {
         value={numberOfScraperImages}
         type="scraperImage"
       />
+      <Card title="News" value={numberOfNews} type="news" />
       {/* <Card title="Tweets" value={numberOfTweets} type="tweet" />
       <Card title="Tweets" value={numberOfTweets} type="invoices" />
       <Card title="Tweets" value={numberOfTweets} type="customers" /> */}
@@ -45,7 +52,7 @@ export function Card({
 }: {
   title: string;
   value: number | string;
-  type: "scraper" | "scraperText" | "scraperImage" | "tweet";
+  type: "scraper" | "scraperText" | "scraperImage" | "news" | "tweet";
 }) {
   const Icon = iconMap[type];
 
