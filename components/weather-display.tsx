@@ -1,4 +1,3 @@
-import type { WeatherData } from "@/lib/definitions";
 import {
   Card,
   CardContent,
@@ -7,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import type { WeatherData, WeatherGraphicTypes } from "@/lib/definitions";
 import {
   ArrowDown,
   ArrowUp,
@@ -24,8 +24,10 @@ import {
   ThermometerSun,
   Wind,
 } from "lucide-react";
-import { QRCodeSVG } from "qrcode.react";
 import Image from "next/image";
+import { QRCodeSVG } from "qrcode.react";
+import ReactAnimatedWeather from "react-animated-weather";
+import { WeatherState, WeatherSvg } from "weather-icons-animated";
 
 export default function WeatherDisplay({ data }: { data: WeatherData }) {
   return (
@@ -132,43 +134,95 @@ export default function WeatherDisplay({ data }: { data: WeatherData }) {
 
 export const WeatherIcon: React.FC<{
   weather: string;
-  iconSet: "Classic" | "Animated";
+  iconSet: WeatherGraphicTypes;
 }> = ({ weather, iconSet }) => {
-  if (iconSet === "Classic") {
+  if (iconSet === "Lucide Icons") {
     switch (weather) {
       case "11d": // Thunderstorm
-        return <CloudLightning className="size-12 text-amber-500" />;
+        return <CloudLightning className="size-16 text-amber-500" />;
 
       case "09d": // Drizzle
-        return <CloudDrizzle className="size-12 text-blue-400" />;
+        return <CloudDrizzle className="size-16 text-blue-400" />;
 
       case "10d": // Rain
-        return <CloudRain className="size-12 text-blue-600" />;
+        return <CloudRain className="size-16 text-blue-600" />;
 
       case "13d": // Snow
-        return <CloudSnow className="size-12 text-cyan-500" />;
+        return <CloudSnow className="size-16 text-cyan-500" />;
 
       case "50d": // Atmosphere
-        return <CloudFog className="size-12 text-neutral-500" />;
+        return <CloudFog className="size-16 text-neutral-500" />;
 
       case "01d": // Clear Day
-        return <Sun className="size-12 text-yellow-500" />;
+        return <Sun className="size-16 text-yellow-500" />;
       case "01n": // Clear Night
-        return <MoonStar className="size-12 text-stone-500" />;
+        return <MoonStar className="size-16 text-stone-500" />;
 
       case "02d": // few clouds
       case "02n": // few clouds
-        return <CloudSun className="size-12 text-amber-500" />;
+        return <CloudSun className="size-16 text-amber-500" />;
 
       case "03d": // scattered clouds
       case "03n": // scattered clouds
       case "04d": // broken clouds / overcast clouds
       case "04n": // broken clouds / overcast clouds
-        return <Cloud className="size-12 text-gray-500" />;
+        return <Cloud className="size-16 text-gray-500" />;
 
       default:
         return "";
     }
+  } else if (iconSet === "3D") {
+    const codeMapping: { [key: string]: WeatherState } = {
+      "01d": "sunny",
+      "01n": "clear-night",
+      "02d": "partlycloudy",
+      "02n": "partlycloudy",
+      "03d": "partlycloudy",
+      "03n": "partlycloudy",
+      "04d": "cloudy",
+      "04n": "cloudy",
+      "09d": "rainy",
+      "09n": "rainy",
+      "10d": "pouring",
+      "10n": "pouring",
+      "11d": "lightning",
+      "11n": "lightning",
+      "13d": "snowy",
+      "13n": "snowy",
+      "50d": "fog",
+      "50n": "fog",
+    } as const;
+    return <WeatherSvg state={codeMapping[weather]} width={100} height={100} />;
+  } else if (iconSet === "Animated") {
+    const codeMapping = {
+      "01d": { icon: "CLEAR_DAY", color: "#FFD700" }, // Sunny
+      "01n": { icon: "CLEAR_NIGHT", color: "#A3A3A3" }, // Clear night
+      "02d": { icon: "PARTLY_CLOUDY_DAY", color: "#FFE066" },
+      "02n": { icon: "PARTLY_CLOUDY_NIGHT", color: "#B0B0B0" },
+      "03d": { icon: "PARTLY_CLOUDY_DAY", color: "#B0C4DE" },
+      "03n": { icon: "PARTLY_CLOUDY_NIGHT", color: "#B0C4DE" },
+      "04d": { icon: "CLOUDY", color: "#A0AEC0" },
+      "04n": { icon: "CLOUDY", color: "#A0AEC0" },
+      "09d": { icon: "RAIN", color: "#60A5FA" },
+      "09n": { icon: "RAIN", color: "#60A5FA" },
+      "10d": { icon: "RAIN", color: "#2563EB" },
+      "10n": { icon: "RAIN", color: "#2563EB" },
+      "11d": { icon: "RAIN", color: "#F59E42" }, // Thunderstorm
+      "11n": { icon: "RAIN", color: "#F59E42" },
+      "13d": { icon: "SNOW", color: "#A7F3D0" },
+      "13n": { icon: "SNOW", color: "#A7F3D0" },
+      "50d": { icon: "FOG", color: "#CBD5E1" },
+      "50n": { icon: "FOG", color: "#CBD5E1" },
+    } as const;
+    type WeatherCode = keyof typeof codeMapping;
+    const weatherMapping = codeMapping[weather as WeatherCode];
+    return (
+      <ReactAnimatedWeather
+        icon={weatherMapping.icon}
+        color={weatherMapping.color}
+        animate={true}
+      />
+    );
   } else {
     return (
       <Image
