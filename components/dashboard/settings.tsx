@@ -4,7 +4,16 @@ import { saveSettings, StateSettings } from "@/lib/actions";
 import type { Settings } from "@/lib/definitions";
 import { Button } from "@/ui/button";
 import { ChangeEvent, ReactNode, useActionState, useState } from "react";
-import { Clock, GlassWater, HardDrive, Save, Timer } from "lucide-react";
+import {
+  Clock,
+  GalleryHorizontal,
+  GalleryHorizontalEnd,
+  GlassWater,
+  HardDrive,
+  RectangleEllipsis,
+  Save,
+  Timer,
+} from "lucide-react";
 import { CloudIcon, NoSymbolIcon } from "@heroicons/react/24/outline";
 
 export default function Settings({
@@ -33,6 +42,18 @@ export default function Settings({
     }
   });
 
+  const [news, setNews] = useState<ReactNode>(() => {
+    if (settings.news === "carousel") {
+      return (
+        <GalleryHorizontal className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+      );
+    } else if (settings.news === "infinite") {
+      return (
+        <GalleryHorizontalEnd className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+      );
+    }
+  });
+
   const [stale, setStale] = useState<number>(settings.stale);
 
   const [state, formAction, isPending] = useActionState(
@@ -52,6 +73,18 @@ export default function Settings({
     } else if (e.target.value === "Remote") {
       setStorage(
         <CloudIcon className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />,
+      );
+    }
+  };
+
+  const handleNewsChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    if (e.target.value === "carousel") {
+      setNews(
+        <GalleryHorizontal className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />,
+      );
+    } else if (e.target.value === "infinite") {
+      setNews(
+        <GalleryHorizontalEnd className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />,
       );
     }
   };
@@ -268,9 +301,79 @@ export default function Settings({
             </select>
             <Clock className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
           </div>
-          <div id="customer-error" aria-live="polite" aria-atomic="true">
+          <div id="date-error" aria-live="polite" aria-atomic="true">
             {state.errors?.date &&
               state.errors.date.map((error) => (
+                <p className="mt-2 text-sm text-red-500" key={error}>
+                  {error}
+                </p>
+              ))}
+          </div>
+        </div>
+
+        {/* news */}
+        <div className="mb-4">
+          <label htmlFor="news" className="mb-2 block text-sm font-medium">
+            News:
+          </label>
+          <div className="relative mt-2 rounded-md">
+            <select
+              onChange={handleNewsChange}
+              id="news"
+              name="news"
+              className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+              defaultValue={settings.news}
+              aria-describedby="news-error"
+            >
+              <option value="" disabled>
+                --Select a news option--
+              </option>
+              <option value="carousel">News carousel</option>
+              <option value="infinite">Infinite scroll</option>
+            </select>
+            {news}
+          </div>
+          <div id="news-error" aria-live="polite" aria-atomic="true">
+            {state.errors?.news &&
+              state.errors.news.map((error) => (
+                <p className="mt-2 text-sm text-red-500" key={error}>
+                  {error}
+                </p>
+              ))}
+          </div>
+        </div>
+
+        {/* progressbar */}
+        <div className="mb-4">
+          <label
+            htmlFor="progressbar"
+            className="mb-2 block text-sm font-medium"
+          >
+            Progress bar:
+          </label>
+          <div className="relative">
+            <select
+              id="progressbar"
+              name="progressbar"
+              className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+              defaultValue={settings.progressbar}
+              aria-describedby="progressbar-error"
+            >
+              <option value="" disabled>
+                --Select a progress bar option--
+              </option>
+              <option value="None">None</option>
+              <option value="ProgressBar">ProgressBar</option>
+              <option value="Countdown">Countdown</option>
+              <option value="ProgressBar and Countdown">
+                ProgressBar and Countdown
+              </option>
+            </select>
+            <RectangleEllipsis className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+          </div>
+          <div id="progressbar-error" aria-live="polite" aria-atomic="true">
+            {state.errors?.progressbar &&
+              state.errors.progressbar.map((error) => (
                 <p className="mt-2 text-sm text-red-500" key={error}>
                   {error}
                 </p>

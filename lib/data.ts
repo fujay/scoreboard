@@ -1,5 +1,6 @@
 import postgres from "postgres";
 import {
+  NewsData,
   Scraper,
   ScraperData,
   ScraperForm,
@@ -30,19 +31,24 @@ export async function fetchCardData() {
     const scrapersListPromise = sql`SELECT COUNT(*) FROM scrapers`;
     const scrapersTextListPromise = sql`SELECT COUNT(*) FROM scrapers WHERE format = 'Text'`;
     const scrapersImageListPromise = sql`SELECT COUNT(*) FROM scrapers WHERE format = 'Screenshot'`;
+    const newsListPromise = sql`SELECT COUNT(*) FROM news`;
     const data = await Promise.all([
       scrapersListPromise,
       scrapersTextListPromise,
       scrapersImageListPromise,
+      newsListPromise,
     ]);
 
     const numberOfScrapers = data[0][0].count ?? "0";
     const numberOfScraperTexts = data[1][0].count ?? "0";
     const numberOfScraperImages = data[2][0].count ?? "0";
+    const numberOfNews = data[3][0].count ?? "0";
+
     return {
       numberOfScrapers,
       numberOfScraperTexts,
       numberOfScraperImages,
+      numberOfNews,
     };
     // } else {
     //   return {
@@ -248,6 +254,20 @@ export async function fetchScrapersData() {
   }
 }
 
+export async function fetchNews() {
+  try {
+    const news = await sql<NewsData[]>`
+    SELECT id, title, content
+    FROM news
+    WHERE (show_until IS NULL OR show_until > NOW())
+    `;
+
+    return news;
+  } catch (error) {
+    console.error("Database Error: ", error);
+    throw new Error("Failed to fetch news data.");
+  }
+}
 export async function fetchTweets() {
   try {
     const tweets = await sql<Tweet[]>`SELECT * FROM tweets`;
@@ -262,9 +282,8 @@ export async function fetchFilteredTweets(query: string, currentPage: number) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
-    const tweets = await sql<
-      TweetTable[]
-    >`SELECT * FROM tweets WHERE content ILIKE ${`%${query}%`} LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}`;
+    const tweets = await sql<TweetTable[]>`
+    SELECT * FROM tweets WHERE content ILIKE ${`%${query}%`} LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}`;
     return tweets;
   } catch (error) {
     console.error("Database Error: ", error);
