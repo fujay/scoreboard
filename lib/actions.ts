@@ -24,6 +24,13 @@ const FormSchemaGeneral = z.object({
     "Clock and Date",
     "Clock and Date without time",
   ]),
+  news: z.enum(["carousel", "infinite"]),
+  progressbar: z.enum([
+    "None",
+    "ProgressBar",
+    "Countdown",
+    "ProgressBar and Countdown",
+  ]),
 });
 
 const FormSchemaWeather = z.object({
@@ -34,7 +41,7 @@ const FormSchemaWeather = z.object({
     // ^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$
     .or(z.string().min(2)),
   qrcode: z.coerce.boolean(),
-  graphic: z.enum(["Classic", "Animated"]),
+  graphic: z.enum(["OpenWeatherMap", "Lucide Icons", "Animated", "3D"]),
 });
 
 const FormSchemaScraper = z.object({
@@ -81,6 +88,8 @@ export type StateSettings = {
     images?: string[];
     stale?: string[];
     date?: string[];
+    news?: string[];
+    progressbar?: string[];
   };
   message?: string | null;
 };
@@ -127,6 +136,8 @@ export async function saveSettings(
     images: formData.get("images"),
     stale: parseInt(formData.get("stale") as string),
     date: formData.get("date"),
+    news: formData.get("news"),
+    progressbar: formData.get("progressbar"),
   });
 
   if (!validatedFields.success) {
@@ -136,9 +147,13 @@ export async function saveSettings(
     };
   }
 
-  const { time, db, images, stale, date } = validatedFields.data;
+  const { time, db, images, stale, date, news, progressbar } =
+    validatedFields.data;
 
-  await saveConfig({ time, db, images, stale, date }, "general");
+  await saveConfig(
+    { time, db, images, stale, date, news, progressbar },
+    "general",
+  );
 
   revalidatePath("/dashboard/settings");
   redirect("/dashboard/settings");

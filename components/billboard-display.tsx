@@ -1,7 +1,7 @@
 "use client";
 
 import ContentDisplay from "@/components/content-display";
-import type { ContentType } from "@/lib/definitions";
+import type { ContentType, ProgressbarTypes } from "@/lib/definitions";
 import { getScraperData } from "@/lib/scraper";
 import { getWeatherData } from "@/lib/weather";
 import { ProgressBar, ProgressBarNew } from "@/ui/progress-bar";
@@ -13,11 +13,13 @@ export default function BillboardDisplay({
   location,
   interval,
   stale,
+  progressbar,
 }: {
   active: boolean;
   location: string;
   interval: number;
   stale: number;
+  progressbar: ProgressbarTypes;
 }) {
   const [contentItems, setContentItems] = useState<ContentType[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -38,11 +40,9 @@ export default function BillboardDisplay({
 
         // Fetch weather data
         const weatherData = await getWeatherData(location);
-        console.log("Weather data:", weatherData);
 
         // Fetch scraper data
         const scraperData = await getScraperData();
-        console.log("Scraper data:", scraperData);
 
         if (!scraperData || scraperData.length === 0) {
           console.warn("No scraper data found");
@@ -146,15 +146,22 @@ export default function BillboardDisplay({
         </motion.main>
       </AnimatePresence>
       <footer>
-        {!isLoading && !error && contentItems.length > 0 && (
-          <div className="p-6">
-            <ProgressBar progress={progress} interval={interval} />
-            <ProgressBarNew
+        {progressbar !== "None" &&
+          !isLoading &&
+          !error &&
+          contentItems.length > 0 && (
+            <div className="p-6">
+              <ProgressBar
+                progress={progress}
+                interval={interval}
+                option={progressbar}
+              />
+              {/* <ProgressBarNew
               timeRemaining={timeRemaining}
               totalTime={interval}
-            />
-          </div>
-        )}
+            /> */}
+            </div>
+          )}
       </footer>
     </>
   );
