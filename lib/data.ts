@@ -254,10 +254,56 @@ export async function fetchScrapersData() {
   }
 }
 
+export async function fetchNewsPages(query: string) {
+  try {
+    const data = await sql`SELECT COUNT(*)
+      from news
+      WHERE
+        title ILIKE ${`%${query}%`} OR
+        content ILIKE ${`%${query}%`} OR
+        show_until::text ILIKE ${`%${query}%`} OR
+        icon ILIKE ${`%${query}%`}
+      `;
+
+    const totalPages = Math.ceil(Number(data[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch total number of news pages.");
+  }
+}
+
+export async function fetchFilteredNews(query: string, currentPage: number) {
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const news = await sql<NewsData[]>`
+      SELECT
+        id,
+        title,
+        content,
+        show_until,
+        icon
+      FROM news
+      WHERE
+        title ILIKE ${`%${query}%`} OR
+        content ILIKE ${`%${query}%`} OR
+        show_until::text ILIKE ${`%${query}%`} OR
+        icon ILIKE ${`%${query}%`}
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+      `;
+
+    return news;
+  } catch (error) {
+    console.error("Database Error: ", error);
+    throw new Error("Failed to fetch filtered news.");
+  }
+}
+
 export async function fetchNews() {
   try {
     const news = await sql<NewsData[]>`
-    SELECT id, title, content
+    SELECT id, title, content, icon
     FROM news
     WHERE (show_until IS NULL OR show_until > NOW())
     `;
