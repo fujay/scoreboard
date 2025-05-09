@@ -105,7 +105,42 @@ export default function DashboardSkeleton() {
   );
 }
 
-export function TableRowSkeleton() {
+export function TableRowNewsSkeleton() {
+  return (
+    <tr className="w-full border-b border-gray-100 last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg">
+      {/* Icon */}
+      <td className="px-3 py-3 whitespace-nowrap">
+        <Skeleton className="h-6 w-6 rounded bg-gray-100"></Skeleton>
+      </td>
+      {/* Title */}
+      <td className="px-3 py-3 whitespace-nowrap">
+        <Skeleton className="h-6 w-32 rounded bg-gray-100"></Skeleton>
+      </td>
+      {/* Content */}
+      <td className="px-3 py-3 whitespace-nowrap">
+        <Skeleton className="h-6 w-16 rounded bg-gray-100"></Skeleton>
+      </td>
+      {/* Show until */}
+      <td className="px-3 py-3 whitespace-nowrap">
+        <Skeleton className="h-6 w-16 rounded bg-gray-100"></Skeleton>
+      </td>
+      {/* Status */}
+      <td className="px-3 py-3 whitespace-nowrap">
+        <Skeleton className="h-6 w-16 rounded bg-gray-100"></Skeleton>
+      </td>
+
+      {/* Actions */}
+      <td className="py-3 pr-3 pl-6 whitespace-nowrap">
+        <div className="flex justify-end gap-3">
+          <Skeleton className="h-[38px] w-[38px] rounded bg-gray-100"></Skeleton>
+          <Skeleton className="h-[38px] w-[38px] rounded bg-gray-100"></Skeleton>
+        </div>
+      </td>
+    </tr>
+  );
+}
+
+export function TableRowScrapperSkeleton() {
   return (
     <tr className="w-full border-b border-gray-100 last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg">
       {/* URL */}
@@ -204,12 +239,66 @@ export function InvoicesTableSkeleton() {
               </tr>
             </thead>
             <tbody className="bg-white">
-              <TableRowSkeleton />
-              <TableRowSkeleton />
-              <TableRowSkeleton />
-              <TableRowSkeleton />
-              <TableRowSkeleton />
-              <TableRowSkeleton />
+              <TableRowScrapperSkeleton />
+              <TableRowScrapperSkeleton />
+              <TableRowScrapperSkeleton />
+              <TableRowScrapperSkeleton />
+              <TableRowScrapperSkeleton />
+              <TableRowScrapperSkeleton />
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function NewsTableSkeleton() {
+  return (
+    <div className="mt-6 flow-root">
+      <div className="inline-block min-w-full align-middle">
+        <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+          <div className="md:hidden">
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+          </div>
+          <table className="hidden min-w-full text-gray-900 md:table">
+            <thead className="rounded-lg text-left text-sm font-normal">
+              <tr>
+                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+                  Icon
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Title
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Content
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Show until
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Status
+                </th>
+                <th
+                  scope="col"
+                  className="relative pt-2 pr-6 pb-4 pl-3 sm:pr-6"
+                >
+                  <span className="sr-only">Edit</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white">
+              <TableRowNewsSkeleton />
+              <TableRowNewsSkeleton />
+              <TableRowNewsSkeleton />
+              <TableRowNewsSkeleton />
+              <TableRowNewsSkeleton />
+              <TableRowNewsSkeleton />
             </tbody>
           </table>
         </div>
