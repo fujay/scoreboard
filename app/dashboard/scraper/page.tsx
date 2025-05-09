@@ -4,7 +4,7 @@ import Pagination from "@/ui/pagination";
 import { CreateScraper } from "@/ui/scraper/buttons";
 import Table from "@/ui/scraper/table";
 import Search from "@/ui/search";
-import { InvoicesTableSkeleton } from "@/ui/skeletons";
+import { ScraperTableSkeleton } from "@/ui/skeletons";
 import { Metadata } from "next";
 import { Suspense } from "react";
 
@@ -33,7 +33,7 @@ export default async function Page(props: {
         <Search placeholder="Search scrapers..." />
         <CreateScraper />
       </div>
-      <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
+      <Suspense key={query + currentPage} fallback={<ScraperTableSkeleton />}>
         <Table query={query} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
