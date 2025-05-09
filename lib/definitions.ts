@@ -17,7 +17,17 @@ export type NewsData = {
   title: string;
   content: string;
   show_until: string;
+  icon: NewsIcons;
 };
+
+export type NewsIcons =
+  | "alarm-clock"
+  | "bell"
+  | "circle-alert"
+  | "circle-help"
+  | "info"
+  | "megaphone"
+  | "triangle-alert";
 
 export type Scraper = {
   id: string;
