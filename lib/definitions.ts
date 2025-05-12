@@ -3,6 +3,17 @@
  * It describes the shape of the data, and what data type each property should accept.
  */
 
+import {
+  AlarmClock,
+  Bell,
+  CircleAlert,
+  CircleHelp,
+  Info,
+  LucideIcon,
+  Megaphone,
+  TriangleAlert,
+} from "lucide-react";
+
 export type User = {
   id: string;
   name: string;
@@ -28,6 +39,16 @@ export type NewsIcons =
   | "info"
   | "megaphone"
   | "triangle-alert";
+
+export const NewsIconsMapping: { name: NewsIcons; icon: LucideIcon }[] = [
+  { name: "alarm-clock", icon: AlarmClock },
+  { name: "bell", icon: Bell },
+  { name: "circle-alert", icon: CircleAlert },
+  { name: "circle-help", icon: CircleHelp },
+  { name: "info", icon: Info },
+  { name: "megaphone", icon: Megaphone },
+  { name: "triangle-alert", icon: TriangleAlert },
+];
 
 export type Scraper = {
   id: string;
