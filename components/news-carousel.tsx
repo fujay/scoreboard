@@ -3,6 +3,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import type { NewsData, Settings } from "@/lib/definitions";
 import { getNewsData } from "@/lib/news";
+import { IconMapping } from "@/ui/news/news-icon";
 import { Info } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -72,8 +73,8 @@ export default function NewsCarousel({
       <Card className="bg-white shadow-md">
         <CardContent className="p-4">
           <div className="flex items-start space-x-3">
-            <div className="rounded-full bg-emerald-100 p-2">
-              <Info className="h-6 w-6 text-emerald-600" />
+            <div className="rounded-full bg-destructive p-2 text-primary">
+              <IconMapping icon={currentNews.icon} />
             </div>
             <div>
               <h3 className="text-lg font-bold">{currentNews.title}</h3>
@@ -88,7 +89,7 @@ export default function NewsCarousel({
         {news.map((_, index) => (
           <div
             key={index}
-            className={`h-1.5 w-1.5 rounded-full ${index === currentNewsIndex ? "bg-emerald-500" : "bg-slate-300"}`}
+            className={`h-1.5 w-1.5 rounded-full ${index === currentNewsIndex ? "bg-primary" : "bg-primary/30"}`}
           />
         ))}
       </div>
