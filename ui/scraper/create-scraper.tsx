@@ -137,7 +137,7 @@ export default function ScraperForm() {
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 aria-label="The URL of the website to scrape"
                 aria-describedby="url-error"
-                // required
+                required
               />
               <LinkIcon className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
@@ -171,7 +171,7 @@ export default function ScraperForm() {
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 aria-label="The selector for the title element on the website, e.g. #c18317 > h2."
                 aria-describedby="titleSelector-error"
-                // required
+                required
               />
               <LetterText className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
@@ -202,7 +202,7 @@ export default function ScraperForm() {
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 aria-label="The selector for the data element on the website, e.g. #c18317 > h2."
                 aria-describedby="selectors-error"
-                // required
+                required
               />
               <TextSelect className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
@@ -235,6 +235,7 @@ export default function ScraperForm() {
 
                 --Only Puppeteer works with screenshots!`}
               aria-describedby="scraper-error"
+              required
             >
               <option value="" disabled>
                 --Select a scraper option--
