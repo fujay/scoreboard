@@ -20,7 +20,7 @@ export default function IconSelector({
       {NewsIconsMapping.map((icon) => (
         <div
           key={icon.name}
-          className={`cursor-pointer rounded-md p-3 transition-colors hover:bg-primary/10 ${selectedIcon === icon.name ? "bg-primary/30 hover:bg-primary/30" : ""}`}
+          className={`cursor-pointer rounded-md p-3 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color ${selectedIcon === icon.name ? "bg-primary-color/80" : "hover:bg-primary-color/30"}`}
           onClick={() => onSelectedIcon(icon.name)}
           tabIndex={0}
         >
