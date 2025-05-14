@@ -70,6 +70,7 @@
   --chart-4: hsl(43 74% 66%);
   --chart-5: hsl(27 87% 67%);
   --radius: 0.6rem;
+  --primary-color: hsl(221.2 83.2% 53.3%);
 }
 
 .dark {
@@ -97,6 +98,7 @@
   --chart-3: hsl(30 80% 55%);
   --chart-4: hsl(280 65% 60%);
   --chart-5: hsl(340 75% 55%);
+  --primary-color: hsl(221.2 83.2% 53.3%);
 }
 
 @theme inline {
@@ -128,6 +130,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --color-primary-color: var(--primary-color);
 }
 
 @layer base {
@@ -139,12 +142,12 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 input[type="number"] {
   -moz-appearance: textfield;
