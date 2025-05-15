@@ -455,7 +455,7 @@ export async function updateScraper(
      `;
     } catch (error) {
       return {
-        message: `${error}: Database Error: Failed to update Scraper.`,
+        message: `Database Error: Failed to update Scraper. (${error}).`,
       };
     }
   }
@@ -506,7 +506,38 @@ export async function updateNews(
   id: string,
   prevState: StateNews,
   formData: FormData,
-) {}
+) {
+  const validatedFields = FormSchemaNews.safeParse({
+    title: formData.get("title"),
+    content: formData.get("content"),
+    icon: formData.get("icon"),
+    showUntil: formData.get("showUntil"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Missing Fields. Failed to update News.",
+    };
+  }
+
+  const { title, content, icon, showUntil } = validatedFields.data;
+
+  try {
+    await sql`
+      UPDATE news
+      SET title = ${title}, content = ${content}, icon = ${icon}, show_until = ${showUntil}
+      WHERE id = ${id}
+    `;
+  } catch (error) {
+    return {
+      message: `Database Error: Failed to update News. (${error}).`,
+    };
+  }
+
+  revalidatePath("/dashboard/news");
+  redirect("/dashboard/news");
+}
 
 export async function deleteNews(id: string) {
   try {
