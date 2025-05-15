@@ -290,6 +290,7 @@ export async function fetchFilteredNews(query: string, currentPage: number) {
         content ILIKE ${`%${query}%`} OR
         show_until::text ILIKE ${`%${query}%`} OR
         icon ILIKE ${`%${query}%`}
+      ORDER BY show_until DESC
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
       `;
 
@@ -314,6 +315,27 @@ export async function fetchNews() {
     throw new Error("Failed to fetch news data.");
   }
 }
+
+export async function fetchNewsById(id: string) {
+  try {
+    const news = await sql<NewsData[]>`
+      SELECT
+        id,
+        title,
+        content,
+        show_until,
+        icon
+      FROM news
+      WHERE id = ${id};
+    `;
+
+    return news[0];
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch news.");
+  }
+}
+
 export async function fetchTweets() {
   try {
     const tweets = await sql<Tweet[]>`SELECT * FROM tweets`;
