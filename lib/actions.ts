@@ -44,6 +44,24 @@ const FormSchemaWeather = z.object({
   graphic: z.enum(["OpenWeatherMap", "Lucide Icons", "Animated", "3D"]),
 });
 
+const FormSchemaNews = z.object({
+  title: z.string().min(2),
+  content: z.string().min(2),
+  icon: z.enum([
+    "alarm-clock",
+    "bell",
+    "circle-alert",
+    "circle-help",
+    "info",
+    "megaphone",
+    "triangle-alert",
+  ]),
+  showUntil: z.preprocess(
+    (val) => (val === "" || val === undefined ? null : val),
+    z.string().date().nullable(),
+  ),
+});
+
 const FormSchemaScraper = z.object({
   url: z.string().url(),
   titleSelector: z.string().trim().min(2),
@@ -102,6 +120,22 @@ export type StateWeather = {
     qrcode?: string[];
   };
   message?: string | null;
+};
+
+export type StateNews = {
+  errors?: {
+    title?: string[];
+    content?: string[];
+    icon?: string[];
+    showUntil?: string[];
+  };
+  message?: string | null;
+  inputs?: {
+    title?: string;
+    content?: string;
+    icon?: string;
+    showUntil?: string;
+  };
 };
 
 export type StateScraper = {
@@ -428,6 +462,60 @@ export async function updateScraper(
 
   revalidatePath("/dashboard/scraper");
   redirect("/dashboard/scraper");
+}
+
+export async function createNews(prevState: StateNews, formData: FormData) {
+  const validatedFields = FormSchemaNews.safeParse({
+    title: formData.get("title"),
+    content: formData.get("content"),
+    icon: formData.get("icon"),
+    showUntil: formData.get("showUntil"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Missing Fields. Failed to Create News.",
+      inputs: {
+        title: formData.get("title") as string,
+        content: formData.get("content") as string,
+        icon: formData.get("icon") as string,
+        showUntil: formData.get("showUntil") as string,
+      },
+    };
+  }
+
+  const { title, content, icon, showUntil } = validatedFields.data;
+
+  try {
+    await sql`
+      INSERT INTO news (title, content, icon, show_until)
+      VALUES (${title}, ${content}, ${icon}, ${showUntil})
+    `;
+  } catch (error) {
+    return {
+      message: `Database Error: Failed to Create News. (${error}).`,
+    };
+  }
+
+  revalidatePath("/dashboard/news");
+  redirect("/dashboard/news");
+}
+
+export async function updateNews(
+  id: string,
+  prevState: StateNews,
+  formData: FormData,
+) {}
+
+export async function deleteNews(id: string) {
+  try {
+    await sql`DELETE FROM news WHERE id = ${id}`;
+
+    revalidatePath("/dashboard/news");
+  } catch (error) {
+    console.error("Error deleting news:", error);
+  }
 }
 
 export async function createX(prevState: StateX, formData: FormData) {
