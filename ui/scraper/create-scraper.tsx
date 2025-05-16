@@ -466,7 +466,7 @@ export default function ScraperForm() {
                 height={600}
               />
             ) : (
-              <pre className="mt-2 text-xs">{previewResult.data}</pre>
+              <p className="mt-2 text-xs">{previewResult.data}</p>
             )}
           </div>
         )}

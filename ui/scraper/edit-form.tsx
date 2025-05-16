@@ -391,7 +391,7 @@ export default function EditScraperForm({ scraper }: { scraper: ScraperForm }) {
           {scraper.format === "Screenshot" ? (
             <Image src={scraper.data} alt="Preview" width={800} height={600} />
           ) : (
-            <pre className="mt-2 text-xs">{scraper.data}</pre>
+            <p className="mt-2 text-xs">{scraper.data}</p>
           )}
         </div>
       </div>
