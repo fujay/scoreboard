@@ -32,6 +32,7 @@ export default function ScraperForm() {
   const initialState: StateScraper = {
     message: null,
     errors: {},
+    inputs: {},
   };
 
   const [format, setFormat] = useState<string>("Text");
@@ -134,6 +135,7 @@ export default function ScraperForm() {
                 type="url"
                 placeholder="https://www.frankfurt-university.de/"
                 title="The URL of the website to scrape"
+                defaultValue={state.inputs?.url}
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 aria-label="The URL of the website to scrape"
                 aria-describedby="url-error"
@@ -168,6 +170,7 @@ export default function ScraperForm() {
                 type="text"
                 placeholder="#c18317 > h2 or Semestertermine"
                 title="The selector for the title element on the website, e.g. #c18317 > h2."
+                defaultValue={state.inputs?.titleSelector}
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 aria-label="The selector for the title element on the website, e.g. #c18317 > h2."
                 aria-describedby="titleSelector-error"
@@ -199,6 +202,7 @@ export default function ScraperForm() {
                 type="text"
                 placeholder="#c18317 > h2"
                 title="The selector for the data element on the website, e.g. #c18317 > h2."
+                defaultValue={state.inputs?.selectors}
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 aria-label="The selector for the data element on the website, e.g. #c18317 > h2."
                 aria-describedby="selectors-error"
@@ -227,6 +231,7 @@ export default function ScraperForm() {
               id="scraper"
               name="scraper"
               onChange={onChangeScraper}
+              defaultValue={state.inputs?.scraper}
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               title={`The scraper tool for parsing HTML.
                 -Cheerio is fast, flexible, and elegant library for parsing and manipulating HTML and XML.
@@ -330,6 +335,7 @@ export default function ScraperForm() {
                   name="qrcode"
                   type="checkbox"
                   title="Activate to show the QR code for the website url"
+                  defaultChecked={state.inputs?.qrcode}
                   className="h-4 w-4 cursor-pointer border-gray-300 focus:ring-2"
                   aria-describedby="qrcode-error"
                   aria-label="Activate to show the QR code for the website url"
@@ -375,7 +381,7 @@ export default function ScraperForm() {
                 min="100"
                 max="2000"
                 list="defaultWidths"
-                defaultValue={1920}
+                defaultValue={state.inputs?.width || 1920}
                 placeholder="1920"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 title="The page width in CSS pixels."
@@ -418,7 +424,7 @@ export default function ScraperForm() {
                 min="100"
                 max="2000"
                 list="defaultHeights"
-                defaultValue={1080}
+                defaultValue={state.inputs?.height || 1080}
                 placeholder="1080"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 title="The page height in CSS pixels."

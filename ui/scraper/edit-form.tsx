@@ -25,7 +25,7 @@ import { ChangeEvent, useActionState, useState } from "react";
 export default function EditScraperForm({ scraper }: { scraper: ScraperForm }) {
   const updateScraperWithId = updateScraper.bind(null, scraper.id);
 
-  const initialState: StateScraper = {
+  const initialState: Omit<StateScraper, "inputs"> = {
     message: null,
     errors: {},
   };

@@ -150,6 +150,16 @@ export type StateScraper = {
     qrcode?: string[];
   };
   message?: string | null;
+  inputs?: {
+    url?: string;
+    titleSelector?: string;
+    selectors?: string;
+    scraper?: string;
+    format?: string;
+    width?: number;
+    height?: number;
+    qrcode?: boolean;
+  };
 };
 
 export type StateX = {
@@ -235,6 +245,16 @@ export async function createScraper(
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: "Missing Fields. Failed to Create Scraper.",
+      inputs: {
+        url: formData.get("url") as string,
+        titleSelector: formData.get("titleSelector") as string,
+        selectors: formData.get("selectors") as string,
+        scraper: formData.get("scraper") as string,
+        format: formData.get("format") as string,
+        width: Number(formData.get("width")),
+        height: Number(formData.get("height")),
+        qrcode: formData.get("qrcode") === "on",
+      },
     };
   }
 
