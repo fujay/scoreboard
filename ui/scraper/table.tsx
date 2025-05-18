@@ -26,7 +26,7 @@ export default async function ScrapersTable({
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
-          <div className="md:hidden">
+          <div className="lg:hidden">
             {scrapers?.map((scraper) => (
               <div
                 key={scraper.id}
@@ -34,12 +34,10 @@ export default async function ScrapersTable({
               >
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
-                    <div className="mb-2 items-center">
-                      <p>{scraper.url}</p>
+                    <div className="mb-2 text-sm">
+                      <p title={scraper.url}>{scraper.url}</p>
                     </div>
-                    <p className="text-sm text-gray-500">
-                      {scraper.title_selector}
-                    </p>
+                    <p title={scraper.title_selector}>{scraper.title}</p>
                   </div>
                   <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs text-white">
                     {scraper.format === "Text" ? (
@@ -57,19 +55,24 @@ export default async function ScrapersTable({
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
-                    <p className="text-xl font-medium">{scraper.selectors}</p>
+                    <p
+                      title={scraper.selectors}
+                      className="line-clamp-3 font-medium"
+                    >
+                      {scraper.data}
+                    </p>
                     <p>{formatDateToLocal(scraper.created_at)}</p>
-                  </div>
-                  <div className="flex justify-end gap-2">
-                    <UpdateScraper id={scraper.id} />
-                    <DeleteScraper id={scraper.id} />
+                    <div className="flex justify-end gap-2">
+                      <UpdateScraper id={scraper.id} />
+                      <DeleteScraper id={scraper.id} />
+                    </div>
                   </div>
                 </div>
               </div>
             ))}
           </div>
-          <table className="hidden min-w-full text-gray-900 md:table">
-            <thead className="rounded-lg text-left text-sm font-normal">
+          <table className="hidden min-w-full text-gray-900 lg:table">
+            <thead className="rounded-lg text-left font-normal max-lg:text-sm">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
                   URL
@@ -84,7 +87,7 @@ export default async function ScrapersTable({
                   Format
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Date
+                  Created
                 </th>
                 <th scope="col" className="relative py-3 pr-3 pl-6">
                   <span className="sr-only">Edit</span>
@@ -97,18 +100,16 @@ export default async function ScrapersTable({
                   key={scraper.id}
                   className="w-full border-b py-3 text-sm even:bg-muted last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
-                  <td className="py-3 pr-3 pl-6 whitespace-nowrap">
-                    <div className="flex items-center gap-3">
-                      <p>{scraper.url}</p>
-                    </div>
+                  <td title={scraper.url} className="py-3 pr-3 pl-6">
+                    {scraper.url}
                   </td>
-                  <td className="px-3 py-3 whitespace-nowrap">
-                    {scraper.title_selector}
+                  <td title={scraper.title_selector} className="px-3 py-3">
+                    {scraper.title}
                   </td>
-                  <td className="px-3 py-3 whitespace-nowrap">
-                    {scraper.selectors}
+                  <td title={scraper.selectors} className="px-3 py-3">
+                    {scraper.data}
                   </td>
-                  <td className="px-3 py-3 whitespace-nowrap">
+                  <td className="px-3 py-3">
                     {
                       <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs text-white">
                         {scraper.format === "Text" ? (
@@ -125,10 +126,10 @@ export default async function ScrapersTable({
                       </span>
                     }
                   </td>
-                  <td className="px-3 py-3 whitespace-nowrap">
+                  <td className="px-3 py-3">
                     {formatDateToLocal(scraper.created_at)}
                   </td>
-                  <td className="py-3 pr-3 pl-6 whitespace-nowrap">
+                  <td className="py-3 pr-3 pl-6">
                     <div className="flex justify-end gap-3">
                       <UpdateScraper id={scraper.id} />
                       <DeleteScraper id={scraper.id} />

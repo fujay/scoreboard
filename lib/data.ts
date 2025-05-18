@@ -1,15 +1,14 @@
 import postgres from "postgres";
+import { readKeyConfig } from "./config";
 import {
   NewsData,
   Scraper,
   ScraperData,
   ScraperForm,
-  ScrapersTable,
   Settings,
   Tweet,
   TweetTable,
 } from "./definitions";
-import { readKeyConfig } from "./config";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
@@ -122,7 +121,7 @@ export async function fetchFilteredScrapers(
 
     //   return filteredScrapers.slice(start, end);
     // } else if (storage.db === "Remote") {
-    const scrapers = await sql<ScrapersTable[]>`
+    const scrapers = await sql<ScraperForm[]>`
       SELECT
         scrapers.id,
         scrapers.url,

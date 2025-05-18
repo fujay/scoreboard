@@ -86,20 +86,6 @@ export type ScraperData = {
   date: string;
 };
 
-export type ScrapersTable = {
-  id: string;
-  scraper_data_id: string;
-  url: string;
-  title_selector: string;
-  selectors: string;
-  scraper: ScraperTypes;
-  format: ScraperFormats;
-  width: number;
-  height: number;
-  qrcode: boolean;
-  created_at: string;
-};
-
 export type ScraperForm = {
   id: string;
   scraper_data_id: string;
