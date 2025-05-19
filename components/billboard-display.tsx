@@ -24,7 +24,6 @@ export default function BillboardDisplay({
 }) {
   const [contentItems, setContentItems] = useState<ContentType[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [timeRemaining, setTimeRemaining] = useState(interval);
   const [progress, setProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -87,32 +86,20 @@ export default function BillboardDisplay({
   useEffect(() => {
     if (isPaused || contentItems.length === 0) return;
 
-    const timer = setInterval(() => {
-      setTimeRemaining((prevTime) => {
-        if (prevTime <= 1) {
-          // Move to the next content item //(prevIndex + 1) % contentItems.length);
-          setCurrentIndex((prevIndex) =>
-            prevIndex === contentItems.length - 1 ? 0 : prevIndex + 1,
-          );
-          setProgress(0); // Reset progress bar
-          return interval; // Reset timer
-        }
-        return prevTime - 1;
-      });
-    }, 1000);
-
     const progressInterval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) return 100;
-        return prev + 1;
+      setProgress((prevProgress) => {
+        if (prevProgress >= 100) {
+          setCurrentIndex((prevIndex) => (prevIndex + 1) % contentItems.length);
+          return 0;
+        }
+        return prevProgress + 1;
       });
     }, progressUpdateInterval);
 
     return () => {
-      clearInterval(timer);
       clearInterval(progressInterval);
     };
-  }, [contentItems.length, interval, progressUpdateInterval, isPaused]);
+  }, [contentItems.length, isPaused, progressUpdateInterval]);
 
   // Current content to display
   const currentContent = contentItems[currentIndex];
