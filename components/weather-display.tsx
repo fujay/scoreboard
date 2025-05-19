@@ -92,7 +92,7 @@ export default function WeatherDisplay({ data }: { data: WeatherData }) {
               </CardTitle>
             </CardHeader>
             <CardContent className="flex items-center gap-2">
-              <p className="text-3xl font-semibold">{data.tempMax}°C /</p>
+              <p className="text-3xl font-semibold">{data.tempMax}°C / </p>
               <p className="mt-4 text-xl font-semibold">{data.tempMin}°C</p>
             </CardContent>
           </Card>
