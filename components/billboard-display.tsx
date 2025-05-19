@@ -4,8 +4,9 @@ import ContentDisplay from "@/components/content-display";
 import type { ContentType, ProgressbarTypes } from "@/lib/definitions";
 import { getScraperData } from "@/lib/scraper";
 import { getWeatherData } from "@/lib/weather";
-import { ProgressBar, ProgressBarNew } from "@/ui/progress-bar";
+import { ProgressBar } from "@/ui/progress-bar";
 import { AnimatePresence, motion } from "framer-motion";
+import { Play } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function BillboardDisplay({
@@ -27,6 +28,7 @@ export default function BillboardDisplay({
   const [progress, setProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isPaused, setIsPaused] = useState(false);
 
   const transitionIntervalMs = interval * 1000;
   const progressUpdateInterval = transitionIntervalMs / 100;
@@ -83,7 +85,7 @@ export default function BillboardDisplay({
 
   // Handle content rotation and progress bar
   useEffect(() => {
-    if (contentItems.length === 0) return;
+    if (isPaused || contentItems.length === 0) return;
 
     const timer = setInterval(() => {
       setTimeRemaining((prevTime) => {
@@ -110,7 +112,7 @@ export default function BillboardDisplay({
       clearInterval(timer);
       clearInterval(progressInterval);
     };
-  }, [contentItems.length, interval, progressUpdateInterval]);
+  }, [contentItems.length, interval, progressUpdateInterval, isPaused]);
 
   // Current content to display
   const currentContent = contentItems[currentIndex];
@@ -145,7 +147,15 @@ export default function BillboardDisplay({
           )}
         </motion.main>
       </AnimatePresence>
-      <footer>
+      <footer
+        className="cursor-pointer"
+        onClick={() => setIsPaused((prev) => !prev)}
+      >
+        {isPaused ? (
+          <p className="flex justify-center">
+            <Play className="size-5 text-primary" />
+          </p>
+        ) : null}
         {progressbar !== "None" &&
           !isLoading &&
           !error &&
@@ -156,10 +166,6 @@ export default function BillboardDisplay({
                 interval={interval}
                 option={progressbar}
               />
-              {/* <ProgressBarNew
-              timeRemaining={timeRemaining}
-              totalTime={interval}
-            /> */}
             </div>
           )}
       </footer>

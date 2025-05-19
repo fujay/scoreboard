@@ -22,7 +22,7 @@ export function ProgressBar({ progress, interval, option }: ProgressBarProps) {
       {(option === "ProgressBar" || option === "ProgressBar and Countdown") && (
         <div className={`h-1.5 overflow-hidden rounded-full bg-gray-200`}>
           <motion.div
-            className="h-full bg-blue-500"
+            className="h-full bg-primary"
             initial={{ width: "0%" }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.1, ease: "linear" }}
