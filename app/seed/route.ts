@@ -60,6 +60,21 @@ async function createScraperDataTable() {
   `;
 }
 
+async function createSocialMediaTable() {
+  await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS social_media (
+      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      title TEXT,
+      platform TEXT NOT NULL,
+      url TEXT NOT NULL,
+      qrcode BOOLEAN NOT NULL,
+      show_until TEXT NOT NULL
+    );
+  `;
+}
+
 export async function GET() {
   try {
     const result = await sql.begin((sql) => [
@@ -67,6 +82,7 @@ export async function GET() {
       createScraperDataTable(),
       createScraperTable(),
       createNewsTable(),
+      createSocialMediaTable(),
     ]);
 
     return Response.json({ message: "Database created successfully" });
