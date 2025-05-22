@@ -21,7 +21,10 @@ export type User = {
   password: string;
 };
 
-export type ContentType = { type: string; data: WeatherData | ScraperData };
+export type ContentType = {
+  type: string;
+  data: WeatherData | ScraperData | SocialMediaData;
+};
 
 export type NewsData = {
   id: string;
@@ -101,6 +104,15 @@ export type ScraperForm = {
   title: string;
   data: string;
   date: string;
+};
+
+export type SocialMediaData = {
+  id: string;
+  title: string;
+  platform: SocialMediaTypes;
+  url: string;
+  qrcode: boolean;
+  show_until: string;
 };
 
 export type Tweet = {
@@ -241,6 +253,15 @@ export type WeatherGraphicTypes =
   | "Lucide Icons"
   | "Animated"
   | "3D";
+
+export type SocialMediaTypes =
+  | "Facebook"
+  | "Instagram"
+  | "LinkedIn"
+  | "Pinterest"
+  | "TikTok"
+  | "X"
+  | "YouTube";
 
 export interface Settings {
   general: {
