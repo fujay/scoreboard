@@ -1,6 +1,5 @@
 "use client";
 
-import XIcon from "@/ui/x-icon";
 import {
   CalendarDaysIcon,
   CloudIcon,
@@ -12,7 +11,7 @@ import {
   RssIcon,
   SunIcon,
 } from "@heroicons/react/24/outline";
-import { FileVideo } from "lucide-react";
+import { FileVideo, MessageSquareMoreIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -24,7 +23,11 @@ const links = [
   { name: "Message", href: "/dashboard/message", icon: DocumentTextIcon },
   { name: "RSS", href: "/dashboard/rss", icon: RssIcon },
   { name: "Scraper", href: "/dashboard/scraper", icon: GlobeAltIcon },
-  { name: "Twitter", href: "/dashboard/x", icon: XIcon },
+  {
+    name: "Social Media",
+    href: "/dashboard/socialmedia",
+    icon: MessageSquareMoreIcon,
+  },
   { name: "Weather", href: "/dashboard/weather", icon: SunIcon },
   { name: "Multimedia", href: "/dashboard/multimedia", icon: FileVideo },
   { name: "Calendar", href: "/dashboard/calendar", icon: CalendarDaysIcon },
