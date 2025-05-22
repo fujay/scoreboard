@@ -70,7 +70,7 @@ async function createSocialMediaTable() {
       platform TEXT NOT NULL,
       url TEXT NOT NULL,
       qrcode BOOLEAN NOT NULL,
-      show_until TEXT NOT NULL
+      show_until DATE
     );
   `;
 }
@@ -85,7 +85,7 @@ export async function GET() {
       createSocialMediaTable(),
     ]);
 
-    return Response.json({ message: "Database created successfully" });
+    return Response.json({ message: "Databases created successfully" });
   } catch (error) {
     return Response.json({ error }, { status: 500 });
   }
