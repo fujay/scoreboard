@@ -1,6 +1,12 @@
-import { ContentType, ScraperData, WeatherData } from "@/lib/definitions";
-import WeatherDisplay from "@/components/weather-display";
 import ScraperDisplay from "@/components/scraper-display";
+import SocialMediaDisplay from "@/components/social-media-display";
+import WeatherDisplay from "@/components/weather-display";
+import {
+  ContentType,
+  ScraperData,
+  SocialMediaData,
+  WeatherData,
+} from "@/lib/definitions";
 
 export default function ContentDisplay({ content }: { content: ContentType }) {
   return (
@@ -10,6 +16,8 @@ export default function ContentDisplay({ content }: { content: ContentType }) {
         <WeatherDisplay data={content.data as WeatherData} />
       ) : content.type === "scraper" ? (
         <ScraperDisplay data={content.data as ScraperData} />
+      ) : content.type === "social-media" ? (
+        <SocialMediaDisplay data={content.data as SocialMediaData} />
       ) : (
         <div className="text-2xl">No content to display</div>
       )}
