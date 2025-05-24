@@ -3,6 +3,7 @@
 import ContentDisplay from "@/components/content-display";
 import type { ContentType, ProgressbarTypes } from "@/lib/definitions";
 import { getScraperData } from "@/lib/scraper";
+import { getSocialMediaData } from "@/lib/social-media";
 import { getWeatherData } from "@/lib/weather";
 import { ProgressBar } from "@/ui/progress-bar";
 import { AnimatePresence, motion } from "framer-motion";
@@ -39,22 +40,28 @@ export default function BillboardDisplay({
         setIsLoading(true);
         setError(null);
 
-        // Fetch weather data
-        const weatherData = await getWeatherData(location);
+        let weatherData = null;
+        if (active) {
+          // Fetch weather data
+          weatherData = await getWeatherData(location);
+        }
 
         // Fetch scraper data
         const scraperData = await getScraperData();
 
-        if (!scraperData || scraperData.length === 0) {
-          console.warn("No scraper data found");
-        }
+        // Fetch social media data
+        const socialMediaData = await getSocialMediaData();
 
         // Combine content to a single array
         const allContent = [
-          { type: "weather", data: weatherData },
+          ...(weatherData ? [{ type: "weather", data: weatherData }] : []),
           ...scraperData.map((scraperDataItem) => ({
             type: "scraper",
             data: scraperDataItem,
+          })),
+          ...socialMediaData.map((socialMediaItem) => ({
+            type: "social-media",
+            data: socialMediaItem,
           })),
         ];
 
@@ -80,7 +87,7 @@ export default function BillboardDisplay({
     const refreshInterval = setInterval(loadInitialData, stale * 60 * 1000);
 
     return () => clearInterval(refreshInterval);
-  }, [location, stale]);
+  }, [active, location, stale]);
 
   // Handle content rotation and progress bar
   useEffect(() => {
