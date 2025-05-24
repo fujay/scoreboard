@@ -10,7 +10,7 @@ import Pagination from "@/ui/pagination";
 import { CreateX } from "@/ui/x/buttons";
 
 export const metadata: Metadata = {
-  title: "X Tweets",
+  title: "Social Media",
 };
 
 type Props = {
