@@ -6,6 +6,7 @@ import {
   ScraperData,
   ScraperForm,
   Settings,
+  SocialMediaData,
   Tweet,
   TweetTable,
 } from "./definitions";
@@ -332,6 +333,42 @@ export async function fetchNewsById(id: string) {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch news.");
+  }
+}
+
+export async function fetchSocialMedia() {
+  try {
+    const socialMedia = await sql<SocialMediaData[]>`
+    SELECT id, title, platform, url, qrcode
+    FROM social_media
+    WHERE (show_until IS NULL OR show_until > NOW())
+    `;
+
+    return socialMedia;
+  } catch (error) {
+    console.error("Database Error: ", error);
+    throw new Error("Failed to fetch social media data.");
+  }
+}
+
+export async function fetchSocialMediaById(id: string) {
+  try {
+    const socialMedia = await sql<SocialMediaData[]>`
+      SELECT
+        id,
+        title,
+        platform,
+        url,
+        qrcode,
+        show_until
+      FROM social_media
+      WHERE id = ${id};
+    `;
+
+    return socialMedia[0];
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch social media.");
   }
 }
 
