@@ -261,6 +261,7 @@ export type SocialMediaTypes =
   | "Pinterest"
   | "TikTok"
   | "X"
+  | "Tweet"
   | "YouTube";
 
 export interface Settings {
