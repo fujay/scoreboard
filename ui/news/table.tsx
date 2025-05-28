@@ -3,7 +3,7 @@ import { formatDateToLocal } from "@/lib/utils";
 import { DeleteNews, UpdateNews } from "@/ui/news/buttons";
 import { IconMapping } from "@/ui/news/news-icon";
 import { InfinityIcon } from "lucide-react";
-import NewsStatus from "./status";
+import NewsStatus from "@/ui/news/status";
 
 export default async function NewsTable({
   query,
