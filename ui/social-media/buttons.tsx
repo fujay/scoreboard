@@ -1,36 +1,39 @@
-import { deleteX } from "@/lib/actions";
+import { deleteSocialMedia } from "@/lib/actions";
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
-export function CreateX() {
+export function CreateSocialMedia() {
   return (
     <Link
-      href="/dashboard/x/create"
-      className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+      href="/dashboard/socialmedia/create"
+      className="flex h-10 items-center rounded-lg bg-primary-color px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
     >
-      <span className="hidden md:block">Create Invoice</span>{" "}
+      <span className="hidden md:block">Create Social Media</span>{" "}
       <PlusIcon className="h-5 md:ml-4" />
     </Link>
   );
 }
 
-export function UpdateX({ id }: { id: string }) {
+export function UpdateSocialMedia({ id }: { id: string }) {
   return (
     <Link
-      href={`/dashboard/x/${id}/edit`}
-      className="rounded-md border p-2 hover:bg-gray-100"
+      href={`/dashboard/socialmedia/${id}/edit`}
+      className="rounded-md border p-2 shadow hover:border-primary-color/50 hover:bg-primary-color/10 hover:text-primary-color hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
     >
       <PencilIcon className="w-5" />
     </Link>
   );
 }
 
-export function DeleteX({ id }: { id: string }) {
-  const deleteTweetWithId = deleteX.bind(null, id);
+export function DeleteSocialMedia({ id }: { id: string }) {
+  const deleteSocialMediaWithId = deleteSocialMedia.bind(null, id);
 
   return (
-    <form action={deleteTweetWithId}>
-      <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
+    <form action={deleteSocialMediaWithId}>
+      <button
+        type="submit"
+        className="cursor-pointer rounded-md border p-2 shadow hover:border-destructive/50 hover:bg-destructive-foreground hover:text-destructive hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-destructive"
+      >
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-5" />
       </button>
