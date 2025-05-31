@@ -336,6 +336,58 @@ export async function fetchNewsById(id: string) {
   }
 }
 
+export async function fetchSocialMediaPages(query: string) {
+  try {
+    const data = await sql`SELECT COUNT(*)
+      from social_media
+      WHERE
+        title ILIKE ${`%${query}%`} OR
+        platform ILIKE ${`%${query}%`} OR
+        url ILIKE ${`%${query}%`} OR
+        show_until::text ILIKE ${`%${query}%`}
+      `;
+
+    const totalPages = Math.ceil(Number(data[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch total number of social media pages.");
+  }
+}
+
+export async function fetchFilteredSocialMedia(
+  query: string,
+  currentPage: number,
+) {
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const socialMedia = await sql<SocialMediaData[]>`
+      SELECT
+        id,
+        title,
+        platform,
+        url,
+        qrcode,
+        show_until
+
+      FROM social_media
+      WHERE
+        title ILIKE ${`%${query}%`} OR
+        platform ILIKE ${`%${query}%`} OR
+        url ILIKE ${`%${query}%`} OR
+        show_until::text ILIKE ${`%${query}%`}
+      ORDER BY show_until DESC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+      `;
+
+    return socialMedia;
+  } catch (error) {
+    console.error("Database Error: ", error);
+    throw new Error("Failed to fetch filtered news.");
+  }
+}
+
 export async function fetchSocialMedia() {
   try {
     const socialMedia = await sql<SocialMediaData[]>`
@@ -369,52 +421,5 @@ export async function fetchSocialMediaById(id: string) {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch social media.");
-  }
-}
-
-export async function fetchTweets() {
-  try {
-    const tweets = await sql<Tweet[]>`SELECT * FROM tweets`;
-    return tweets;
-  } catch (error) {
-    console.error("Database Error: ", error);
-    throw new Error("Failed to fetch tweet data.");
-  }
-}
-
-export async function fetchFilteredTweets(query: string, currentPage: number) {
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-
-  try {
-    const tweets = await sql<TweetTable[]>`
-    SELECT * FROM tweets WHERE content ILIKE ${`%${query}%`} LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}`;
-    return tweets;
-  } catch (error) {
-    console.error("Database Error: ", error);
-    throw new Error("Failed to fetch tweets.");
-  }
-}
-
-export async function fetchTweetsPages(query: string) {
-  try {
-    const data =
-      await sql`SELECT COUNT(*) FROM tweets WHERE content ILIKE ${`%${query}%`}`;
-
-    const totalPages = Math.ceil(Number(data[0].count) / ITEMS_PER_PAGE);
-    return totalPages;
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch total number of tweets.");
-  }
-}
-
-export async function fetchTweetById(id: string) {
-  try {
-    const tweet = await sql<Tweet[]>`SELECT * FROM tweets WHERE id = ${id}`;
-
-    return tweet;
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch tweet.");
   }
 }
