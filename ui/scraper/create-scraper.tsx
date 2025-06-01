@@ -79,6 +79,8 @@ export default function ScraperForm() {
       return;
     }
 
+    setPreviewResult({ title: "Loading preview...", data: "" });
+
     if (format === "Text") {
       let result;
       if (scraper === "Cheerio") {
