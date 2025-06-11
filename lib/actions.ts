@@ -80,23 +80,24 @@ const FormSchemaScraper = z.object({
   qrcode: z.coerce.boolean(),
 });
 
-const FormSchemaTweet = z.object({
-  id: z.string(),
-  tweetId: z
-    .string()
-    .min(5, { message: "ID must be at least 5 characters long." }),
-  text: z.string(),
-  createdAt: z.string().datetime(),
-  name: z.string(),
-  screenName: z.string(),
-  showUntil: z.string().datetime(),
-});
-
-const CreateX = FormSchemaTweet.omit({
-  id: true,
-});
-const UpdateX = FormSchemaTweet.omit({
-  id: true,
+const FormSchemaSocialMedia = z.object({
+  title: z.string().optional(),
+  platform: z.enum([
+    "Facebook",
+    "Instagram",
+    "LinkedIn",
+    "Pinterest",
+    "TikTok",
+    "Tweet",
+    "X",
+    "YouTube",
+  ]),
+  url: z.string().url().or(z.number()),
+  qrcode: z.coerce.boolean(),
+  showUntil: z.preprocess(
+    (val) => (val === "" || val === undefined ? null : val),
+    z.string().date().nullable(),
+  ),
 });
 
 export type StateSettings = {
@@ -162,12 +163,20 @@ export type StateScraper = {
   };
 };
 
-export type StateX = {
+export type StateSocialMedia = {
   errors?: {
-    tweetId?: string[];
+    title?: string[];
+    content?: string[];
+    icon?: string[];
     showUntil?: string[];
   };
   message?: string | null;
+  inputs?: {
+    title?: string;
+    content?: string;
+    icon?: string;
+    showUntil?: string;
+  };
 };
 
 export async function saveSettings(
@@ -569,8 +578,11 @@ export async function deleteNews(id: string) {
   }
 }
 
-export async function createX(prevState: StateX, formData: FormData) {
-  const validatedFields = CreateX.safeParse({
+export async function createSocialMedia(
+  prevState: StateSocialMedia,
+  formData: FormData,
+) {
+  const validatedFields = FormSchemaSocialMedia.safeParse({
     tweetId: formData.get("tweetId"),
     text: formData.get("text"),
     createdAt: formData.get("createdAt"),
@@ -603,12 +615,12 @@ export async function createX(prevState: StateX, formData: FormData) {
   redirect("/dashboard/x");
 }
 
-export async function updateX(
+export async function updateSocialMedia(
   id: string,
-  prevState: StateX,
+  prevState: StateSocialMedia,
   formData: FormData,
 ) {
-  const validatedFields = UpdateX.safeParse({
+  const validatedFields = FormSchemaSocialMedia.safeParse({
     tweetId: formData.get("tweetId"),
     text: formData.get("text"),
     createdAt: formData.get("createdAt"),
@@ -642,23 +654,21 @@ export async function updateX(
   redirect("/dashboard/x");
 }
 
-export async function deleteX(id: string) {
-  // try {
-  await sql`DELETE FROM tweets WHERE id = ${id}`;
-  revalidatePath("/dashboard/x");
-  // return { message: "Deleted X / Tweet." };
-  // } catch (error) {
-  // return {
-  // message: `Database Error: Failed to Delete X / Tweet (${error}).`,
-  // message: "Database Error: Failed to Delete X / Tweet (${error}).",
-  // };
-  // }
+export async function deleteSocialMedia(id: string) {
+  try {
+    await sql`DELETE FROM social_media WHERE id = ${id}`;
+
+    revalidatePath("/dashboard/socialmedia");
+  } catch (error) {
+    console.error("Error deleting social media:", error);
+  }
 }
 
 export async function scrapeViaCheerio(
   url: string,
   title: string,
-  selectors: string[],
+  selectors: string | string[],
+  specific?: string[],
 ) {
   const response = await fetch(url);
 
@@ -675,10 +685,27 @@ export async function scrapeViaCheerio(
     header = title;
   }
 
-  selectors.forEach((selector) => {
-    const data = $(selector).text().trim();
-    scrappedData.push(data);
-  });
+  if (typeof selectors === "string") {
+    console.log("selectors is a string:", selectors);
+    $(selectors).each((index, element) => {
+      if (specific) {
+        specific.forEach((spec) => {
+          const data = $(element).find(spec).text().trim();
+          scrappedData.push(data);
+        });
+      } else {
+        const data = $(element).text().trim();
+        scrappedData.push(data);
+      }
+    });
+  } else {
+    console.log("selectors is an array:", selectors);
+    selectors.forEach((selector) => {
+      const data = $(selector).text().trim();
+
+      scrappedData.push(data);
+    });
+  }
 
   return {
     title: header,
