@@ -1,6 +1,15 @@
+import bcrypt from "bcrypt";
 import postgres from "postgres";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
+
+const users = [
+  {
+    name: "Test",
+    email: "test@test.com",
+    password: "123456",
+  },
+];
 
 async function seedAdmin() {
   await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
@@ -12,6 +21,19 @@ async function seedAdmin() {
       password TEXT NOT NULL
     );
   `;
+
+  const insertedUsers = await Promise.all(
+    users.map(async (user) => {
+      const hashedPassword = await bcrypt.hash(user.password, 10);
+      return sql`
+        INSERT INTO users (name, email, password)
+        VALUES (${user.name}, ${user.email}, ${hashedPassword})
+        ON CONFLICT (id) DO NOTHING;
+      `;
+    }),
+  );
+
+  return insertedUsers;
 }
 
 async function createNewsTable() {

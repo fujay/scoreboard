@@ -1,5 +1,5 @@
 import postgres from "postgres";
-import { readKeyConfig } from "./config";
+// import { readKeyConfig } from "./config";
 import {
   NewsData,
   Scraper,
@@ -17,7 +17,7 @@ const ITEMS_PER_PAGE = 6;
 
 export async function fetchCardData() {
   try {
-    const storage: Settings["general"] = await readKeyConfig("general");
+    // const storage: Settings["general"] = await readKeyConfig("general");
     // const tweetCountPromise = sql`SELECT COUNT(*) FROM tweets`;
     // if (storage.db === "Local") {
     //   const scrapersListPromise: Promise<Settings["scraper"]> =
@@ -166,7 +166,7 @@ export async function fetchFilteredScrapers(
 
 export async function fetchScrapersPages(query: string) {
   try {
-    const storage: Settings["general"] = await readKeyConfig("general");
+    // const storage: Settings["general"] = await readKeyConfig("general");
     // if (storage.db === "Local") {
     //   const scrapersList: Settings["scraper"] = await readKeyConfig("scraper");
     //   const countedScrapers = scrapersList.filter((scraper) => {

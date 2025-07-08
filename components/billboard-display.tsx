@@ -54,10 +54,14 @@ export default function BillboardDisplay({
 
         // Combine content to a single array
         const allContent = [
-          ...(weatherData ? [{ type: "weather", data: weatherData }] : []),
-          ...scraperData.map((scraperDataItem) => ({
-            type: "scraper",
-            data: scraperDataItem,
+          // ...(weatherData ? [{ type: "weather", data: weatherData }] : []),
+          // ...scraperData.map((scraperDataItem) => ({
+          //   type: "scraper",
+          //   data: scraperDataItem,
+          // })),
+          ...socialMediaData.map((socialMediaItem) => ({
+            type: "social-media",
+            data: socialMediaItem,
           })),
           ...socialMediaData.map((socialMediaItem) => ({
             type: "social-media",

@@ -1,22 +1,19 @@
 "use client";
 
-import { CustomerField } from "@/app/lib/definitions";
 import Link from "next/link";
 import {
   CheckIcon,
   ClockIcon,
-  CurrencyDollarIcon,
   LinkIcon,
-  UserCircleIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { createSocialMedia, SocialMediaState } from "@/app/lib/actions";
+import { createSocialMedia, type StateSocialMedia } from "@/lib/actions";
 import { useActionState } from "react";
 import { Button } from "@/ui/button";
 import { Save } from "lucide-react";
 
 export default function SocialMediaForm() {
-  const initialState: SocialMediaState = {
+  const initialState: StateSocialMedia = {
     message: null,
     errors: {},
     inputs: {},

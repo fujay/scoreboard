@@ -10,8 +10,29 @@ import { uploadImage } from "./cloudinary";
 import { Settings } from "./definitions";
 import { containsCssSelectors } from "./utils";
 import { readKeyConfig, saveConfig } from "./config";
+import { AuthError } from "next-auth";
+import { signIn } from "@/auth";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
+
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    await signIn("credentials", formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case "CredentialsSignin":
+          return "Invalid  credentials.";
+        default:
+          return "Something went wrong.";
+      }
+    }
+    throw error;
+  }
+}
 
 const FormSchemaGeneral = z.object({
   time: z.number().int().min(1).max(300),
@@ -594,7 +615,7 @@ export async function createSocialMedia(
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing Fields. Failed to Create X / Tweet.",
+      message: "Missing Fields. Failed to Create Social Media.",
     };
   }
 

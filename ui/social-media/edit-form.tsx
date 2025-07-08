@@ -13,13 +13,12 @@ import { Button } from "@/ui/button";
 import { State, updateInvoice } from "@/app/lib/actions";
 import { useActionState } from "react";
 import { Save } from "lucide-react";
+import { SocialMediaData } from "@/lib/definitions";
 
-export default function EditInvoiceForm({
-  invoice,
-  customers,
+export default function EditSocialMediaForm({
+  socialMedia,
 }: {
-  invoice: InvoiceForm;
-  customers: CustomerField[];
+  socialMedia: SocialMediaData;
 }) {
   const initialState: State = { message: null, errors: {} };
   const updateInvoiceWithId = updateInvoice.bind(null, invoice.id);
