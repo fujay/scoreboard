@@ -54,20 +54,18 @@ export default function BillboardDisplay({
 
         // Combine content to a single array
         const allContent = [
-          // ...(weatherData ? [{ type: "weather", data: weatherData }] : []),
-          // ...scraperData.map((scraperDataItem) => ({
-          //   type: "scraper",
-          //   data: scraperDataItem,
-          // })),
-          ...socialMediaData.map((socialMediaItem) => ({
-            type: "social-media",
-            data: socialMediaItem,
+          ...(weatherData ? [{ type: "weather", data: weatherData }] : []),
+          ...scraperData.map((scraperDataItem) => ({
+            type: "scraper",
+            data: scraperDataItem,
           })),
           ...socialMediaData.map((socialMediaItem) => ({
             type: "social-media",
             data: socialMediaItem,
           })),
         ];
+
+        allContent.sort(() => Math.random() - 0.5); // Shuffle content
 
         if (allContent.length === 0) {
           setError(
