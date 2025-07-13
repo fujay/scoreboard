@@ -102,7 +102,7 @@ const FormSchemaScraper = z.object({
 });
 
 const FormSchemaSocialMedia = z.object({
-  title: z.string().optional(),
+  title: z.string(),
   platform: z.enum([
     "Facebook",
     "Instagram",
@@ -187,15 +187,17 @@ export type StateScraper = {
 export type StateSocialMedia = {
   errors?: {
     title?: string[];
-    content?: string[];
-    icon?: string[];
+    platform?: string[];
+    url?: string[];
+    qrcode?: string[];
     showUntil?: string[];
   };
   message?: string | null;
   inputs?: {
     title?: string;
-    content?: string;
-    icon?: string;
+    platform?: string;
+    url?: string;
+    qrcode?: boolean;
     showUntil?: string;
   };
 };
@@ -603,37 +605,47 @@ export async function createSocialMedia(
   prevState: StateSocialMedia,
   formData: FormData,
 ) {
+  console.log(formData);
+
   const validatedFields = FormSchemaSocialMedia.safeParse({
-    tweetId: formData.get("tweetId"),
-    text: formData.get("text"),
-    createdAt: formData.get("createdAt"),
-    name: formData.get("name"),
-    screenName: formData.get("screenName"),
+    title: formData.get("title"),
+    platform: formData.get("platform"),
+    url: formData.get("url"),
+    qrcode: formData.get("qrcode"),
     showUntil: formData.get("showUntil"),
   });
+  console.log(validatedFields);
+  console.log(validatedFields.data);
 
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: "Missing Fields. Failed to Create Social Media.",
+      inputs: {
+        title: formData.get("title") as string,
+        platform: formData.get("platform") as string,
+        url: formData.get("url") as string,
+        qrcode: formData.get("qrcode") === "on",
+        showUntil: formData.get("showUntil") as string,
+      },
     };
   }
 
-  const { tweetId, text, createdAt, name, screenName, showUntil } =
-    validatedFields.data;
+  const { title, platform, url, qrcode, showUntil } = validatedFields.data;
 
   try {
     await sql`
-    INSERT INTO tweets (tweetId, text, createdAt, name, screenName, showUntil)
-    VALUES (${tweetId}, ${text}, ${createdAt}, ${name}, ${screenName}, ${showUntil})`;
+      INSERT INTO social_media (title, platform, url, qrcode, show_until)
+      VALUES (${title}, ${platform}, ${url}, ${qrcode}, ${showUntil})
+      `;
   } catch (error) {
     return {
-      message: `Database Error: Failed to Create Create X / Tweet. (${error}).`,
+      message: `Database Error: Failed to Create Create Social Media. (${error}).`,
     };
   }
 
-  revalidatePath("/dashboard/x");
-  redirect("/dashboard/x");
+  revalidatePath("/dashboard/socialmedia");
+  redirect("/dashboard/socialmedia");
 }
 
 export async function updateSocialMedia(
@@ -642,37 +654,42 @@ export async function updateSocialMedia(
   formData: FormData,
 ) {
   const validatedFields = FormSchemaSocialMedia.safeParse({
-    tweetId: formData.get("tweetId"),
-    text: formData.get("text"),
-    createdAt: formData.get("createdAt"),
-    name: formData.get("name"),
-    screenName: formData.get("screenName"),
+    title: formData.get("title"),
+    platform: formData.get("platform"),
+    url: formData.get("url"),
+    qrcode: formData.get("qrcode"),
     showUntil: formData.get("showUntil"),
   });
 
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing Fields. Failed to Update X / Tweet.",
+      message: "Missing Fields. Failed to Update Social Media.",
+      inputs: {
+        title: formData.get("title") as string,
+        platform: formData.get("platform") as string,
+        url: formData.get("url") as string,
+        qrcode: formData.get("qrcode") === "on",
+        showUntil: formData.get("showUntil") as string,
+      },
     };
   }
 
-  const { tweetId, text, createdAt, name, screenName, showUntil } =
-    validatedFields.data;
+  const { title, platform, url, qrcode, showUntil } = validatedFields.data;
 
   try {
     await sql`
-    UPDATE tweets
-    SET tweetId = ${tweetId}, text = ${text}, createdAt = ${createdAt}, name = ${name}, screenName = ${screenName}, showUntil = ${showUntil}
+    UPDATE social_media
+    SET title = ${title}, platform = ${platform}, url = ${url}, qrcode = ${qrcode}, showUntil = ${showUntil}
     WHERE id = ${id}`;
   } catch (error) {
     return {
-      message: `Database Error: Failed to Update X / Tweet. (${error}).`,
+      message: `Database Error: Failed to Update Social Media. (${error}).`,
     };
   }
 
-  revalidatePath("/dashboard/x");
-  redirect("/dashboard/x");
+  revalidatePath("/dashboard/socialmedia");
+  redirect("/dashboard/socialmedia");
 }
 
 export async function deleteSocialMedia(id: string) {
