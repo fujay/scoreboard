@@ -168,7 +168,7 @@ export default function EditNewsForm({ news }: { news: NewsData }) {
         <Button type="submit" disabled={isPending}>
           <Save />
           <span className="hidden sm:block">
-            {isPending ? "Creating..." : "Create News"}
+            {isPending ? "Saving..." : "Edit News"}
           </span>
         </Button>
       </div>
