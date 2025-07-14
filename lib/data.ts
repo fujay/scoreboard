@@ -5,10 +5,7 @@ import {
   Scraper,
   ScraperData,
   ScraperForm,
-  Settings,
   SocialMediaData,
-  Tweet,
-  TweetTable,
 } from "./definitions";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
