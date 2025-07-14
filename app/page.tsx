@@ -8,6 +8,16 @@ export default async function Home() {
   return (
     <div className="flex min-h-screen flex-col overflow-hidden">
       <Header settings={settings.general} />
+      <div>{settings.general.time}</div>
+      <div>{settings.general.db}</div>
+      <div>{settings.general.images}</div>
+      <div>{settings.general.stale}</div>
+      <div>{settings.general.date}</div>
+      <div>{settings.general.news}</div>
+      <div>{settings.weather.active}</div>
+      <div>{settings.weather.location}</div>
+      <div>{settings.weather.qrcode}</div>
+      <div>{settings.weather.graphic}</div>
       <BillboardDisplay
         active={settings.weather.active}
         location={settings.weather.location}
