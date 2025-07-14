@@ -680,7 +680,7 @@ export async function updateSocialMedia(
   try {
     await sql`
     UPDATE social_media
-    SET title = ${title}, platform = ${platform}, url = ${url}, qrcode = ${qrcode}, showUntil = ${showUntil}
+    SET title = ${title}, platform = ${platform}, url = ${url}, qrcode = ${qrcode}, show_until = ${showUntil}
     WHERE id = ${id}`;
   } catch (error) {
     return {
