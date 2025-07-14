@@ -2,8 +2,8 @@
 
 import ContentDisplay from "@/components/content-display";
 import type { ContentType, ProgressbarTypes } from "@/lib/definitions";
-import { getScraperData } from "@/lib/scraper";
-import { getSocialMediaData } from "@/lib/social-media";
+// import { getScraperData } from "@/lib/scraper";
+// import { getSocialMediaData } from "@/lib/social-media";
 import { getWeatherData } from "@/lib/weather";
 import { ProgressBar } from "@/ui/progress-bar";
 import { AnimatePresence, motion } from "framer-motion";
