@@ -70,29 +70,47 @@ export default function NewsCarousel({
     </Card>
   ) : news.length > 0 ? (
     <>
-      <Card className="bg-white shadow-md">
-        <CardContent className="p-4">
-          <div className="flex items-start space-x-3">
-            <div className="rounded-full bg-destructive p-2 text-primary">
-              <IconMapping icon={currentNews.icon} />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold">{currentNews.title}</h3>
-              <p className="text-slate-600">{currentNews.content}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {newsDisplay === "carousel" ? (
+        <>
+          <Card className="bg-white shadow-md">
+            <CardContent className="p-4">
+              <div className="flex items-start space-x-3">
+                <div className="rounded-full bg-destructive p-2 text-primary">
+                  <IconMapping icon={currentNews.icon} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold">{currentNews.title}</h3>
+                  <p className="text-slate-600">{currentNews.content}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
-      {/* Indicators */}
-      <div className="mt-2 flex justify-center space-x-1">
-        {news.map((_, index) => (
-          <div
-            key={index}
-            className={`h-1.5 w-1.5 rounded-full ${index === currentNewsIndex ? "bg-primary" : "bg-primary/30"}`}
-          />
-        ))}
-      </div>
+          {/* Indicators */}
+          <div className="mt-2 flex justify-center space-x-1">
+            {news.map((_, index) => (
+              <div
+                key={index}
+                className={`h-1.5 w-1.5 rounded-full ${index === currentNewsIndex ? "bg-primary" : "bg-primary/30"}`}
+              />
+            ))}
+          </div>
+        </>
+      ) : newsDisplay === "infinite" ? (
+        <Card className="bg-white shadow-md">
+          <CardContent className="p-4">
+            <div className="flex items-start space-x-3">
+              <div className="rounded-full bg-destructive p-2 text-primary">
+                <IconMapping icon={currentNews.icon} />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold">{currentNews.title}</h3>
+                <p className="text-slate-600">{currentNews.content}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ) : null}
     </>
   ) : null;
 }
