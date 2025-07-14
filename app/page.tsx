@@ -14,9 +14,9 @@ export default async function Home() {
       <div>{settings.general.stale}</div>
       <div>{settings.general.date}</div>
       <div>{settings.general.news}</div>
-      <div>{settings.weather.active}</div>
+      <div>{settings.weather.active === true ? "Active" : "Inactive"}</div>
       <div>{settings.weather.location}</div>
-      <div>{settings.weather.qrcode}</div>
+      <div>{settings.weather.qrcode === true ? "Enabled" : "Disabled"}</div>
       <div>{settings.weather.graphic}</div>
       <BillboardDisplay
         active={settings.weather.active}

@@ -47,22 +47,22 @@ export default function BillboardDisplay({
         }
 
         // Fetch scraper data
-        const scraperData = await getScraperData();
+        // const scraperData = await getScraperData();
 
         // Fetch social media data
-        const socialMediaData = await getSocialMediaData();
+        // const socialMediaData = await getSocialMediaData();
 
         // Combine content to a single array
         const allContent = [
           ...(weatherData ? [{ type: "weather", data: weatherData }] : []),
-          ...scraperData.map((scraperDataItem) => ({
-            type: "scraper",
-            data: scraperDataItem,
-          })),
-          ...socialMediaData.map((socialMediaItem) => ({
-            type: "social-media",
-            data: socialMediaItem,
-          })),
+          // ...scraperData.map((scraperDataItem) => ({
+          //   type: "scraper",
+          //   data: scraperDataItem,
+          // })),
+          // ...socialMediaData.map((socialMediaItem) => ({
+          //   type: "social-media",
+          //   data: socialMediaItem,
+          // })),
         ];
 
         allContent.sort(() => Math.random() - 0.5); // Shuffle content
