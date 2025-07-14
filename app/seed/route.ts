@@ -99,15 +99,15 @@ async function createSocialMediaTable() {
 
 export async function GET() {
   try {
-    const result = await sql.begin((sql) => [
-      // seedAdmin(),
+    const result = await sql.begin(() => [
+      seedAdmin(),
       createScraperDataTable(),
       createScraperTable(),
       createNewsTable(),
       createSocialMediaTable(),
     ]);
 
-    return Response.json({ message: "Databases created successfully" });
+    return Response.json({ message: "Databases created successfully", result });
   } catch (error) {
     return Response.json({ error }, { status: 500 });
   }
