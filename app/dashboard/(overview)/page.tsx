@@ -1,6 +1,10 @@
 import CardWrapper from "@/ui/cards";
 import { lusitana } from "@/ui/fonts";
-import { CardsSkeleton } from "@/ui/skeletons";
+import {
+  CardsSkeleton,
+  DataCategoriesChartSkeleton,
+  DataChartSkeleton,
+} from "@/ui/skeletons";
 import { Metadata } from "next";
 import { Suspense } from "react";
 
@@ -20,12 +24,12 @@ export default async function Page() {
         </Suspense>
       </div>
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
-        {/* <Suspense fallback={<DataChartSkeleton />}> */}
-        {/* <DataChart /> */}
-        {/* </Suspense> */}
-        {/* <Suspense fallback={<DataCategoriesChartSkeleton />}> */}
-        {/* <DataCategoriesChart /> */}
-        {/* </Suspense> */}
+        <Suspense fallback={<DataChartSkeleton />}>
+          {/* <DataChart /> */}
+        </Suspense>
+        <Suspense fallback={<DataCategoriesChartSkeleton />}>
+          {/* <DataCategoriesChart /> */}
+        </Suspense>
       </div>
     </main>
   );
