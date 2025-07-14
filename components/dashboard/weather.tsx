@@ -137,7 +137,6 @@ export default function Weather({
               </option>
               <option value="OpenWeatherMap">OpenWeatherMap</option>
               <option value="Lucide Icons">Lucide Icons</option>
-              <option value="Animated">Animated</option>
               <option value="3D">3D</option>
             </select>
             <SparklesIcon className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />

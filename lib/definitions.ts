@@ -248,11 +248,7 @@ export type ProgressbarTypes =
   | "Countdown"
   | "ProgressBar and Countdown";
 
-export type WeatherGraphicTypes =
-  | "OpenWeatherMap"
-  | "Lucide Icons"
-  | "Animated"
-  | "3D";
+export type WeatherGraphicTypes = "OpenWeatherMap" | "Lucide Icons" | "3D";
 
 export type SocialMediaTypes =
   | "Facebook"

@@ -26,7 +26,6 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { QRCodeSVG } from "qrcode.react";
-import ReactAnimatedWeather from "react-animated-weather";
 import { WeatherState, WeatherSvg } from "weather-icons-animated";
 
 export default function WeatherDisplay({ data }: { data: WeatherData }) {
@@ -193,36 +192,6 @@ export const WeatherIcon: React.FC<{
       "50n": "fog",
     } as const;
     return <WeatherSvg state={codeMapping[weather]} width={100} height={100} />;
-  } else if (iconSet === "Animated") {
-    const codeMapping = {
-      "01d": { icon: "CLEAR_DAY", color: "#FFD700" }, // Sunny
-      "01n": { icon: "CLEAR_NIGHT", color: "#A3A3A3" }, // Clear night
-      "02d": { icon: "PARTLY_CLOUDY_DAY", color: "#FFE066" },
-      "02n": { icon: "PARTLY_CLOUDY_NIGHT", color: "#B0B0B0" },
-      "03d": { icon: "PARTLY_CLOUDY_DAY", color: "#B0C4DE" },
-      "03n": { icon: "PARTLY_CLOUDY_NIGHT", color: "#B0C4DE" },
-      "04d": { icon: "CLOUDY", color: "#A0AEC0" },
-      "04n": { icon: "CLOUDY", color: "#A0AEC0" },
-      "09d": { icon: "RAIN", color: "#60A5FA" },
-      "09n": { icon: "RAIN", color: "#60A5FA" },
-      "10d": { icon: "RAIN", color: "#2563EB" },
-      "10n": { icon: "RAIN", color: "#2563EB" },
-      "11d": { icon: "RAIN", color: "#F59E42" }, // Thunderstorm
-      "11n": { icon: "RAIN", color: "#F59E42" },
-      "13d": { icon: "SNOW", color: "#A7F3D0" },
-      "13n": { icon: "SNOW", color: "#A7F3D0" },
-      "50d": { icon: "FOG", color: "#CBD5E1" },
-      "50n": { icon: "FOG", color: "#CBD5E1" },
-    } as const;
-    type WeatherCode = keyof typeof codeMapping;
-    const weatherMapping = codeMapping[weather as WeatherCode];
-    return (
-      <ReactAnimatedWeather
-        icon={weatherMapping.icon}
-        color={weatherMapping.color}
-        animate={true}
-      />
-    );
   } else {
     return (
       <Image

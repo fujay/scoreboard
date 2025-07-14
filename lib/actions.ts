@@ -62,7 +62,7 @@ const FormSchemaWeather = z.object({
     // ^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$
     .or(z.string().min(2)),
   qrcode: z.coerce.boolean(),
-  graphic: z.enum(["OpenWeatherMap", "Lucide Icons", "Animated", "3D"]),
+  graphic: z.enum(["OpenWeatherMap", "Lucide Icons", "3D"]),
 });
 
 const FormSchemaNews = z.object({
