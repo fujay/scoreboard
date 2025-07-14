@@ -1,16 +1,11 @@
 "use client";
 
 import { saveWeather, StateWeather } from "@/lib/actions";
-import { Settings } from "@/lib/definitions";
 import { Button } from "@/ui/button";
 import { Save } from "lucide-react";
 import { useActionState } from "react";
 
-export default function Multimedia({
-  settings,
-}: {
-  settings: Settings["general"];
-}) {
+export default function Multimedia() {
   const initialState: StateWeather = {
     message: null,
     errors: {},
