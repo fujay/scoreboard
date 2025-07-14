@@ -232,6 +232,7 @@ export async function saveSettings(
   );
 
   revalidatePath("/dashboard/settings");
+  revalidatePath("/");
   redirect("/dashboard/settings");
 }
 
