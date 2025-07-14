@@ -16,5 +16,9 @@ export default async function Page(props: Props) {
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
 
-  return <div></div>;
+  return (
+    <div>
+      {query} {currentPage}
+    </div>
+  );
 }
