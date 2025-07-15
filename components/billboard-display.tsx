@@ -78,7 +78,7 @@ export default function BillboardDisplay({
         setIsLoading(false);
       } catch (error) {
         console.error("Error loading initial data:", error);
-        setError("Failed to load content. Please check your API connections.");
+        setError(`Failed to load content. ${error}`);
         setIsLoading(false);
       }
     };
