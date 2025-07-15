@@ -4,15 +4,15 @@ import ContentDisplay from "@/components/content-display";
 import type {
   ContentType,
   ProgressbarTypes,
-  WeatherData,
+  // WeatherData,
 } from "@/lib/definitions";
 // import { getScraperData } from "@/lib/scraper";
 // import { getSocialMediaData } from "@/lib/social-media";
-// import { getWeatherData } from "@/lib/weather";
+import { getWeatherData } from "@/lib/weather";
 import { ProgressBar } from "@/ui/progress-bar";
 import { AnimatePresence, motion } from "framer-motion";
 import { Play } from "lucide-react";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function BillboardDisplay({
   active,
@@ -20,16 +20,16 @@ export default function BillboardDisplay({
   interval,
   stale,
   progressbar,
-  weatherPromise,
+  // weatherPromise,
 }: {
   active: boolean;
   location: string;
   interval: number;
   stale: number;
   progressbar: ProgressbarTypes;
-  weatherPromise: Promise<WeatherData>;
+  // weatherPromise: Promise<WeatherData>;
 }) {
-  const weatherDatat = use(weatherPromise);
+  // const weatherDatat = use(weatherPromise);
   const [contentItems, setContentItems] = useState<ContentType[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [progress, setProgress] = useState(0);
@@ -50,7 +50,7 @@ export default function BillboardDisplay({
         let weatherData = null;
         if (active) {
           // Fetch weather data
-          weatherData = weatherDatat; //await getWeatherData(location);
+          weatherData = await getWeatherData(location);
         }
 
         // Fetch scraper data
