@@ -9,14 +9,14 @@ export default async function Home() {
   return (
     <div className="flex min-h-screen flex-col overflow-hidden">
       <Header settings={settings.general} />
-      <BillboardDisplay
+      {/* <BillboardDisplay
         active={settings.weather.active}
         location={settings.weather.location}
         interval={settings.general.time}
         stale={settings.general.stale}
         progressbar={settings.general.progressbar}
         // weatherPromise={weatherPromise}
-      />
+      /> */}
     </div>
   );
 }
