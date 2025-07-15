@@ -4,7 +4,7 @@ import Link from "next/link";
 import logo from "@/assets/logo.png";
 import DateTime from "@/components/date-time";
 import { Settings } from "@/lib/definitions";
-import NewsCarousel from "./news-carousel";
+// import NewsCarousel from "./news-carousel";
 
 export default function Header({
   settings,
@@ -25,7 +25,7 @@ export default function Header({
         </Link>
       </section>
       <section className="w-1/2">
-        <NewsCarousel stale={settings.stale} newsDisplay={settings.news} />
+        {/* <NewsCarousel stale={settings.stale} newsDisplay={settings.news} /> */}
       </section>
       <section className="">
         <DateTime settings={settings.date} />
