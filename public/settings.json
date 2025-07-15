@@ -1,0 +1,17 @@
+{
+  "general": {
+    "time": 18,
+    "db": "Remote",
+    "images": "Remote",
+    "stale": 10,
+    "date": "Clock and Date without time",
+    "news": "carousel",
+    "progressbar": "ProgressBar and Countdown"
+  },
+  "weather": {
+    "active": true,
+    "location": "Frankfurt am Main",
+    "qrcode": true,
+    "graphic": "Lucide Icons"
+  }
+}
