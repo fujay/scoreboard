@@ -6,7 +6,7 @@ import { Settings } from "./definitions";
 export async function readConfig() {
   const configFileContent = await fs.readFile(
     // "settings.json",
-    process.cwd() + "/settings.json",
+    process.cwd() + "/app/settings.json",
     "utf-8",
   );
   const config: Settings = JSON.parse(configFileContent);
@@ -15,7 +15,7 @@ export async function readConfig() {
 
 export async function readKeyConfig(key: string) {
   const configFileContent = await fs.readFile(
-    process.cwd() + "/settings.json",
+    process.cwd() + "/app/settings.json",
     "utf-8",
   );
   const config = JSON.parse(configFileContent);
@@ -29,7 +29,7 @@ export async function saveConfig(
   index?: number,
 ) {
   const configFileContent = await fs.readFile(
-    process.cwd() + "/settings.json",
+    process.cwd() + "/app/settings.json",
     "utf-8",
   );
   const config = JSON.parse(configFileContent);
@@ -40,7 +40,10 @@ export async function saveConfig(
     config[key] = newConfig;
   }
 
-  await fs.writeFile(process.cwd() + "/settings.json", JSON.stringify(config));
+  await fs.writeFile(
+    process.cwd() + "/app/settings.json",
+    JSON.stringify(config),
+  );
 }
 
 export async function saveImageLocal(
