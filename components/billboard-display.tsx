@@ -8,7 +8,7 @@ import type {
 } from "@/lib/definitions";
 // import { getScraperData } from "@/lib/scraper";
 // import { getSocialMediaData } from "@/lib/social-media";
-import { getWeatherData } from "@/lib/weather";
+// import { getWeatherData } from "@/lib/weather";
 import { ProgressBar } from "@/ui/progress-bar";
 import { AnimatePresence, motion } from "framer-motion";
 import { Play } from "lucide-react";
