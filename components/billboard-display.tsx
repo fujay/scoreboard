@@ -87,17 +87,15 @@ export default function BillboardDisplay({
         console.error("Error loading initial data:", error);
         setError(`Failed to load content. ${error}`);
         setIsLoading(false);
-      } finally {
-        setTimeout(loadInitialData, stale * 60 * 1000); // Reload data after stale time
       }
     };
 
     loadInitialData();
 
     // Refresh data every interval
-    // const refreshInterval = setInterval(loadInitialData, stale * 60 * 1000);
+    const refreshInterval = setInterval(loadInitialData, stale * 60 * 1000);
 
-    // return () => clearInterval(refreshInterval);
+    return () => clearInterval(refreshInterval);
   }, [active, location, stale]);
 
   // Handle content rotation and progress bar
