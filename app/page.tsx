@@ -1,4 +1,4 @@
-import BillboardDisplay from "@/components/billboard-display";
+// import BillboardDisplay from "@/components/billboard-display";
 import Header from "@/components/header";
 import { readConfig } from "@/lib/config";
 // import { getWeatherData } from "@/lib/weather";
