@@ -3,8 +3,6 @@ import Header from "@/components/header";
 import { readConfig } from "@/lib/config";
 import { getWeatherData } from "@/lib/weather";
 
-export const dynamic = "force-dynamic";
-
 export default async function Home() {
   const settings = await readConfig();
   const weatherPromise = getWeatherData(settings.weather.location);
