@@ -10,29 +10,29 @@ import type {
 } from "@/lib/definitions";
 import { getScraperData } from "@/lib/scraper";
 // import { getSocialMediaData } from "@/lib/social-media";
-import { getWeatherData } from "@/lib/weather";
+// import { getWeatherData } from "@/lib/weather";
 import { ProgressBar } from "@/ui/progress-bar";
 import { AnimatePresence, motion } from "framer-motion";
 import { Play } from "lucide-react";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, use } from "react";
 import useSWR from "swr";
 
 export default function BillboardDisplay({
   active,
-  location,
+  // location,
   interval,
   stale,
   progressbar,
-  // weatherPromise,
+  weatherPromise,
 }: {
   active: boolean;
-  location: string;
+  // location: string;
   interval: number;
   stale: number;
   progressbar: ProgressbarTypes;
-  // weatherPromise: Promise<WeatherData>;
+  weatherPromise: Promise<WeatherData>;
 }) {
-  // const weatherDatat = use(weatherPromise);
+  const weatherData = active ? use(weatherPromise) : null;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -41,15 +41,15 @@ export default function BillboardDisplay({
   const progressUpdateInterval = transitionIntervalMs / 100;
 
   // SWR fetches
-  const {
-    data: weatherData,
-    error: weatherError,
-    isLoading: weatherLoading,
-  } = useSWR<WeatherData>(
-    active ? ["weather", location] : null,
-    () => getWeatherData(location),
-    { refreshInterval: stale * 60 * 1000 },
-  );
+  // const {
+  //   data: weatherData,
+  //   error: weatherError,
+  //   isLoading: weatherLoading,
+  // } = useSWR<WeatherData>(
+  //   active ? ["weather", location] : null,
+  //   () => getWeatherData(location),
+  //   { refreshInterval: stale * 60 * 1000 },
+  // );
   const {
     data: scraperData,
     error: scraperError,
@@ -86,8 +86,8 @@ export default function BillboardDisplay({
   }, [weatherData, scraperData /* , socialMediaData */]);
 
   const isLoading =
-    weatherLoading || scraperLoading; /* || socialMediaLoading */
-  const error = weatherError || scraperError; /* || socialMediaError */
+    /* weatherLoading  ||*/ scraperLoading; /* || socialMediaLoading */
+  const error = /* weatherError || */ scraperError; /* || socialMediaError */
 
   // Handle content rotation and progress bar
   useEffect(() => {
