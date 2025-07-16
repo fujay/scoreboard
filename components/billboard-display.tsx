@@ -17,8 +17,6 @@ import { Play } from "lucide-react";
 import { useEffect, useState, useMemo, use } from "react";
 import useSWR from "swr";
 
-export const dynamic = "force-dynamic";
-
 export default function BillboardDisplay({
   active,
   // location,
