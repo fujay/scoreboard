@@ -34,6 +34,7 @@
     "react-social-media-embed": "^2.5.18",
     "react-tweet": "^3.2.1",
     "sonner": "^2.0.1",
+    "swr": "^2.3.4",
     "tailwind-merge": "^3.0.1",
     "tailwindcss-animate": "^1.0.7",
     "use-debounce": "^10.0.4",
