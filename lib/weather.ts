@@ -5,7 +5,7 @@ import { readConfig } from "@/lib/config";
 
 const settings = await readConfig();
 
-// const staleTime = settings.general.stale || 60;
+const staleTime = settings.general.stale || 60;
 
 /**
  * Fetches current weather data for a given location using the OpenWeatherMap API.
@@ -24,7 +24,7 @@ export async function getWeatherData(location: string) {
 
     const response = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${process.env.OPENWEATHERMAP_API_KEY}&units=metric`,
-      // { cache: "force-cache", next: { revalidate: staleTime * 60 } },
+      { cache: "force-cache", next: { revalidate: staleTime * 60 } },
     );
 
     if (!response.ok) {
