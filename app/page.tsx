@@ -12,10 +12,10 @@ export default async function Home() {
     <div className="flex min-h-screen flex-col overflow-hidden">
       <Header settings={settings.general} />
       <BillboardDisplay
-        active={settings.weather.active}
-        location={settings.weather.location}
+        // active={settings.weather.active}
+        // location={settings.weather.location}
         interval={settings.general.time}
-        stale={settings.general.stale}
+        // stale={settings.general.stale}
         progressbar={settings.general.progressbar}
         weatherPromise={weatherPromise}
         scraperPromise={scraperPromise}
