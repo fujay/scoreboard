@@ -8,13 +8,13 @@ import type {
   ScraperData,
   // SocialMediaData,
 } from "@/lib/definitions";
-import { getScraperData } from "@/lib/scraper";
+// import { getScraperData } from "@/lib/scraper";
 // import { getSocialMediaData } from "@/lib/social-media";
 import { getWeatherData } from "@/lib/weather";
 import { ProgressBar } from "@/ui/progress-bar";
 import { AnimatePresence, motion } from "framer-motion";
 import { Play } from "lucide-react";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, use } from "react";
 import useSWR from "swr";
 
 export default function BillboardDisplay({
@@ -24,6 +24,7 @@ export default function BillboardDisplay({
   stale,
   progressbar,
   // weatherPromise,
+  scraperPromise,
 }: {
   active: boolean;
   location: string;
@@ -31,8 +32,10 @@ export default function BillboardDisplay({
   stale: number;
   progressbar: ProgressbarTypes;
   // weatherPromise: Promise<WeatherData>;
+  scraperPromise: Promise<ScraperData[]>;
 }) {
   // const weatherData = active ? use(weatherPromise) : null;
+  const scraperDataT = use(scraperPromise);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -50,13 +53,13 @@ export default function BillboardDisplay({
     () => getWeatherData(location),
     { refreshInterval: stale * 60 * 1000 },
   );
-  const {
-    data: scraperData,
-    error: scraperError,
-    isLoading: scraperLoading,
-  } = useSWR<ScraperData[]>("scraper", getScraperData, {
-    refreshInterval: stale * 60 * 1000,
-  });
+  // const {
+  //   data: scraperData,
+  //   error: scraperError,
+  //   isLoading: scraperLoading,
+  // } = useSWR<ScraperData[]>("scraper", getScraperData, {
+  //   refreshInterval: stale * 60 * 1000,
+  // });
   // const {
   //   data: socialMediaData,
   //   error: socialMediaError,
@@ -69,8 +72,14 @@ export default function BillboardDisplay({
   const contentItems: ContentType[] = useMemo(() => {
     const allContent: ContentType[] = [
       ...(weatherData ? [{ type: "weather", data: weatherData }] : []),
-      ...(scraperData
-        ? scraperData.map((scraperDataItem) => ({
+      // ...(scraperData
+      //   ? scraperData.map((scraperDataItem) => ({
+      //       type: "scraper",
+      //       data: scraperDataItem,
+      //     }))
+      //   : []),
+      ...(scraperDataT
+        ? scraperDataT.map((scraperDataItem) => ({
             type: "scraper",
             data: scraperDataItem,
           }))
@@ -83,11 +92,11 @@ export default function BillboardDisplay({
       //   : []),
     ];
     return allContent.sort(() => Math.random() - 0.5);
-  }, [weatherData, scraperData /* , socialMediaData */]);
+  }, [weatherData, scraperDataT /* , socialMediaData */]);
 
   const isLoading =
-    weatherLoading || scraperLoading; /* || socialMediaLoading */
-  const error = weatherError || scraperError; /* || socialMediaError */
+    weatherLoading; /* || scraperLoading || socialMediaLoading */
+  const error = weatherError; /* || scraperError;  || socialMediaError */
 
   // Handle content rotation and progress bar
   useEffect(() => {
