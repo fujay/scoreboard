@@ -1,6 +1,5 @@
 "use client";
 
-import { usePolling } from "@/app/hooks/usePolling";
 import ContentDisplay from "@/components/content-display";
 import type {
   ContentType,
@@ -22,7 +21,7 @@ export default function BillboardDisplay({
   // active,
   // location,
   interval,
-  stale,
+  // stale,
   progressbar,
   weatherPromise,
   scraperPromise,
@@ -30,12 +29,11 @@ export default function BillboardDisplay({
   // active: boolean;
   // location: string;
   interval: number;
-  stale: number;
+  // stale: number;
   progressbar: ProgressbarTypes;
   weatherPromise: Promise<WeatherData>;
   scraperPromise: Promise<ScraperData[]>;
 }) {
-  usePolling(stale * 60 * 1000);
   const weatherData = use(weatherPromise);
   const scraperData = use(scraperPromise);
   const [currentIndex, setCurrentIndex] = useState(0);
