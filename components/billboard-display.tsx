@@ -14,6 +14,7 @@ import type {
 import { ProgressBar } from "@/ui/progress-bar";
 import { AnimatePresence, motion } from "framer-motion";
 import { Play } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState, useMemo, use } from "react";
 // import useSWR from "swr";
 
@@ -21,7 +22,7 @@ export default function BillboardDisplay({
   // active,
   // location,
   interval,
-  // stale,
+  stale,
   progressbar,
   weatherPromise,
   scraperPromise,
@@ -29,11 +30,12 @@ export default function BillboardDisplay({
   // active: boolean;
   // location: string;
   interval: number;
-  // stale: number;
+  stale: number;
   progressbar: ProgressbarTypes;
   weatherPromise: Promise<WeatherData>;
   scraperPromise: Promise<ScraperData[]>;
 }) {
+  const router = useRouter();
   const weatherData = use(weatherPromise);
   const scraperData = use(scraperPromise);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -67,6 +69,17 @@ export default function BillboardDisplay({
   // } = useSWR<SocialMediaData[]>("social-media", getSocialMediaData, {
   //   refreshInterval: stale * 60 * 1000,
   // });
+
+  useEffect(() => {
+    const refreshInterval = setInterval(
+      () => {
+        router.refresh();
+      },
+      stale * 60 * 1000,
+    );
+
+    return () => clearInterval(refreshInterval);
+  }, [router, stale]);
 
   // Combine content
   const contentItems: ContentType[] = useMemo(() => {

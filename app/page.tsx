@@ -15,7 +15,7 @@ export default async function Home() {
         // active={settings.weather.active}
         // location={settings.weather.location}
         interval={settings.general.time}
-        // stale={settings.general.stale}
+        stale={settings.general.stale}
         progressbar={settings.general.progressbar}
         weatherPromise={weatherPromise}
         scraperPromise={scraperPromise}
