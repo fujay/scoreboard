@@ -1,5 +1,5 @@
 import BillboardDisplay from "@/components/billboard-display";
-import Header from "@/components/header";
+// import Header from "@/components/header";
 import { readConfig } from "@/lib/config";
 import { getWeatherData } from "@/lib/weather";
 import { getScraperData } from "@/lib/scraper";
@@ -10,7 +10,7 @@ export default async function Home() {
   const scraperPromise = getScraperData();
   return (
     <div className="flex min-h-screen flex-col overflow-hidden">
-      <Header settings={settings.general} />
+      {/* <Header settings={settings.general} /> */}
       <BillboardDisplay
         // active={settings.weather.active}
         // location={settings.weather.location}
