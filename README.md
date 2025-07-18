@@ -37,3 +37,10 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 tailwindcss classname= text-balance, pose
 <video>
+
+I want a signage or digital information app in next.js and to deploy it on vercel. The app should show information fetched from a database and from an API.
+There should be a settings.json file with settings saved in the path /app/settings.json.
+In the JSON file is a time: 20 and a stale: 15. The numbers are seconds for when another piece of information should slide in. The stale is for when new data should be fetched.
+The database is a Neon PostgreSQL with several tables from categories like news.
+In the header is a news banner for important news. It fetches the data from the database and rotates through it.
+In the footer is a progress bar that represents the time
