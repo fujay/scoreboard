@@ -4,7 +4,7 @@ import ContentDisplay from "@/components/content-display";
 import type {
   ContentType,
   ProgressbarTypes,
-  // WeatherData,
+  WeatherData,
   ScraperData,
   // SocialMediaData,
 } from "@/lib/definitions";
@@ -23,7 +23,7 @@ export default function BillboardDisplay({
   interval,
   // stale,
   progressbar,
-  // weatherPromise,
+  weatherPromise,
   scraperPromise,
 }: {
   // active: boolean;
@@ -31,10 +31,10 @@ export default function BillboardDisplay({
   interval: number;
   // stale: number;
   progressbar: ProgressbarTypes;
-  // weatherPromise: Promise<WeatherData>;
+  weatherPromise: Promise<WeatherData>;
   scraperPromise: Promise<ScraperData[]>;
 }) {
-  // const weatherData = use(weatherPromise);
+  const weatherData = use(weatherPromise);
   const scraperData = use(scraperPromise);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [progress, setProgress] = useState(0);
@@ -71,7 +71,7 @@ export default function BillboardDisplay({
   // Combine content
   const contentItems: ContentType[] = useMemo(() => {
     const allContent: ContentType[] = [
-      // ...(weatherData ? [{ type: "weather", data: weatherData }] : []),
+      ...(weatherData ? [{ type: "weather", data: weatherData }] : []),
       ...(scraperData
         ? scraperData.map((scraperDataItem) => ({
             type: "scraper",
@@ -86,7 +86,7 @@ export default function BillboardDisplay({
       //   : []),
     ];
     return allContent.sort(() => Math.random() - 0.5);
-  }, [/* weatherData, */ scraperData /* , socialMediaData */]);
+  }, [weatherData, scraperData /* , socialMediaData */]);
 
   // const isLoading =
   //   weatherLoading; /* || scraperLoading || socialMediaLoading */
