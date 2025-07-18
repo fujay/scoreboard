@@ -276,6 +276,38 @@ export default function Settings({
           </div>
         </div>
 
+        {/* fetching */}
+        {/* <div className="mb-4">
+          <label htmlFor="fetching" className="mb-2 block text-sm font-medium">
+            Fetching method:
+          </label>
+          <div className="relative">
+            <select
+              id="fetching"
+              name="fetching"
+              className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+              defaultValue={settings.fetching}
+              aria-describedby="fetching-error"
+            >
+              <option value="" disabled>
+                --Select a fetching method--
+              </option>
+              <option value="Nextjs">Next.js fetching</option>
+              <option value="Swr">SWR Stale-while-revalidate</option>
+              <option value="Query">TanStack Query</option>
+            </select>
+            <RectangleEllipsis className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+          </div>
+          <div id="fetching-error" aria-live="polite" aria-atomic="true">
+            {state.errors?.fetching &&
+              state.errors.fetching.map((error) => (
+                <p className="mt-2 text-sm text-red-500" key={error}>
+                  {error}
+                </p>
+              ))}
+          </div>
+        </div> */}
+
         {/* date */}
         <div className="mb-4">
           <label htmlFor="date" className="mb-2 block text-sm font-medium">

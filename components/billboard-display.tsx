@@ -1,5 +1,6 @@
 "use client";
 
+import { usePolling } from "@/app/hooks/usePolling";
 import ContentDisplay from "@/components/content-display";
 import type {
   ContentType,
@@ -14,7 +15,6 @@ import type {
 import { ProgressBar } from "@/ui/progress-bar";
 import { AnimatePresence, motion } from "framer-motion";
 import { Play } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEffect, useState, useMemo, use } from "react";
 // import useSWR from "swr";
 
@@ -35,7 +35,7 @@ export default function BillboardDisplay({
   weatherPromise: Promise<WeatherData>;
   scraperPromise: Promise<ScraperData[]>;
 }) {
-  const router = useRouter();
+  usePolling(stale * 60 * 1000);
   const weatherData = use(weatherPromise);
   const scraperData = use(scraperPromise);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -69,17 +69,6 @@ export default function BillboardDisplay({
   // } = useSWR<SocialMediaData[]>("social-media", getSocialMediaData, {
   //   refreshInterval: stale * 60 * 1000,
   // });
-
-  useEffect(() => {
-    const refreshInterval = setInterval(
-      () => {
-        router.refresh();
-      },
-      stale * 60 * 1000,
-    );
-
-    return () => clearInterval(refreshInterval);
-  }, [router, stale]);
 
   // Combine content
   const contentItems: ContentType[] = useMemo(() => {
