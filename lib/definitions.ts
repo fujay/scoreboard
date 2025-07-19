@@ -234,6 +234,8 @@ export type DbTypes = "None" | "Local" | "Remote";
 
 export type ImagesTypes = "Local" | "Remote";
 
+export type FetchingTypes = "Nextjs" | "SWR" | "Query";
+
 export type DateTypes =
   | "Clock"
   | "Date"
@@ -266,6 +268,7 @@ export interface Settings {
     db: DbTypes;
     images: ImagesTypes;
     stale: number;
+    fetching: FetchingTypes;
     date: DateTypes;
     news: NewsType;
     progressbar: ProgressbarTypes;
@@ -303,6 +306,7 @@ export const DEFAULT_SETTINGS: Settings = {
     images: "Local",
     stale: 3600,
     date: "Clock",
+    fetching: "Nextjs",
     news: "carousel",
     progressbar: "ProgressBar and Countdown",
   },

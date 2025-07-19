@@ -6,6 +6,7 @@ import { Button } from "@/ui/button";
 import { ChangeEvent, ReactNode, useActionState, useState } from "react";
 import {
   Clock,
+  Download,
   GalleryHorizontal,
   GalleryHorizontalEnd,
   GlassWater,
@@ -277,7 +278,7 @@ export default function Settings({
         </div>
 
         {/* fetching */}
-        {/* <div className="mb-4">
+        <div className="mb-4">
           <label htmlFor="fetching" className="mb-2 block text-sm font-medium">
             Fetching method:
           </label>
@@ -293,10 +294,10 @@ export default function Settings({
                 --Select a fetching method--
               </option>
               <option value="Nextjs">Next.js fetching</option>
-              <option value="Swr">SWR Stale-while-revalidate</option>
+              <option value="SWR">SWR Stale-while-revalidate</option>
               <option value="Query">TanStack Query</option>
             </select>
-            <RectangleEllipsis className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+            <Download className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
           </div>
           <div id="fetching-error" aria-live="polite" aria-atomic="true">
             {state.errors?.fetching &&
@@ -306,7 +307,7 @@ export default function Settings({
                 </p>
               ))}
           </div>
-        </div> */}
+        </div>
 
         {/* date */}
         <div className="mb-4">

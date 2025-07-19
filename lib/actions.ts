@@ -39,6 +39,7 @@ const FormSchemaGeneral = z.object({
   db: z.enum(["None", "Local", "Remote"]),
   images: z.enum(["Local", "Remote"]),
   stale: z.number().int().min(1).max(1440),
+  fetching: z.enum(["Nextjs", "SWR", "Query"]),
   date: z.enum([
     "Clock",
     "Date",
@@ -127,6 +128,7 @@ export type StateSettings = {
     db?: string[];
     images?: string[];
     stale?: string[];
+    fetching?: string[];
     date?: string[];
     news?: string[];
     progressbar?: string[];
@@ -211,6 +213,7 @@ export async function saveSettings(
     db: formData.get("db"),
     images: formData.get("images"),
     stale: parseInt(formData.get("stale") as string),
+    fetching: formData.get("fetching"),
     date: formData.get("date"),
     news: formData.get("news"),
     progressbar: formData.get("progressbar"),
@@ -223,11 +226,11 @@ export async function saveSettings(
     };
   }
 
-  const { time, db, images, stale, date, news, progressbar } =
+  const { time, db, images, stale, fetching, date, news, progressbar } =
     validatedFields.data;
 
   await saveConfig(
-    { time, db, images, stale, date, news, progressbar },
+    { time, db, images, stale, fetching, date, news, progressbar },
     "general",
   );
 

@@ -4,6 +4,7 @@
     "db": "Remote",
     "images": "Remote",
     "stale": 10,
+    "fetching": "Nextjs",
     "date": "Clock and Date without time",
     "news": "carousel",
     "progressbar": "ProgressBar and Countdown"
