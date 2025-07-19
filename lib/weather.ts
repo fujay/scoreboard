@@ -1,9 +1,27 @@
 "use server";
 
-import type { OpenWeatherData, WeatherData } from "@/lib/definitions";
-import { readConfig } from "@/lib/config";
+import type { OpenWeatherData, Settings, WeatherData } from "@/lib/definitions";
+// import { readConfig } from "@/lib/config";
 
-const settings = await readConfig();
+// const settings = await readConfig();
+const settings: Settings = {
+  general: {
+    time: 14,
+    db: "Remote",
+    images: "Remote",
+    stale: 10,
+    fetching: "Nextjs",
+    date: "Clock and Date without time",
+    news: "carousel",
+    progressbar: "ProgressBar and Countdown",
+  },
+  weather: {
+    active: true,
+    location: "Frankfurt am Main",
+    qrcode: true,
+    graphic: "Lucide Icons",
+  },
+};
 
 const staleTime = settings.general.stale || 60;
 

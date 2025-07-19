@@ -9,7 +9,7 @@ import { z } from "zod";
 import { uploadImage } from "./cloudinary";
 import { Settings } from "./definitions";
 import { containsCssSelectors } from "./utils";
-import { readKeyConfig, saveConfig } from "./config";
+import { /* readKeyConfig, */ saveConfig } from "./config";
 import { AuthError } from "next-auth";
 import { signIn } from "@/auth";
 
@@ -485,7 +485,26 @@ export async function updateScraper(
     qrcode,
   } = validatedFields.data;
 
-  const storage: Settings["general"] = await readKeyConfig("general");
+  // const storage: Settings["general"] = await readKeyConfig("general");
+  const settings: Settings = {
+    general: {
+      time: 14,
+      db: "Remote",
+      images: "Remote",
+      stale: 10,
+      fetching: "Nextjs",
+      date: "Clock and Date without time",
+      news: "carousel",
+      progressbar: "ProgressBar and Countdown",
+    },
+    weather: {
+      active: true,
+      location: "Frankfurt am Main",
+      qrcode: true,
+      graphic: "Lucide Icons",
+    },
+  };
+  const storage = settings.general;
 
   if (storage.db === "Local") {
     await saveConfig(
