@@ -279,24 +279,6 @@ export interface Settings {
     graphic: WeatherGraphicTypes;
     qrcode: boolean;
   };
-  scraper: [
-    {
-      id: string;
-      scraper_data_id: string;
-      url: string;
-      titleSelector: string;
-      selectors: string;
-      scraper: ScraperTypes;
-      format: ScraperFormats;
-      width: number;
-      height: number;
-      qrcode: boolean;
-      createdAt: string;
-      title: string;
-      data: string;
-      date: string;
-    },
-  ];
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -316,22 +298,4 @@ export const DEFAULT_SETTINGS: Settings = {
     graphic: "OpenWeatherMap",
     qrcode: false,
   },
-  scraper: [
-    {
-      id: "",
-      scraper_data_id: "",
-      url: "",
-      titleSelector: "",
-      selectors: "",
-      scraper: "Puppeteer",
-      format: "Text",
-      width: 0,
-      height: 0,
-      qrcode: false,
-      createdAt: new Date().toISOString(),
-      title: "",
-      data: "",
-      date: new Date().toISOString(),
-    },
-  ],
 };

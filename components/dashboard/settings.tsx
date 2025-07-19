@@ -11,6 +11,7 @@ import {
   GalleryHorizontalEnd,
   GlassWater,
   HardDrive,
+  Palette,
   RectangleEllipsis,
   Save,
   Timer,
@@ -112,6 +113,35 @@ export default function Settings({
       </datalist>
 
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
+        {/* color */}
+        <div className="mb-4">
+          <label htmlFor="color" className="mb-2 block text-sm font-medium">
+            Color:
+          </label>
+          <div className="relative mt-2 rounded-md">
+            <div className="relative">
+              <input
+                id="color"
+                name="color"
+                type="color"
+                // defaultValue={settings.color}
+                className="peer block w-1/2 cursor-pointer rounded-md border border-gray-200 p-10 py-1 text-sm outline-2 placeholder:text-gray-500"
+                aria-describedby="color-error"
+              />
+              <Palette className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+            </div>
+          </div>
+
+          {/* <div id="color-error" aria-live="polite" aria-atomic="true">
+            {state.errors?.color &&
+              state.errors.color.map((error) => (
+                <p className="mt-2 text-sm text-red-500" key={error}>
+                  {error}
+                </p>
+              ))}
+          </div> */}
+        </div>
+
         {/* time */}
         <div className="mb-4">
           <label htmlFor="time" className="mb-2 block text-sm font-medium">
