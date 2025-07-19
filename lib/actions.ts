@@ -488,11 +488,11 @@ export async function updateScraper(
   // const storage: Settings["general"] = await readKeyConfig("general");
   const settings: Settings = {
     general: {
-      time: 14,
+      time: 15,
       db: "Remote",
       images: "Remote",
       stale: 10,
-      fetching: "Nextjs",
+      fetching: "SWR",
       date: "Clock and Date without time",
       news: "carousel",
       progressbar: "ProgressBar and Countdown",

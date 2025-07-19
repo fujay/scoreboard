@@ -1,5 +1,5 @@
 import BillboardDisplay from "@/components/billboard-display";
-// import Header from "@/components/header";
+import Header from "@/components/header";
 import { Settings } from "@/lib/definitions";
 // import { readConfig } from "@/lib/config";
 
@@ -7,11 +7,11 @@ export default async function Home() {
   // const settings = await readConfig();
   const settings: Settings = {
     general: {
-      time: 14,
+      time: 15,
       db: "Remote",
       images: "Remote",
       stale: 10,
-      fetching: "Nextjs",
+      fetching: "SWR",
       date: "Clock and Date without time",
       news: "carousel",
       progressbar: "ProgressBar and Countdown",
@@ -26,7 +26,7 @@ export default async function Home() {
 
   return (
     <div className="flex min-h-screen flex-col overflow-hidden">
-      {/* <Header settings={settings.general} /> */}
+      <Header settings={settings.general} />
       <BillboardDisplay
         active={settings.weather.active}
         location={settings.weather.location}
