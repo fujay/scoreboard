@@ -3,70 +3,124 @@
 import ContentDisplay from "@/components/content-display";
 import type {
   ContentType,
+  FetchingTypes,
   ProgressbarTypes,
-  WeatherData,
   ScraperData,
-  // SocialMediaData,
+  WeatherData,
 } from "@/lib/definitions";
-// import { getScraperData } from "@/lib/scraper";
+import { getScraperData } from "@/lib/scraper";
 // import { getSocialMediaData } from "@/lib/social-media";
-// import { getWeatherData } from "@/lib/weather";
+import { getWeatherData } from "@/lib/weather";
 import { ProgressBar } from "@/ui/progress-bar";
 import { AnimatePresence, motion } from "framer-motion";
 import { Play } from "lucide-react";
-import { useEffect, useState, useMemo, use } from "react";
-// import useSWR from "swr";
+import { useEffect, useMemo, useState } from "react";
+import useSWR from "swr";
 
 export default function BillboardDisplay({
-  // active,
-  // location,
+  active,
+  location,
   interval,
-  // stale,
+  stale,
+  fetching,
   progressbar,
-  weatherPromise,
-  scraperPromise,
 }: {
-  // active: boolean;
-  // location: string;
+  active: boolean;
+  location: string;
   interval: number;
-  // stale: number;
+  stale: number;
+  fetching: FetchingTypes;
   progressbar: ProgressbarTypes;
-  weatherPromise: Promise<WeatherData>;
-  scraperPromise: Promise<ScraperData[]>;
 }) {
-  const weatherData = use(weatherPromise);
-  const scraperData = use(scraperPromise);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
-  const transitionIntervalMs = interval * 1000;
-  const progressUpdateInterval = transitionIntervalMs / 100;
+  const [weatherDataNextjs, setWeatherDataNextjs] = useState<
+    WeatherData | undefined
+  >(undefined);
+  const [weatherErrorNextjs, setWeatherErrorNextjs] =
+    useState<unknown>(undefined);
+  const [weatherLoadingNextjs, setWeatherLoadingNextjs] = useState(false);
+  const [scraperDataNextjs, setScraperDataNextjs] = useState<
+    ScraperData[] | undefined
+  >(undefined);
+  const [scraperErrorNextjs, setScraperErrorNextjs] =
+    useState<unknown>(undefined);
+  const [scraperLoadingNextjs, setScraperLoadingNextjs] = useState(false);
 
-  // SWR fetches
-  // const {
-  //   data: weatherData,
-  //   error: weatherError,
-  //   isLoading: weatherLoading,
-  // } = useSWR<WeatherData>(
-  //   active ? ["weather", location] : null,
-  //   () => getWeatherData(location),
-  //   { refreshInterval: stale * 60 * 1000 },
-  // );
-  // const {
-  //   data: scraperData,
-  //   error: scraperError,
-  //   isLoading: scraperLoading,
-  // } = useSWR<ScraperData[]>("scraper", getScraperData, {
+  const weatherSWR = useSWR<WeatherData>(
+    active ? ["weather", location] : null,
+    () => getWeatherData(location),
+    { refreshInterval: stale * 60 * 1000 },
+  );
+  const scraperSWR = useSWR<ScraperData[]>("scraper", getScraperData, {
+    refreshInterval: stale * 60 * 1000,
+  });
+  // const socialMediaSWR = useSWR<SocialMediaData[]>("social-media", getSocialMediaData, {
   //   refreshInterval: stale * 60 * 1000,
   // });
-  // const {
-  //   data: socialMediaData,
-  //   error: socialMediaError,
-  //   isLoading: socialMediaLoading,
-  // } = useSWR<SocialMediaData[]>("social-media", getSocialMediaData, {
-  //   refreshInterval: stale * 60 * 1000,
-  // });
+
+  let weatherData: WeatherData | undefined;
+  let weatherError: unknown;
+  let weatherLoading = false;
+  let scraperData: ScraperData[] | undefined;
+  let scraperError: unknown;
+  let scraperLoading = false;
+  // let socialMediaData: SocialMediaData[] | undefined;
+  // let socialMediaError: unknown;
+  // let socialMediaLoading = false;
+
+  useEffect(() => {
+    if (fetching !== "Nextjs") return;
+    let isMounted = true;
+    setWeatherLoadingNextjs(true);
+    setScraperLoadingNextjs(true);
+    getWeatherData(location)
+      .then((data) => {
+        if (isMounted) setWeatherDataNextjs(data);
+      })
+      .catch((err) => {
+        if (isMounted) setWeatherErrorNextjs(err);
+      })
+      .finally(() => {
+        if (isMounted) setWeatherLoadingNextjs(false);
+      });
+    getScraperData()
+      .then((data) => {
+        if (isMounted) setScraperDataNextjs(data);
+      })
+      .catch((err) => {
+        if (isMounted) setScraperErrorNextjs(err);
+      })
+      .finally(() => {
+        if (isMounted) setScraperLoadingNextjs(false);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, [fetching, location]);
+
+  if (fetching === "Nextjs") {
+    weatherData = weatherDataNextjs;
+    weatherError = weatherErrorNextjs;
+    weatherLoading = weatherLoadingNextjs;
+    scraperData = scraperDataNextjs;
+    scraperError = scraperErrorNextjs;
+    scraperLoading = scraperLoadingNextjs;
+  } else if (fetching === "SWR") {
+    weatherData = weatherSWR.data;
+    weatherError = weatherSWR.error;
+    weatherLoading = weatherSWR.isLoading;
+
+    scraperData = scraperSWR.data;
+    scraperError = scraperSWR.error;
+    scraperLoading = scraperSWR.isLoading;
+
+    // socialMediaData = socialMediaSWR.data;
+    // socialMediaError = socialMediaSWR.error;
+    // socialMediaLoading = socialMediaSWR.isLoading;
+  }
 
   // Combine content
   const contentItems: ContentType[] = useMemo(() => {
@@ -88,9 +142,8 @@ export default function BillboardDisplay({
     return allContent.sort(() => Math.random() - 0.5);
   }, [weatherData, scraperData /* , socialMediaData */]);
 
-  // const isLoading =
-  //   weatherLoading; /* || scraperLoading || socialMediaLoading */
-  // const error = weatherError; /* || scraperError;  || socialMediaError */
+  const isLoading = weatherLoading || scraperLoading; /*|| socialMediaLoading */
+  const error = weatherError || scraperError; /*  || socialMediaError */
 
   // Handle content rotation and progress bar
   useEffect(() => {
@@ -104,12 +157,12 @@ export default function BillboardDisplay({
         }
         return prevProgress + 1;
       });
-    }, progressUpdateInterval);
+    }, interval * 10);
 
     return () => {
       clearInterval(progressInterval);
     };
-  }, [contentItems.length, isPaused, progressUpdateInterval]);
+  }, [contentItems.length, isPaused, interval]);
 
   // Current content to display
   const currentContent = contentItems[currentIndex];
@@ -125,47 +178,38 @@ export default function BillboardDisplay({
           transition={{ duration: 0.5 }}
           className="flex-1"
         >
-          {
-            /* isLoading ? (
+          {isLoading ? (
             <div className="flex flex-col items-center justify-center">
               <div className="mb-4 h-12 w-12 animate-spin rounded-full border-t-2 border-b-2 border-white"></div>
               <div className="text-2xl">Loading content...</div>
-            </div> /*:  error ? (
-            <div className="text-center text-2xl text-red-400">
-              <p className="mb-4">⚠️ {String(error)}</p>
-              <p className="text-lg opacity-80">
-                Check your environment variables and try again.
-              </p>
             </div>
-          ) */
-            contentItems.length > 0 ? (
-              <ContentDisplay content={currentContent} />
-            ) : (
-              <div className="text-2xl">No content available</div>
-            )
-          }
+          ) : contentItems.length > 0 ? (
+            <ContentDisplay content={currentContent} />
+          ) : (
+            <div className="text-2xl">No content available</div>
+          )}
         </motion.main>
       </AnimatePresence>
       <footer
         className="cursor-pointer"
         onClick={() => setIsPaused((prev) => !prev)}
       >
-        {/* {error ? (
-          <div className="text-center text-2xl text-red-400">
+        {error ? (
+          <div className="text-center text-xl text-red-400">
             <p className="mb-4">⚠️ {String(error)}</p>
-            <p className="text-lg opacity-80">
+            <p className="opacity-80">
               Check your environment variables and try again.
             </p>
           </div>
-        ) : null} */}
+        ) : null}
         {isPaused ? (
           <p className="flex justify-center">
             <Play className="size-5 text-primary" />
           </p>
         ) : null}
         {progressbar !== "None" &&
-          //   !isLoading &&
-          //   !error &&
+          !isLoading &&
+          !error &&
           contentItems.length > 0 && (
             <div className="p-6">
               <ProgressBar
