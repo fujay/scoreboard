@@ -28,17 +28,19 @@ import Image from "next/image";
 import { Skeleton } from "./ui/skeleton";
 import { getWeatherData } from "@/lib/weather";
 import { useEffect, useState } from "react";
-import type { WeatherData } from "@/lib/definitions";
+import type { WeatherData, WeatherGraphicTypes } from "@/lib/definitions";
 
 export default function Weather({
   location,
   qrcode,
   graphic,
+  stale,
   onDataLoaded,
 }: {
   location: string;
   qrcode: boolean;
-  graphic: "Classic" | "Animated";
+  graphic: WeatherGraphicTypes;
+  stale: number;
   onDataLoaded?: () => void;
 }) {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
@@ -49,7 +51,7 @@ export default function Weather({
     const fetchData = async () => {
       try {
         setLoading(true);
-        const data = await getWeatherData(location);
+        const data = await getWeatherData(location, qrcode, graphic, stale);
         setWeatherData(data);
         setError(null);
         if (onDataLoaded) onDataLoaded();
