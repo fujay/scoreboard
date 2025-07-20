@@ -9,7 +9,7 @@ import { z } from "zod";
 import { uploadImage } from "./cloudinary";
 import { Settings } from "./definitions";
 import { containsCssSelectors } from "./utils";
-import { readKeyConfig, saveConfig } from "./config";
+import { readKeyConfig, saveConfig } from "@/lib/config";
 import { AuthError } from "next-auth";
 import { signIn } from "@/auth";
 
