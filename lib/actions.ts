@@ -7,7 +7,7 @@ import postgres from "postgres";
 import puppeteer from "puppeteer";
 import { z } from "zod";
 import { uploadImage } from "@/lib/cloudinary";
-import { Settings } from "@/lib/definitions";
+import type { Settings } from "@/lib/definitions";
 import { containsCssSelectors } from "@/lib/utils";
 import { readKeyConfig, saveConfig } from "@/lib/config";
 import { AuthError } from "next-auth";

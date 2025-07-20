@@ -7,7 +7,11 @@ import {
 } from "@/lib/actions";
 import { readKeyConfig } from "@/lib/config";
 import { fetchScrapers, fetchScrapersData } from "@/lib/data";
-import { ScraperData, ScraperDataAction, Settings } from "@/lib/definitions";
+import type {
+  ScraperData,
+  ScraperDataAction,
+  Settings,
+} from "@/lib/definitions";
 // import { unstable_cache } from "next/cache";
 
 const settings: Settings["general"] = await readKeyConfig("general");
