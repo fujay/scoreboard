@@ -1,21 +1,4 @@
 import {
-  ArrowDown,
-  ArrowUp,
-  Cloud,
-  CloudDrizzle,
-  CloudFog,
-  CloudLightning,
-  CloudRain,
-  CloudSnow,
-  CloudSun,
-  Droplets,
-  MoonStar,
-  QrCode,
-  Sun,
-  ThermometerSun,
-  Wind,
-} from "lucide-react";
-import {
   Card,
   CardContent,
   CardDescription,
@@ -23,12 +6,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { QRCodeSVG } from "qrcode.react";
-import Image from "next/image";
-import { Skeleton } from "./ui/skeleton";
-import { getWeatherData } from "@/lib/weather";
-import { useEffect, useState } from "react";
 import type { WeatherData, WeatherGraphicTypes } from "@/lib/definitions";
+import { getWeatherData } from "@/lib/weather";
+import {
+  ArrowDown,
+  ArrowUp,
+  Droplets,
+  QrCode,
+  ThermometerSun,
+  Wind,
+} from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
+import { useEffect, useState } from "react";
+import { Skeleton } from "./ui/skeleton";
+import { WeatherIcon } from "./weather-display";
 
 export default function Weather({
   location,
@@ -64,7 +55,7 @@ export default function Weather({
     };
 
     fetchData();
-  }, [location, onDataLoaded]);
+  }, [graphic, location, onDataLoaded, qrcode, stale]);
 
   return (
     <main className="bg-gradient-to-b from-sky-100 to-sky-50 p-4 dark:from-slate-900 dark:to-slate-800">
@@ -285,54 +276,3 @@ export default function Weather({
     </main>
   );
 }
-
-export const WeatherIcon: React.FC<{
-  weather: string;
-  iconSet: "Classic" | "Animated";
-}> = ({ weather, iconSet }) => {
-  if (iconSet === "Classic") {
-    switch (weather) {
-      case "11d": // Thunderstorm
-        return <CloudLightning className="size-12 text-amber-500" />;
-
-      case "09d": // Drizzle
-        return <CloudDrizzle className="size-12 text-blue-400" />;
-
-      case "10d": // Rain
-        return <CloudRain className="size-12 text-blue-600" />;
-
-      case "13d": // Snow
-        return <CloudSnow className="size-12 text-cyan-500" />;
-
-      case "50d": // Atmosphere
-        return <CloudFog className="size-12 text-neutral-500" />;
-
-      case "01d": // Clear Day
-        return <Sun className="size-12 text-yellow-500" />;
-      case "01n": // Clear Night
-        return <MoonStar className="size-12 text-stone-500" />;
-
-      case "02d": // few clouds
-      case "02n": // few clouds
-        return <CloudSun className="size-12 text-amber-500" />;
-
-      case "03d": // scattered clouds
-      case "03n": // scattered clouds
-      case "04d": // broken clouds / overcast clouds
-      case "04n": // broken clouds / overcast clouds
-        return <Cloud className="size-12 text-gray-500" />;
-
-      default:
-        return "";
-    }
-  } else {
-    return (
-      <Image
-        src={`https://openweathermap.org/img/wn/${weather}@2x.png`}
-        alt={""}
-        width={100}
-        height={100}
-      />
-    );
-  }
-};
