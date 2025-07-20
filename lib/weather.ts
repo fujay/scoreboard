@@ -1,11 +1,7 @@
 "use server";
 
 import type { OpenWeatherData, WeatherData } from "@/lib/definitions";
-import { readConfig } from "@/lib/config";
-
-const settings = await readConfig();
-
-const staleTime = settings.general.stale || 60;
+import { readConfig } from "./config";
 
 /**
  * Fetches current weather data for a given location using the OpenWeatherMap API.
@@ -15,6 +11,10 @@ const staleTime = settings.general.stale || 60;
  * @throws Will throw an error if the OpenWeatherMap API key is not configured, if the fetch request fails, or if the response is not OK.
  */
 export async function getWeatherData(location: string) {
+  const settings = await readConfig();
+
+  const staleTime = settings.general.stale || 60;
+
   try {
     if (!process.env.OPENWEATHERMAP_API_KEY) {
       throw new Error("OpenWeather API key is not configured");
