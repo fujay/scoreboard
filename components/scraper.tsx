@@ -16,8 +16,10 @@ import Image from "next/image";
 
 export default function Scraper({
   onDataLoaded,
+  db,
 }: {
   onDataLoaded?: () => void;
+  db: boolean;
 }) {
   const [scraperData, setScraperData] = useState<ScraperData[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -27,7 +29,7 @@ export default function Scraper({
     const fetchData = async () => {
       try {
         setLoading(true);
-        const data = await getScraperData();
+        const data = await getScraperData(db);
         setScraperData(data);
         setError(null);
         if (onDataLoaded) {
