@@ -5,7 +5,7 @@ import {
   scrapeViaCheerio,
   scrapeViaPuppeteer,
 } from "@/lib/actions";
-import { readKeyConfig } from "@/lib/config";
+import { readConfig } from "@/lib/config";
 import { fetchScrapers, fetchScrapersData } from "@/lib/data";
 import type {
   ScraperData,
@@ -14,7 +14,9 @@ import type {
 } from "@/lib/definitions";
 // import { unstable_cache } from "next/cache";
 
-const settings: Settings["general"] = await readKeyConfig("general");
+// const settings: Settings["general"] = await readKeyConfig("general");
+const settingsConfig: Settings = await readConfig();
+const settings = settingsConfig.general;
 
 // const staleTime = settings.stale || 60;
 const isNoCache = settings.db === "None";
