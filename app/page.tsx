@@ -11,6 +11,8 @@ export default async function Home() {
       <BillboardDisplay
         active={settings.weather.active}
         location={settings.weather.location}
+        qrcode={settings.weather.qrcode}
+        graphic={settings.weather.graphic}
         interval={settings.general.time}
         stale={settings.general.stale}
         db={settings.general.db}

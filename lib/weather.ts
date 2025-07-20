@@ -1,7 +1,10 @@
 "use server";
 
-import type { OpenWeatherData, WeatherData } from "@/lib/definitions";
-import { readConfig } from "./config";
+import type {
+  OpenWeatherData,
+  WeatherData,
+  WeatherGraphicTypes,
+} from "@/lib/definitions";
 
 /**
  * Fetches current weather data for a given location using the OpenWeatherMap API.
@@ -10,11 +13,12 @@ import { readConfig } from "./config";
  * @returns A promise that resolves to a `WeatherData` object containing weather information for the specified location.
  * @throws Will throw an error if the OpenWeatherMap API key is not configured, if the fetch request fails, or if the response is not OK.
  */
-export async function getWeatherData(location: string) {
-  const settings = await readConfig();
-
-  const staleTime = settings.general.stale || 60;
-
+export async function getWeatherData(
+  location: string,
+  qrcode: boolean,
+  graphic: WeatherGraphicTypes,
+  staleTime: number,
+): Promise<WeatherData> {
   try {
     if (!process.env.OPENWEATHERMAP_API_KEY) {
       throw new Error("OpenWeather API key is not configured");
@@ -48,8 +52,8 @@ export async function getWeatherData(location: string) {
       humidity: data.main.humidity,
       windSpeed: Math.round(data.wind.speed * 3.6), // Convert m/s to km/h
       dataTime: new Date(data.dt * 1000).toLocaleTimeString(),
-      qrcode: settings.weather.qrcode,
-      graphic: settings.weather.graphic,
+      qrcode: qrcode,
+      graphic: graphic,
     };
 
     return weatherData;

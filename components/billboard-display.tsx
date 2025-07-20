@@ -9,6 +9,7 @@ import type {
   ScraperData,
   SocialMediaData,
   WeatherData,
+  WeatherGraphicTypes,
 } from "@/lib/definitions";
 import { getScraperData } from "@/lib/scraper";
 import { getSocialMediaData } from "@/lib/social-media";
@@ -22,6 +23,8 @@ import useSWR from "swr";
 export default function BillboardDisplay({
   active,
   location,
+  qrcode,
+  graphic,
   interval,
   stale,
   db,
@@ -30,6 +33,8 @@ export default function BillboardDisplay({
 }: {
   active: boolean;
   location: string;
+  qrcode: boolean;
+  graphic: WeatherGraphicTypes;
   interval: number;
   stale: number;
   db: DbTypes;
@@ -64,7 +69,7 @@ export default function BillboardDisplay({
 
   const weatherSWR = useSWR<WeatherData>(
     active ? ["weather", location] : null,
-    () => getWeatherData(location),
+    () => getWeatherData(location, qrcode, graphic, stale),
     { refreshInterval: stale * 60 * 1000 },
   );
   const scraperSWR = useSWR<ScraperData[]>(
@@ -98,7 +103,7 @@ export default function BillboardDisplay({
     setWeatherLoadingNextjs(true);
     setScraperLoadingNextjs(true);
     setSocialMediaLoadingNextjs(true);
-    getWeatherData(location)
+    getWeatherData(location, qrcode, graphic, stale)
       .then((data) => {
         if (isMounted) setWeatherDataNextjs(data);
       })
@@ -131,7 +136,7 @@ export default function BillboardDisplay({
     return () => {
       isMounted = false;
     };
-  }, [fetching, location, db]);
+  }, [fetching, location, db, qrcode, graphic, stale]);
 
   if (fetching === "Nextjs") {
     weatherData = weatherDataNextjs;
