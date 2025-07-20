@@ -5,7 +5,7 @@ import {
   scrapeViaCheerio,
   scrapeViaPuppeteer,
 } from "@/lib/actions";
-import { readConfig } from "@/lib/config";
+import { readKeyConfig } from "@/lib/config";
 import { fetchScrapers, fetchScrapersData } from "@/lib/data";
 import type {
   ScraperData,
@@ -13,13 +13,6 @@ import type {
   Settings,
 } from "@/lib/definitions";
 // import { unstable_cache } from "next/cache";
-
-// const settings: Settings["general"] = await readKeyConfig("general");
-const settingsConfig: Settings = await readConfig();
-const settings = settingsConfig.general;
-
-// const staleTime = settings.stale || 60;
-const isNoCache = settings.db === "None";
 
 /**
  * Fetches scraper data based on the caching mechanism and scraper configurations.
@@ -37,6 +30,11 @@ const isNoCache = settings.db === "None";
  * @throws {Error} If no scraper data is found in the database when fetching new data.
  */
 export async function getScraperData(): Promise<ScraperData[]> {
+  const settings: Settings["general"] = await readKeyConfig("general");
+
+  // const staleTime = settings.stale || 60;
+  const isNoCache = settings.db === "None";
+
   if (isNoCache) {
     const scrapersList = await fetchScrapers();
     const scraperData: ScraperDataAction[] = await Promise.all(
