@@ -6,10 +6,11 @@ import type {
   FetchingTypes,
   ProgressbarTypes,
   ScraperData,
+  SocialMediaData,
   WeatherData,
 } from "@/lib/definitions";
 import { getScraperData } from "@/lib/scraper";
-// import { getSocialMediaData } from "@/lib/social-media";
+import { getSocialMediaData } from "@/lib/social-media";
 import { getWeatherData } from "@/lib/weather";
 import { ProgressBar } from "@/ui/progress-bar";
 import { AnimatePresence, motion } from "framer-motion";
@@ -42,12 +43,21 @@ export default function BillboardDisplay({
   const [weatherErrorNextjs, setWeatherErrorNextjs] =
     useState<unknown>(undefined);
   const [weatherLoadingNextjs, setWeatherLoadingNextjs] = useState(false);
+
   const [scraperDataNextjs, setScraperDataNextjs] = useState<
     ScraperData[] | undefined
   >(undefined);
   const [scraperErrorNextjs, setScraperErrorNextjs] =
     useState<unknown>(undefined);
   const [scraperLoadingNextjs, setScraperLoadingNextjs] = useState(false);
+
+  const [socialMediaDataNextjs, setSocialMediaDataNextjs] = useState<
+    SocialMediaData[] | undefined
+  >(undefined);
+  const [socialMediaErrorNextjs, setSocialMediaErrorNextjs] =
+    useState<unknown>(undefined);
+  const [socialMediaLoadingNextjs, setSocialMediaLoadingNextjs] =
+    useState(false);
 
   const weatherSWR = useSWR<WeatherData>(
     active ? ["weather", location] : null,
@@ -57,9 +67,13 @@ export default function BillboardDisplay({
   const scraperSWR = useSWR<ScraperData[]>("scraper", getScraperData, {
     refreshInterval: stale * 60 * 1000,
   });
-  // const socialMediaSWR = useSWR<SocialMediaData[]>("social-media", getSocialMediaData, {
-  //   refreshInterval: stale * 60 * 1000,
-  // });
+  const socialMediaSWR = useSWR<SocialMediaData[]>(
+    "social-media",
+    getSocialMediaData,
+    {
+      refreshInterval: stale * 60 * 1000,
+    },
+  );
 
   let weatherData: WeatherData | undefined;
   let weatherError: unknown;
@@ -67,15 +81,16 @@ export default function BillboardDisplay({
   let scraperData: ScraperData[] | undefined;
   let scraperError: unknown;
   let scraperLoading = false;
-  // let socialMediaData: SocialMediaData[] | undefined;
-  // let socialMediaError: unknown;
-  // let socialMediaLoading = false;
+  let socialMediaData: SocialMediaData[] | undefined;
+  let socialMediaError: unknown;
+  let socialMediaLoading = false;
 
   useEffect(() => {
     if (fetching !== "Nextjs") return;
     let isMounted = true;
     setWeatherLoadingNextjs(true);
     setScraperLoadingNextjs(true);
+    setSocialMediaLoadingNextjs(true);
     getWeatherData(location)
       .then((data) => {
         if (isMounted) setWeatherDataNextjs(data);
@@ -96,6 +111,16 @@ export default function BillboardDisplay({
       .finally(() => {
         if (isMounted) setScraperLoadingNextjs(false);
       });
+    getSocialMediaData()
+      .then((data) => {
+        if (isMounted) setSocialMediaDataNextjs(data);
+      })
+      .catch((err) => {
+        if (isMounted) setSocialMediaErrorNextjs(err);
+      })
+      .finally(() => {
+        if (isMounted) setSocialMediaLoadingNextjs(false);
+      });
     return () => {
       isMounted = false;
     };
@@ -108,6 +133,9 @@ export default function BillboardDisplay({
     scraperData = scraperDataNextjs;
     scraperError = scraperErrorNextjs;
     scraperLoading = scraperLoadingNextjs;
+    socialMediaData = socialMediaDataNextjs;
+    socialMediaError = socialMediaErrorNextjs;
+    socialMediaLoading = socialMediaLoadingNextjs;
   } else if (fetching === "SWR") {
     weatherData = weatherSWR.data;
     weatherError = weatherSWR.error;
@@ -117,9 +145,9 @@ export default function BillboardDisplay({
     scraperError = scraperSWR.error;
     scraperLoading = scraperSWR.isLoading;
 
-    // socialMediaData = socialMediaSWR.data;
-    // socialMediaError = socialMediaSWR.error;
-    // socialMediaLoading = socialMediaSWR.isLoading;
+    socialMediaData = socialMediaSWR.data;
+    socialMediaError = socialMediaSWR.error;
+    socialMediaLoading = socialMediaSWR.isLoading;
   }
 
   // Combine content
@@ -132,18 +160,18 @@ export default function BillboardDisplay({
             data: scraperDataItem,
           }))
         : []),
-      // ...(socialMediaData
-      //   ? socialMediaData.map((socialMediaItem) => ({
-      //       type: "social-media",
-      //       data: socialMediaItem,
-      //     }))
-      //   : []),
+      ...(socialMediaData
+        ? socialMediaData.map((socialMediaItem) => ({
+            type: "social-media",
+            data: socialMediaItem,
+          }))
+        : []),
     ];
     return allContent.sort(() => Math.random() - 0.5);
-  }, [weatherData, scraperData /* , socialMediaData */]);
+  }, [weatherData, scraperData, socialMediaData]);
 
-  const isLoading = weatherLoading || scraperLoading; /*|| socialMediaLoading */
-  const error = weatherError || scraperError; /*  || socialMediaError */
+  const isLoading = weatherLoading || scraperLoading || socialMediaLoading;
+  const error = weatherError || scraperError || socialMediaError;
 
   // Handle content rotation and progress bar
   useEffect(() => {
