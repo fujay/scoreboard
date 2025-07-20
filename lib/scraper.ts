@@ -5,7 +5,7 @@ import {
   scrapeViaCheerio,
   scrapeViaPuppeteer,
 } from "@/lib/actions";
-// import { readKeyConfig } from "@/lib/config";
+import { readKeyConfig } from "@/lib/config";
 import { fetchScrapers, fetchScrapersData } from "@/lib/data";
 import type {
   ScraperData,
@@ -14,29 +14,10 @@ import type {
 } from "@/lib/definitions";
 // import { unstable_cache } from "next/cache";
 
-// const settings: Settings["general"] = await readKeyConfig("general");
-
-const settings: Settings = {
-  general: {
-    time: 15,
-    db: "Remote",
-    images: "Remote",
-    stale: 10,
-    fetching: "SWR",
-    date: "Clock and Date without time",
-    news: "carousel",
-    progressbar: "ProgressBar and Countdown",
-  },
-  weather: {
-    active: true,
-    location: "Frankfurt am Main",
-    qrcode: true,
-    graphic: "Lucide Icons",
-  },
-};
+const settings: Settings["general"] = await readKeyConfig("general");
 
 // const staleTime = settings.stale || 60;
-const isNoCache = settings.general.db === "None";
+const isNoCache = settings.db === "None";
 
 /**
  * Fetches scraper data based on the caching mechanism and scraper configurations.
