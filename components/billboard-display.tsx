@@ -160,16 +160,16 @@ export default function BillboardDisplay({
   // Combine content
   const contentItems: ContentType[] = useMemo(() => {
     const allContent: ContentType[] = [
-      ...(weatherData ? [{ type: "weather", data: weatherData }] : []),
+      ...(weatherData ? [{ type: "weather" as const, data: weatherData }] : []),
       ...(scraperData
         ? scraperData.map((scraperDataItem) => ({
-            type: "scraper",
+            type: "scraper" as const,
             data: scraperDataItem,
           }))
         : []),
       ...(socialMediaData
         ? socialMediaData.map((socialMediaItem) => ({
-            type: "social-media",
+            type: "social-media" as const,
             data: socialMediaItem,
           }))
         : []),

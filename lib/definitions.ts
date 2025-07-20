@@ -22,7 +22,7 @@ export type User = {
 };
 
 export type ContentType = {
-  type: string;
+  type: "weather" | "scraper" | "social-media";
   data: WeatherData | ScraperData | SocialMediaData;
 };
 
