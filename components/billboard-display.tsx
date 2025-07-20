@@ -3,6 +3,7 @@
 import ContentDisplay from "@/components/content-display";
 import type {
   ContentType,
+  DbTypes,
   FetchingTypes,
   ProgressbarTypes,
   ScraperData,
@@ -23,6 +24,7 @@ export default function BillboardDisplay({
   location,
   interval,
   stale,
+  db,
   fetching,
   progressbar,
 }: {
@@ -30,6 +32,7 @@ export default function BillboardDisplay({
   location: string;
   interval: number;
   stale: number;
+  db: DbTypes;
   fetching: FetchingTypes;
   progressbar: ProgressbarTypes;
 }) {
@@ -64,9 +67,13 @@ export default function BillboardDisplay({
     () => getWeatherData(location),
     { refreshInterval: stale * 60 * 1000 },
   );
-  const scraperSWR = useSWR<ScraperData[]>("scraper", getScraperData, {
-    refreshInterval: stale * 60 * 1000,
-  });
+  const scraperSWR = useSWR<ScraperData[]>(
+    "scraper",
+    () => getScraperData(db === "None"),
+    {
+      refreshInterval: stale * 60 * 1000,
+    },
+  );
   const socialMediaSWR = useSWR<SocialMediaData[]>(
     "social-media",
     getSocialMediaData,
@@ -101,7 +108,7 @@ export default function BillboardDisplay({
       .finally(() => {
         if (isMounted) setWeatherLoadingNextjs(false);
       });
-    getScraperData()
+    getScraperData(db === "None")
       .then((data) => {
         if (isMounted) setScraperDataNextjs(data);
       })
@@ -124,7 +131,7 @@ export default function BillboardDisplay({
     return () => {
       isMounted = false;
     };
-  }, [fetching, location]);
+  }, [fetching, location, db]);
 
   if (fetching === "Nextjs") {
     weatherData = weatherDataNextjs;

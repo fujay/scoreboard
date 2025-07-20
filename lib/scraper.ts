@@ -5,13 +5,8 @@ import {
   scrapeViaCheerio,
   scrapeViaPuppeteer,
 } from "@/lib/actions";
-import { readKeyConfig } from "@/lib/config";
 import { fetchScrapers, fetchScrapersData } from "@/lib/data";
-import type {
-  ScraperData,
-  ScraperDataAction,
-  Settings,
-} from "@/lib/definitions";
+import type { ScraperData, ScraperDataAction } from "@/lib/definitions";
 // import { unstable_cache } from "next/cache";
 
 /**
@@ -29,11 +24,10 @@ import type {
  * @returns {Promise<ScraperData[]>} A promise that resolves to an array of scraper data objects.
  * @throws {Error} If no scraper data is found in the database when fetching new data.
  */
-export async function getScraperData(): Promise<ScraperData[]> {
-  const settings: Settings["general"] = await readKeyConfig("general");
-
+export async function getScraperData(
+  isNoCache: boolean,
+): Promise<ScraperData[]> {
   // const staleTime = settings.stale || 60;
-  const isNoCache = settings.db === "None";
 
   if (isNoCache) {
     const scrapersList = await fetchScrapers();

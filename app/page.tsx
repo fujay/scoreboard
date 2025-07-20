@@ -13,6 +13,7 @@ export default async function Home() {
         location={settings.weather.location}
         interval={settings.general.time}
         stale={settings.general.stale}
+        db={settings.general.db}
         fetching={settings.general.fetching}
         progressbar={settings.general.progressbar}
       />
