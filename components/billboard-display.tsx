@@ -214,7 +214,9 @@ export default function BillboardDisplay({
           ) : contentItems.length > 0 ? (
             <ContentDisplay content={currentContent} />
           ) : (
-            <div className="text-2xl">No content available</div>
+            <div className="flex items-center justify-center text-2xl">
+              No content available
+            </div>
           )}
         </motion.main>
       </AnimatePresence>
