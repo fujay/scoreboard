@@ -36,6 +36,20 @@ async function seedAdmin() {
   return insertedUsers;
 }
 
+async function createMessagesTable() {
+  await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+  await sql`
+    CREATE TABLE IF NOT EXISTS messages (
+      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      content TEXT NOT NULL,
+      url TEXT NOT NULL,
+      qrcode BOOLEAN NOT NULL,
+      show_until DATE,
+      created_at DATE NOT NULL
+    );
+  `;
+}
+
 async function createNewsTable() {
   await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
   await sql`
@@ -103,6 +117,7 @@ export async function GET() {
       seedAdmin(),
       createScraperDataTable(),
       createScraperTable(),
+      createMessagesTable(),
       createNewsTable(),
       createSocialMediaTable(),
     ]);
