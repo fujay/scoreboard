@@ -66,6 +66,16 @@ const FormSchemaWeather = z.object({
   graphic: z.enum(["OpenWeatherMap", "Lucide Icons", "3D"]),
 });
 
+const FormSchemaMessage = z.object({
+  content: z.string(),
+  url: z.string().url(),
+  qrcode: z.coerce.boolean(),
+  showUntil: z.preprocess(
+    (val) => (val === "" || val === undefined ? null : val),
+    z.string().date().nullable(),
+  ),
+});
+
 const FormSchemaNews = z.object({
   title: z.string().min(2),
   content: z.string().min(2),
@@ -144,6 +154,22 @@ export type StateWeather = {
     qrcode?: string[];
   };
   message?: string | null;
+};
+
+export type StateMessage = {
+  errors?: {
+    content?: string[];
+    url?: string[];
+    qrcode?: string[];
+    showUntil?: string[];
+  };
+  message?: string | null;
+  inputs?: {
+    content?: string;
+    url?: string;
+    qrcode?: string;
+    showUntil?: string;
+  };
 };
 
 export type StateNews = {
@@ -520,6 +546,103 @@ export async function updateScraper(
   redirect("/dashboard/scraper");
 }
 
+export async function createMessage(
+  prevState: StateMessage,
+  formData: FormData,
+) {
+  const validatedFields = FormSchemaMessage.safeParse({
+    content: formData.get("content"),
+    url: formData.get("url"),
+    qrcode: formData.get("qrcode"),
+    showUntil: formData.get("showUntil"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Missing Fields. Failed to Create Message.",
+      inputs: {
+        content: formData.get("content") as string,
+        url: formData.get("url") as string,
+        qrcode: formData.get("qrcode") === "on",
+        showUntil: formData.get("showUntil") as string,
+      },
+    };
+  }
+
+  const { content, url, qrcode, showUntil } = validatedFields.data;
+
+  const date = new Date().toISOString().split("T")[0];
+
+  try {
+    await sql`
+      INSERT INTO messages (content, url, qrcode, show_until, created_at)
+      VALUES (${content}, ${url}, ${qrcode}, ${showUntil}, ${date})
+      `;
+  } catch (error) {
+    return {
+      message: `Database Error: Failed to Create Message. (${error}).`,
+    };
+  }
+
+  revalidatePath("/dashboard/message");
+  redirect("/dashboard/message");
+}
+
+export async function updateMessage(
+  id: string,
+  prevState: StateMessage,
+  formData: FormData,
+) {
+  const validatedFields = FormSchemaMessage.safeParse({
+    content: formData.get("content"),
+    url: formData.get("url"),
+    qrcode: formData.get("qrcode"),
+    showUntil: formData.get("showUntil"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Missing Fields. Failed to Update Message.",
+      inputs: {
+        content: formData.get("content") as string,
+        url: formData.get("url") as string,
+        qrcode: formData.get("qrcode") === "on",
+        showUntil: formData.get("showUntil") as string,
+      },
+    };
+  }
+
+  const { content, url, qrcode, showUntil } = validatedFields.data;
+
+  const date = new Date().toISOString().split("T")[0];
+
+  try {
+    await sql`
+    UPDATE messages
+    SET content = ${content}, url = ${url}, qrcode = ${qrcode}, show_until = ${showUntil}, created_at = ${date}
+    WHERE id = ${id}`;
+  } catch (error) {
+    return {
+      message: `Database Error: Failed to Update Message. (${error}).`,
+    };
+  }
+
+  revalidatePath("/dashboard/message");
+  redirect("/dashboard/message");
+}
+
+export async function deleteMessage(id: string) {
+  try {
+    await sql`DELETE FROM messages WHERE id = ${id}`;
+
+    revalidatePath("/dashboard/message");
+  } catch (error) {
+    console.error("Error deleting message:", error);
+  }
+}
+
 export async function createNews(prevState: StateNews, formData: FormData) {
   const validatedFields = FormSchemaNews.safeParse({
     title: formData.get("title"),
@@ -609,8 +732,6 @@ export async function createSocialMedia(
   prevState: StateSocialMedia,
   formData: FormData,
 ) {
-  console.log(formData);
-
   const validatedFields = FormSchemaSocialMedia.safeParse({
     title: formData.get("title"),
     platform: formData.get("platform"),
@@ -618,8 +739,6 @@ export async function createSocialMedia(
     qrcode: formData.get("qrcode"),
     showUntil: formData.get("showUntil"),
   });
-  console.log(validatedFields);
-  console.log(validatedFields.data);
 
   if (!validatedFields.success) {
     return {
@@ -797,7 +916,6 @@ export async function scrapeViaPuppeteer(
       titleSelector,
       selectors,
     );
-    console.log(data);
     // return data
     return {
       title: data.title || titleSelector,
