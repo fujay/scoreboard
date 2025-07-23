@@ -28,6 +28,8 @@ export function CardsSkeleton() {
       <CardSkeleton />
       <CardSkeleton />
       <CardSkeleton />
+      <CardSkeleton />
+      <CardSkeleton />
     </>
   );
 }
@@ -73,12 +75,45 @@ export default function DashboardSkeleton() {
         <CardSkeleton />
         <CardSkeleton />
         <CardSkeleton />
+        <CardSkeleton />
+        <CardSkeleton />
       </div>
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
         <DataChartSkeleton />
         <DataCategoriesChartSkeleton />
       </div>
     </>
+  );
+}
+
+export function TableRowMessageSkeleton() {
+  return (
+    <tr className="w-full border-b border-gray-100 last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg">
+      {/* Content */}
+      <td className="px-3 py-3 whitespace-nowrap">
+        <Skeleton className="h-6 w-32 rounded bg-gray-100"></Skeleton>
+      </td>
+      {/* QR code */}
+      <td className="px-3 py-3 whitespace-nowrap">
+        <Skeleton className="h-6 w-16 rounded bg-gray-100"></Skeleton>
+      </td>
+      {/* Show until */}
+      <td className="px-3 py-3 whitespace-nowrap">
+        <Skeleton className="h-6 w-16 rounded bg-gray-100"></Skeleton>
+      </td>
+      {/* Created */}
+      <td className="px-3 py-3 whitespace-nowrap">
+        <Skeleton className="h-6 w-16 rounded bg-gray-100"></Skeleton>
+      </td>
+
+      {/* Actions */}
+      <td className="py-3 pr-3 pl-6 whitespace-nowrap">
+        <div className="flex justify-end gap-3">
+          <Skeleton className="h-[38px] w-[38px] rounded bg-gray-100"></Skeleton>
+          <Skeleton className="h-[38px] w-[38px] rounded bg-gray-100"></Skeleton>
+        </div>
+      </td>
+    </tr>
   );
 }
 
@@ -170,6 +205,57 @@ export function MobileSkeleton() {
         <div className="flex justify-end gap-2">
           <div className="h-10 w-10 rounded bg-gray-100"></div>
           <div className="h-10 w-10 rounded bg-gray-100"></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function MessageTableSkeleton() {
+  return (
+    <div className="mt-6 flow-root">
+      <div className="inline-block min-w-full align-middle">
+        <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+          <div className="md:hidden">
+            <MobileSkeleton />
+            <MobileSkeleton />
+            <MobileSkeleton />
+            <MobileSkeleton />
+            <MobileSkeleton />
+            <MobileSkeleton />
+          </div>
+          <table className="hidden min-w-full text-gray-900 md:table">
+            <thead className="rounded-lg text-left text-sm font-normal">
+              <tr>
+                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+                  Content
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  QR code
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Show until
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Created
+                </th>
+                <th
+                  scope="col"
+                  className="relative pt-2 pr-6 pb-4 pl-3 sm:pr-6"
+                >
+                  <span className="sr-only">Edit</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white">
+              <TableRowMessageSkeleton />
+              <TableRowMessageSkeleton />
+              <TableRowMessageSkeleton />
+              <TableRowMessageSkeleton />
+              <TableRowMessageSkeleton />
+              <TableRowMessageSkeleton />
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
