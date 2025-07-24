@@ -1,6 +1,7 @@
 import postgres from "postgres";
 // import { readKeyConfig } from "./config";
 import {
+  MessageData,
   NewsData,
   Scraper,
   ScraperData,
@@ -248,6 +249,93 @@ export async function fetchScrapersData() {
   } catch (error) {
     console.error("Database Error: ", error);
     throw new Error("Failed to fetch scrapers data");
+  }
+}
+
+export async function fetchMessagesPages(query: string) {
+  try {
+    const data = await sql`SELECT COUNT(*)
+      from messages
+      WHERE
+        content ILIKE ${`%${query}%`} OR
+        url ILIKE ${`%${query}%`} OR
+        show_until::text ILIKE ${`%${query}%`} OR
+        created_at::text ILIKE ${`%${query}%`}
+      `;
+
+    const totalPages = Math.ceil(Number(data[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch total number of message pages.");
+  }
+}
+
+export async function fetchFilteredMessages(
+  query: string,
+  currentPage: number,
+) {
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const messages = await sql<MessageData[]>`
+      SELECT
+        id,
+        content,
+        url,
+        qrcode,
+        show_until,
+        created_at
+      FROM messages
+      WHERE
+        content ILIKE ${`%${query}%`} OR
+        url ILIKE ${`%${query}%`} OR
+        show_until::text ILIKE ${`%${query}%`} OR
+        created_at::text ILIKE ${`%${query}%`}
+      ORDER BY show_until DESC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+      `;
+
+    return messages;
+  } catch (error) {
+    console.error("Database Error: ", error);
+    throw new Error("Failed to fetch filtered messages.");
+  }
+}
+
+export async function fetchMessage() {
+  try {
+    const messages = await sql<MessageData[]>`
+    SELECT id, content, url, qrcode
+    FROM messages
+    WHERE (show_until IS NULL OR show_until > NOW())
+    `;
+
+    return messages;
+  } catch (error) {
+    console.error("Database Error: ", error);
+    throw new Error("Failed to fetch messages data.");
+  }
+}
+
+export async function fetchMessageById(id: string) {
+  try {
+    const message = await sql<MessageData[]>`
+      SELECT
+        id,
+        content,
+        url,
+        qrcode,
+        show_until,
+        created_at
+      FROM messages
+      WHERE id = ${id};
+    `;
+
+    return message[0];
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch social media.");
   }
 }
 
