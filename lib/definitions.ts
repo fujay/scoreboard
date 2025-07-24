@@ -106,6 +106,15 @@ export type ScraperForm = {
   date: string;
 };
 
+export type MessageData = {
+  id: string;
+  content: string;
+  url: string;
+  qrcode: boolean;
+  show_until: string;
+  create_at: string;
+};
+
 export type SocialMediaData = {
   id: string;
   title: string;
