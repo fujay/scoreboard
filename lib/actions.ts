@@ -67,9 +67,8 @@ const FormSchemaWeather = z.object({
 });
 
 const FormSchemaMessage = z.object({
-  content: z.string(),
-  url: z.string().url(),
-  qrcode: z.coerce.boolean(),
+  content: z.string().min(2),
+  url: z.string().url().or(z.literal("")),
   showUntil: z.preprocess(
     (val) => (val === "" || val === undefined ? null : val),
     z.string().date().nullable(),
@@ -160,14 +159,12 @@ export type StateMessage = {
   errors?: {
     content?: string[];
     url?: string[];
-    qrcode?: string[];
     showUntil?: string[];
   };
   message?: string | null;
   inputs?: {
     content?: string;
     url?: string;
-    qrcode?: string;
     showUntil?: string;
   };
 };
@@ -550,10 +547,11 @@ export async function createMessage(
   prevState: StateMessage,
   formData: FormData,
 ) {
+  console.log(formData);
+
   const validatedFields = FormSchemaMessage.safeParse({
     content: formData.get("content"),
     url: formData.get("url"),
-    qrcode: formData.get("qrcode"),
     showUntil: formData.get("showUntil"),
   });
 
@@ -564,20 +562,20 @@ export async function createMessage(
       inputs: {
         content: formData.get("content") as string,
         url: formData.get("url") as string,
-        qrcode: formData.get("qrcode") === "on",
         showUntil: formData.get("showUntil") as string,
       },
     };
   }
 
-  const { content, url, qrcode, showUntil } = validatedFields.data;
+  const { content, url, showUntil } = validatedFields.data;
 
   const date = new Date().toISOString().split("T")[0];
+  console.log({ content, url, showUntil, date });
 
   try {
     await sql`
-      INSERT INTO messages (content, url, qrcode, show_until, created_at)
-      VALUES (${content}, ${url}, ${qrcode}, ${showUntil}, ${date})
+      INSERT INTO messages (content, url, show_until, created_at)
+      VALUES (${content}, ${url}, ${showUntil}, ${date})
       `;
   } catch (error) {
     return {
@@ -608,20 +606,19 @@ export async function updateMessage(
       inputs: {
         content: formData.get("content") as string,
         url: formData.get("url") as string,
-        qrcode: formData.get("qrcode") === "on",
         showUntil: formData.get("showUntil") as string,
       },
     };
   }
 
-  const { content, url, qrcode, showUntil } = validatedFields.data;
+  const { content, url, showUntil } = validatedFields.data;
 
   const date = new Date().toISOString().split("T")[0];
 
   try {
     await sql`
     UPDATE messages
-    SET content = ${content}, url = ${url}, qrcode = ${qrcode}, show_until = ${showUntil}, created_at = ${date}
+    SET content = ${content}, url = ${url}, show_until = ${showUntil}, created_at = ${date}
     WHERE id = ${id}`;
   } catch (error) {
     return {
