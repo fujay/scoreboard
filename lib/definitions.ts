@@ -110,9 +110,8 @@ export type MessageData = {
   id: string;
   content: string;
   url: string;
-  qrcode: boolean;
   show_until: string;
-  create_at: string;
+  created_at: string;
 };
 
 export type SocialMediaData = {
