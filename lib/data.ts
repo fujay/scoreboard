@@ -283,7 +283,6 @@ export async function fetchFilteredMessages(
         id,
         content,
         url,
-        qrcode,
         show_until,
         created_at
       FROM messages
@@ -292,7 +291,7 @@ export async function fetchFilteredMessages(
         url ILIKE ${`%${query}%`} OR
         show_until::text ILIKE ${`%${query}%`} OR
         created_at::text ILIKE ${`%${query}%`}
-      ORDER BY show_until DESC
+      ORDER BY created_at DESC
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
       `;
 
@@ -306,7 +305,7 @@ export async function fetchFilteredMessages(
 export async function fetchMessage() {
   try {
     const messages = await sql<MessageData[]>`
-    SELECT id, content, url, qrcode
+    SELECT id, content, url
     FROM messages
     WHERE (show_until IS NULL OR show_until > NOW())
     `;
