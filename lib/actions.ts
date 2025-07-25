@@ -547,8 +547,6 @@ export async function createMessage(
   prevState: StateMessage,
   formData: FormData,
 ) {
-  console.log(formData);
-
   const validatedFields = FormSchemaMessage.safeParse({
     content: formData.get("content"),
     url: formData.get("url"),
@@ -570,7 +568,6 @@ export async function createMessage(
   const { content, url, showUntil } = validatedFields.data;
 
   const date = new Date().toISOString().split("T")[0];
-  console.log({ content, url, showUntil, date });
 
   try {
     await sql`
