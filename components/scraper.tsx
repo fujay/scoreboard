@@ -44,7 +44,7 @@ export default function Scraper({
     };
 
     fetchData();
-  }, [onDataLoaded]);
+  }, [db, onDataLoaded]);
 
   return (
     <main className="bg-gradient-to-b from-sky-100 to-sky-50 p-4 dark:from-slate-900 dark:to-slate-800">
