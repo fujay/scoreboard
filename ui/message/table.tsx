@@ -104,10 +104,11 @@ export default async function MessageTable({
                   key={message.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
-                  <td title={message.content} className="py-3 pr-3 pl-6">
-                    <div className="flex items-center gap-3">
-                      {message.content}
-                    </div>
+                  <td
+                    title={message.content}
+                    className="max-w-md truncate py-3 pr-3 pl-6"
+                  >
+                    {message.content}
                   </td>
                   <td
                     className="max-w-xs truncate px-3 py-3"
