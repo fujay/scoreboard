@@ -324,7 +324,6 @@ export async function fetchMessageById(id: string) {
         id,
         content,
         url,
-        qrcode,
         show_until,
         created_at
       FROM messages
