@@ -22,8 +22,8 @@ export type User = {
 };
 
 export type ContentType = {
-  type: "weather" | "scraper" | "social-media";
-  data: WeatherData | ScraperData | SocialMediaData;
+  type: "weather" | "message" | "scraper" | "social-media";
+  data: WeatherData | MessageData | ScraperData | SocialMediaData;
 };
 
 export type NewsData = {
