@@ -53,6 +53,7 @@ const FormSchemaGeneral = z.object({
     "Countdown",
     "ProgressBar and Countdown",
   ]),
+  slidenumber: z.enum(["None", "Left", "Right"]),
 });
 
 const FormSchemaWeather = z.object({
@@ -141,6 +142,7 @@ export type StateSettings = {
     date?: string[];
     news?: string[];
     progressbar?: string[];
+    slidenumber?: string[];
   };
   message?: string | null;
 };
@@ -240,6 +242,7 @@ export async function saveSettings(
     date: formData.get("date"),
     news: formData.get("news"),
     progressbar: formData.get("progressbar"),
+    slidenumber: formData.get("slidenumber"),
   });
 
   if (!validatedFields.success) {
@@ -249,11 +252,20 @@ export async function saveSettings(
     };
   }
 
-  const { time, db, images, stale, fetching, date, news, progressbar } =
-    validatedFields.data;
+  const {
+    time,
+    db,
+    images,
+    stale,
+    fetching,
+    date,
+    news,
+    progressbar,
+    slidenumber,
+  } = validatedFields.data;
 
   await saveConfig(
-    { time, db, images, stale, fetching, date, news, progressbar },
+    { time, db, images, stale, fetching, date, news, progressbar, slidenumber },
     "general",
   );
 

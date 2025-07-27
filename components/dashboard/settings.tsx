@@ -11,6 +11,8 @@ import {
   GalleryHorizontalEnd,
   GlassWater,
   HardDrive,
+  MoveLeft,
+  MoveRight,
   Palette,
   RectangleEllipsis,
   Save,
@@ -56,6 +58,22 @@ export default function Settings({
     }
   });
 
+  const [slide, setSlide] = useState<ReactNode>(() => {
+    if (settings.slidenumber === "None") {
+      return (
+        <NoSymbolIcon className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+      );
+    } else if (settings.slidenumber === "Left") {
+      return (
+        <MoveLeft className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+      );
+    } else if (settings.slidenumber === "Right") {
+      return (
+        <MoveRight className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+      );
+    }
+  });
+
   const [stale, setStale] = useState<number>(settings.stale);
 
   const [state, formAction, isPending] = useActionState(
@@ -93,6 +111,22 @@ export default function Settings({
 
   const handleStaleChange = (value: ChangeEvent<HTMLInputElement>) => {
     setStale(Number(value.target.value));
+  };
+
+  const handleSlideChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    if (e.target.value === "None") {
+      setSlide(
+        <NoSymbolIcon className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />,
+      );
+    } else if (e.target.value === "Left") {
+      setSlide(
+        <MoveLeft className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />,
+      );
+    } else if (e.target.value === "Right") {
+      setSlide(
+        <MoveRight className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />,
+      );
+    }
   };
 
   return (
@@ -437,6 +471,42 @@ export default function Settings({
           <div id="progressbar-error" aria-live="polite" aria-atomic="true">
             {state.errors?.progressbar &&
               state.errors.progressbar.map((error) => (
+                <p className="mt-2 text-sm text-red-500" key={error}>
+                  {error}
+                </p>
+              ))}
+          </div>
+        </div>
+
+        {/* slidenumber */}
+        <div className="mb-4">
+          <label
+            htmlFor="slidenumber"
+            className="mb-2 block text-sm font-medium"
+          >
+            Slide number:
+          </label>
+          <div className="relative">
+            <select
+              id="slidenumber"
+              name="slidenumber"
+              onChange={handleSlideChange}
+              className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+              defaultValue={settings.slidenumber}
+              aria-describedby="slidenumber-error"
+            >
+              <option value="" disabled>
+                --Select a slide option--
+              </option>
+              <option value="None">None</option>
+              <option value="Left">Left</option>
+              <option value="Right">Right</option>
+            </select>
+            {slide}
+          </div>
+          <div id="slidenumber-error" aria-live="polite" aria-atomic="true">
+            {state.errors?.slidenumber &&
+              state.errors.slidenumber.map((error) => (
                 <p className="mt-2 text-sm text-red-500" key={error}>
                   {error}
                 </p>

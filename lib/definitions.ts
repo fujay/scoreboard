@@ -258,6 +258,8 @@ export type ProgressbarTypes =
   | "Countdown"
   | "ProgressBar and Countdown";
 
+export type SlideTypes = "None" | "Left" | "Right";
+
 export type WeatherGraphicTypes = "OpenWeatherMap" | "Lucide Icons" | "3D";
 
 export type SocialMediaTypes =
@@ -280,6 +282,7 @@ export interface Settings {
     date: DateTypes;
     news: NewsType;
     progressbar: ProgressbarTypes;
+    slidenumber: SlideTypes;
   };
   weather: {
     active: boolean;
@@ -299,6 +302,7 @@ export const DEFAULT_SETTINGS: Settings = {
     fetching: "Nextjs",
     news: "carousel",
     progressbar: "ProgressBar and Countdown",
+    slidenumber: "None",
   },
   weather: {
     active: true,

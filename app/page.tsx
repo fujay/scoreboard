@@ -18,6 +18,7 @@ export default async function Home() {
         db={settings.general.db}
         fetching={settings.general.fetching}
         progressbar={settings.general.progressbar}
+        slides={settings.general.slidenumber}
       />
     </div>
   );

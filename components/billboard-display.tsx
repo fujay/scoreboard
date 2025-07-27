@@ -7,6 +7,7 @@ import type {
   FetchingTypes,
   ProgressbarTypes,
   ScraperData,
+  SlideTypes,
   SocialMediaData,
   WeatherData,
   WeatherGraphicTypes,
@@ -30,6 +31,7 @@ export default function BillboardDisplay({
   db,
   fetching,
   progressbar,
+  slides,
 }: {
   active: boolean;
   location: string;
@@ -40,6 +42,7 @@ export default function BillboardDisplay({
   db: DbTypes;
   fetching: FetchingTypes;
   progressbar: ProgressbarTypes;
+  slides: SlideTypes;
 }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [progress, setProgress] = useState(0);
@@ -236,6 +239,13 @@ export default function BillboardDisplay({
         className="cursor-pointer"
         onClick={() => setIsPaused((prev) => !prev)}
       >
+        {slides !== "None" && (
+          <div
+            className={`absolute ${slides === "Left" ? "left-0" : "right-0"} bottom-0 text-sm text-gray-400`}
+          >
+            {currentIndex + 1} / {contentItems.length}
+          </div>
+        )}
         {error ? (
           <div className="text-center text-xl text-red-400">
             <p className="mb-4">⚠️ {String(error)}</p>
