@@ -5,6 +5,7 @@ import type {
   ContentType,
   DbTypes,
   FetchingTypes,
+  MessageData,
   ProgressbarTypes,
   ScraperData,
   SlideTypes,
@@ -12,6 +13,7 @@ import type {
   WeatherData,
   WeatherGraphicTypes,
 } from "@/lib/definitions";
+import { getMessageData } from "@/lib/message";
 import { getScraperData } from "@/lib/scraper";
 import { getSocialMediaData } from "@/lib/social-media";
 import { getWeatherData } from "@/lib/weather";
@@ -55,6 +57,13 @@ export default function BillboardDisplay({
     useState<unknown>(undefined);
   const [weatherLoadingNextjs, setWeatherLoadingNextjs] = useState(false);
 
+  const [messageDataNextjs, setMessageDataNextjs] = useState<
+    MessageData[] | undefined
+  >(undefined);
+  const [messageErrorNextjs, setMessageErrorNextjs] =
+    useState<unknown>(undefined);
+  const [messageLoadingNextjs, setMessageLoadingNextjs] = useState(false);
+
   const [scraperDataNextjs, setScraperDataNextjs] = useState<
     ScraperData[] | undefined
   >(undefined);
@@ -75,6 +84,9 @@ export default function BillboardDisplay({
     () => getWeatherData(location, qrcode, graphic, stale),
     { refreshInterval: stale * 60 * 1000 },
   );
+  const messageSWR = useSWR<MessageData[]>("message", getMessageData, {
+    refreshInterval: stale * 60 * 1000,
+  });
   const scraperSWR = useSWR<ScraperData[]>(
     "scraper",
     () => getScraperData(db === "None"),
@@ -93,6 +105,9 @@ export default function BillboardDisplay({
   let weatherData: WeatherData | undefined;
   let weatherError: unknown;
   let weatherLoading = false;
+  let messageData: MessageData[] | undefined;
+  let messageError: unknown;
+  let messageLoading = false;
   let scraperData: ScraperData[] | undefined;
   let scraperError: unknown;
   let scraperLoading = false;
@@ -104,6 +119,7 @@ export default function BillboardDisplay({
     if (fetching !== "Nextjs") return;
     let isMounted = true;
     setWeatherLoadingNextjs(true);
+    setMessageLoadingNextjs(true);
     setScraperLoadingNextjs(true);
     setSocialMediaLoadingNextjs(true);
     getWeatherData(location, qrcode, graphic, stale)
@@ -115,6 +131,16 @@ export default function BillboardDisplay({
       })
       .finally(() => {
         if (isMounted) setWeatherLoadingNextjs(false);
+      });
+    getMessageData()
+      .then((data) => {
+        if (isMounted) setMessageDataNextjs(data);
+      })
+      .catch((err) => {
+        if (isMounted) setMessageErrorNextjs(err);
+      })
+      .finally(() => {
+        if (isMounted) setMessageLoadingNextjs(false);
       });
     getScraperData(db === "None")
       .then((data) => {
@@ -145,9 +171,15 @@ export default function BillboardDisplay({
     weatherData = weatherDataNextjs;
     weatherError = weatherErrorNextjs;
     weatherLoading = weatherLoadingNextjs;
+
+    messageData = messageDataNextjs;
+    messageError = messageErrorNextjs;
+    messageLoading = messageLoadingNextjs;
+
     scraperData = scraperDataNextjs;
     scraperError = scraperErrorNextjs;
     scraperLoading = scraperLoadingNextjs;
+
     socialMediaData = socialMediaDataNextjs;
     socialMediaError = socialMediaErrorNextjs;
     socialMediaLoading = socialMediaLoadingNextjs;
@@ -155,6 +187,10 @@ export default function BillboardDisplay({
     weatherData = weatherSWR.data;
     weatherError = weatherSWR.error;
     weatherLoading = weatherSWR.isLoading;
+
+    messageData = messageSWR.data;
+    messageError = messageSWR.error;
+    messageLoading = messageSWR.isLoading;
 
     scraperData = scraperSWR.data;
     scraperError = scraperSWR.error;
@@ -169,6 +205,12 @@ export default function BillboardDisplay({
   const contentItems: ContentType[] = useMemo(() => {
     const allContent: ContentType[] = [
       ...(weatherData ? [{ type: "weather" as const, data: weatherData }] : []),
+      ...(messageData
+        ? messageData.map((messageItem) => ({
+            type: "message" as const,
+            data: messageItem,
+          }))
+        : []),
       ...(scraperData
         ? scraperData.map((scraperDataItem) => ({
             type: "scraper" as const,
@@ -183,10 +225,12 @@ export default function BillboardDisplay({
         : []),
     ];
     return allContent.sort(() => Math.random() - 0.5);
-  }, [weatherData, scraperData, socialMediaData]);
+  }, [, weatherData, messageData, scraperData, socialMediaData]);
 
-  const isLoading = weatherLoading || scraperLoading || socialMediaLoading;
-  const error = weatherError || scraperError || socialMediaError;
+  const isLoading =
+    weatherLoading || messageLoading || scraperLoading || socialMediaLoading;
+  const error =
+    weatherError || messageError || scraperError || socialMediaError;
 
   // Handle content rotation and progress bar
   useEffect(() => {
