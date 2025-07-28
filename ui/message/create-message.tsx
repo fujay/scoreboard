@@ -4,9 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createMessage, type StateMessage } from "@/lib/actions";
 import { Button } from "@/ui/button";
 import { LinkIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { CalendarDays, Eye, Save } from "lucide-react";
+import { CalendarDays, Save } from "lucide-react";
+import { MDXClient, SerializeResult } from "next-mdx-remote-client";
+import { serialize } from "next-mdx-remote-client/serialize";
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 
 export default function MessageForm() {
   const initialState: StateMessage = {
@@ -15,46 +17,39 @@ export default function MessageForm() {
     inputs: {},
   };
 
+  const [content, setContent] = useState<string>("");
+  const [mdxSource, setMdxSource] = useState<
+    SerializeResult<Record<string, unknown>, Record<string, unknown>>
+  >({} as SerializeResult);
+
   const [state, formAction, isPending] = useActionState(
     createMessage,
     initialState,
   );
 
-  const handlePreview = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const handleOnChange = async (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setContent(e.target.value);
+    const mdxSource = await serialize({ source: e.target.value });
+    setMdxSource(mdxSource);
   };
 
   return (
     <>
       <form action={formAction}>
-        <div className="my-6 flex justify-between gap-4">
-          <div className="flex items-center">
-            <Link
-              href="/dashboard/message"
-              className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
-            >
-              <XMarkIcon className="h-6 w-6 sm:mr-1.5" />
-              <span className="hidden sm:block">Cancel</span>
-            </Link>
-          </div>
-          <div className="flex gap-4">
-            <Button
-              onClick={handlePreview}
-              className="bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground"
-              disabled={isPending}
-            >
-              <Eye className="h-6 w-6 sm:mr-1.5" />
-              <span className="hidden sm:block">
-                {isPending ? "Loading..." : "Preview"}
-              </span>
-            </Button>
-            <Button type="submit" disabled={isPending}>
-              <Save />
-              <span className="hidden sm:block">
-                {isPending ? "Creating..." : "Create Message"}
-              </span>
-            </Button>
-          </div>
+        <div className="my-6 flex justify-end gap-4">
+          <Link
+            href="/dashboard/message"
+            className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
+          >
+            <XMarkIcon className="h-6 w-6 sm:mr-1.5" />
+            <span className="hidden sm:block">Cancel</span>
+          </Link>
+          <Button type="submit" disabled={isPending}>
+            <Save />
+            <span className="hidden sm:block">
+              {isPending ? "Creating..." : "Create Message"}
+            </span>
+          </Button>
         </div>
 
         <div className="rounded-md bg-gray-50 p-4 md:p-6">
@@ -128,8 +123,9 @@ export default function MessageForm() {
                 <textarea
                   id="content"
                   name="content"
+                  value={content}
                   defaultValue={state.inputs?.content}
-                  // onChange={(e) => setContent(e.target.value)}
+                  onChange={handleOnChange}
                   placeholder={`Enter your markdown content here...
 
 Example:
@@ -154,14 +150,13 @@ This is a **bold** message with *italic* text.
               </CardHeader>
               <CardContent>
                 <div className="min-h-[500px] rounded border bg-white p-4">
-                  {/* {isPreviewMode && content.trim() ? (
-                    <MDXRenderer content={content} />
-                  ) : (
-                    <div className="text-gray-500 italic">
-                      Click &quot;Preview&quot; to see how your content will
-                      look
+                  {"compiledSource" in mdxSource ? (
+                    <MDXClient {...mdxSource} />
+                  ) : mdxSource && "error" in mdxSource ? (
+                    <div className="text-red-500 italic">
+                      Error rendering preview: {mdxSource.error.message}
                     </div>
-                  )} */}
+                  ) : null}
                 </div>
               </CardContent>
             </Card>
