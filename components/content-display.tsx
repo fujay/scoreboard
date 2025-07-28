@@ -12,8 +12,9 @@ import {
 
 export default function ContentDisplay({ content }: { content: ContentType }) {
   return (
-    <div /* className="mx-auto flex h-full w-full max-w-4xl items-center justify-center" */
-    >
+    // <div /* className="mx-auto flex h-full w-full max-w-4xl items-center justify-center" */
+    // >
+    <>
       {content.type === "weather" ? (
         <WeatherDisplay data={content.data as WeatherData} />
       ) : content.type === "message" ? (
@@ -25,6 +26,7 @@ export default function ContentDisplay({ content }: { content: ContentType }) {
       ) : (
         <div className="text-2xl">No content to display</div>
       )}
-    </div>
+    </>
+    // </div>
   );
 }
