@@ -1,4 +1,5 @@
 import { MessageData } from "@/lib/definitions";
+import { getTextSize } from "@/lib/utils";
 import { MDXClient } from "next-mdx-remote-client";
 import { serialize, SerializeResult } from "next-mdx-remote-client/serialize";
 import { useEffect, useState } from "react";
@@ -18,7 +19,9 @@ export default function MessageDisplay({ data }: { data: MessageData }) {
 
   if ("compiledSource" in mdxSource) {
     return (
-      <div className="flex flex-col items-center">
+      <div
+        className={`prose flex max-w-none flex-col items-center text-balance ${getTextSize(data.content)}`}
+      >
         <MDXClient {...mdxSource} />
       </div>
     );
