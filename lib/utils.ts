@@ -5,6 +5,14 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export const getTextSize = (content: string) => {
+  const length = content.length;
+  if (length < 50) return "text-4xl md:text-6xl lg:text-8xl";
+  if (length < 150) return "text-3xl md:text-5xl lg:text-7xl";
+  if (length < 300) return "text-2xl md:text-4xl lg:text-6xl";
+  return "text-xl md:text-3xl lg:text-5xl";
+};
+
 /**
  * Generates an array of page numbers for pagination.
  *
