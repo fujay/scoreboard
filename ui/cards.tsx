@@ -4,28 +4,31 @@ import {
   GlobeAltIcon,
   PhotoIcon,
 } from "@heroicons/react/24/outline";
+import { MessageSquareMoreIcon, NewspaperIcon } from "lucide-react";
 import { lusitana } from "./fonts";
-import XIcon from "./x-icon";
-import { NewspaperIcon } from "lucide-react";
 
 const iconMap = {
+  messages: DocumentTextIcon,
   scraper: GlobeAltIcon,
   scraperText: DocumentTextIcon,
   scraperImage: PhotoIcon,
+  socialMedia: MessageSquareMoreIcon,
   news: NewspaperIcon,
-  tweet: XIcon,
 };
 
 export default async function CardWrapper() {
   const {
+    numberOfMessages,
     numberOfScrapers,
     numberOfScraperTexts,
     numberOfScraperImages,
+    numberOfSocialMedia,
     numberOfNews,
   } = await fetchCardData();
 
   return (
     <>
+      <Card title="Messages" value={numberOfMessages} type="messages" />
       <Card title="Scrapers" value={numberOfScrapers} type="scraper" />
       <Card
         title="Scraper texts"
@@ -37,10 +40,12 @@ export default async function CardWrapper() {
         value={numberOfScraperImages}
         type="scraperImage"
       />
+      <Card
+        title="Social Media"
+        value={numberOfSocialMedia}
+        type="socialMedia"
+      />
       <Card title="News" value={numberOfNews} type="news" />
-      {/* <Card title="Tweets" value={numberOfTweets} type="tweet" />
-      <Card title="Tweets" value={numberOfTweets} type="invoices" />
-      <Card title="Tweets" value={numberOfTweets} type="customers" /> */}
     </>
   );
 }
@@ -52,7 +57,13 @@ export function Card({
 }: {
   title: string;
   value: number | string;
-  type: "scraper" | "scraperText" | "scraperImage" | "news" | "tweet";
+  type:
+    | "messages"
+    | "scraper"
+    | "scraperText"
+    | "scraperImage"
+    | "socialMedia"
+    | "news";
 }) {
   const Icon = iconMap[type];
 
