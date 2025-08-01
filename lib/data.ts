@@ -26,26 +26,34 @@ export async function fetchCardData() {
     //     numberOfScrapers,
     //   };
     // } else if (storage.db === "Remote") {
+    const messagesListPromise = sql`SELECT COUNT(*) FROM messages`;
     const scrapersListPromise = sql`SELECT COUNT(*) FROM scrapers`;
     const scrapersTextListPromise = sql`SELECT COUNT(*) FROM scrapers WHERE format = 'Text'`;
     const scrapersImageListPromise = sql`SELECT COUNT(*) FROM scrapers WHERE format = 'Screenshot'`;
+    const socialMediaListPromise = sql`SELECT COUNT(*) FROM social_media`;
     const newsListPromise = sql`SELECT COUNT(*) FROM news`;
     const data = await Promise.all([
+      messagesListPromise,
       scrapersListPromise,
       scrapersTextListPromise,
       scrapersImageListPromise,
+      socialMediaListPromise,
       newsListPromise,
     ]);
 
-    const numberOfScrapers = data[0][0].count ?? "0";
-    const numberOfScraperTexts = data[1][0].count ?? "0";
-    const numberOfScraperImages = data[2][0].count ?? "0";
-    const numberOfNews = data[3][0].count ?? "0";
+    const numberOfMessages = data[0][0].count ?? "0";
+    const numberOfScrapers = data[1][0].count ?? "0";
+    const numberOfScraperTexts = data[2][0].count ?? "0";
+    const numberOfScraperImages = data[3][0].count ?? "0";
+    const numberOfSocialMedia = data[4][0].count ?? "0";
+    const numberOfNews = data[5][0].count ?? "0";
 
     return {
+      numberOfMessages,
       numberOfScrapers,
       numberOfScraperTexts,
       numberOfScraperImages,
+      numberOfSocialMedia,
       numberOfNews,
     };
     // } else {
