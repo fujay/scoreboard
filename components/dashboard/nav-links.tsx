@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  CalendarDaysIcon,
   CloudIcon,
   Cog8ToothIcon,
   DocumentTextIcon,
@@ -30,7 +29,6 @@ const links = [
   },
   { name: "Weather", href: "/dashboard/weather", icon: SunIcon },
   { name: "Multimedia", href: "/dashboard/multimedia", icon: FileVideo },
-  { name: "Calendar", href: "/dashboard/calendar", icon: CalendarDaysIcon },
   { name: "Settings", href: "/dashboard/settings", icon: Cog8ToothIcon },
 ];
 
