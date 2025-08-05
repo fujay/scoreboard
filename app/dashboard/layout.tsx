@@ -6,7 +6,16 @@ import { unstable_ViewTransition as ViewTransition } from "react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
+    <div
+      className="flex h-screen flex-col md:flex-row md:overflow-hidden"
+      style={{
+        backgroundImage: `
+        linear-gradient(to right, #e5e7eb 1px, transparent 1px),
+        linear-gradient(to bottom, #e5e7eb 1px, transparent 1px)
+      `,
+        backgroundSize: "40px 40px",
+      }}
+    >
       <div className="w-full flex-none md:w-64">
         <SideNav />
       </div>
