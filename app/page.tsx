@@ -1,9 +1,6 @@
 import BillboardDisplay from "@/components/billboard-display";
 import Header from "@/components/header";
 import { readConfig } from "@/lib/config";
-import settings from "@/app/settings.json";
-
-export const revalidate = settings.general.stale;
 
 export default async function Home() {
   const settings = await readConfig();
