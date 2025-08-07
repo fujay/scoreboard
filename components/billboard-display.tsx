@@ -225,7 +225,7 @@ export default function BillboardDisplay({
         : []),
     ];
     return allContent.sort(() => Math.random() - 0.5);
-  }, [, weatherData, messageData, scraperData, socialMediaData]);
+  }, [weatherData, messageData, scraperData, socialMediaData]);
 
   const isLoading =
     weatherLoading || messageLoading || scraperLoading || socialMediaLoading;
