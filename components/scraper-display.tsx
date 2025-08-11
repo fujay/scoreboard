@@ -26,8 +26,8 @@ export default function ScraperDisplay({ data }: { data: ScraperData }) {
                 src={data.data}
                 alt={data.title}
                 // fill
-                width={2000}
-                height={2000}
+                width={1000}
+                height={1000}
                 style={{ position: "static", width: "100%", height: "auto" }}
               />
             ) : (
