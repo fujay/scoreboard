@@ -28,6 +28,11 @@ export default function RootLayout({
       <body
         // className={`${inter.className} ${geistSans.className} ${geistMono.className} antialiased`}
         className={`${inter.className} antialiased`}
+        style={{
+          backgroundImage: `
+        radial-gradient(circle at 30% 70%, rgba(173, 216, 230, 0.35), transparent 60%),
+        radial-gradient(circle at 70% 30%, rgba(255, 182, 193, 0.4), transparent 60%)`,
+        }}
       >
         {children}
         <Toaster />
