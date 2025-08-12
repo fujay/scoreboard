@@ -73,8 +73,8 @@ function PaginationNumber({
   ${position === "first" || position === "single" ? "rounded-l-md" : ""}
   ${position === "last" || position === "single" ? "rounded-r-md" : ""}
   ${isActive ? "z-10 bg-blue-600 border-blue-600 text-white" : ""}
-  ${!isActive && position !== "middle" ? "hover:bg-gray-100" : ""}
-  ${position === "middle" ? "text-gray-300" : ""}
+  ${!isActive && position !== "middle" ? "hover:bg-gray-100 bg-white" : ""}
+  ${position === "middle" ? "bg-muted text-muted-foreground" : ""}
   `;
 
   return isActive || position === "middle" ? (
@@ -96,8 +96,8 @@ function PaginationArrow({
   isDisabled?: boolean;
 }) {
   const className = `flex h-10 w-10 items-center justify-center rounded-md border
-  ${isDisabled ? "pointer-events-none text-gray-300" : ""}
-  ${!isDisabled ? "hover:bg-gray-100" : ""}
+  ${isDisabled ? "pointer-events-none bg-muted text-muted-foreground" : ""}
+  ${!isDisabled ? "hover:bg-gray-100 bg-white" : ""}
   ${direction === "left" ? "mr-2 md:mr-4" : ""}
   ${direction === "right" ? "ml-2 md:ml-4" : ""}
   `;
