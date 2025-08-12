@@ -10,7 +10,7 @@ import {
   RssIcon,
   SunIcon,
 } from "@heroicons/react/24/outline";
-import { FileVideo, MessageSquareMoreIcon } from "lucide-react";
+import { MessageSquareMoreIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -28,7 +28,6 @@ const links = [
     icon: MessageSquareMoreIcon,
   },
   { name: "Weather", href: "/dashboard/weather", icon: SunIcon },
-  { name: "Multimedia", href: "/dashboard/multimedia", icon: FileVideo },
   { name: "Settings", href: "/dashboard/settings", icon: Cog8ToothIcon },
 ];
 
