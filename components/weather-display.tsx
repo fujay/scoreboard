@@ -19,7 +19,6 @@ import {
   CloudSun,
   Droplets,
   MoonStar,
-  QrCode,
   Sun,
   ThermometerSun,
   Wind,
@@ -30,102 +29,100 @@ import { WeatherState, WeatherSvg } from "weather-icons-animated";
 
 export default function WeatherDisplay({ data }: { data: WeatherData }) {
   return (
-    <main className="bg-gradient-to-b from-sky-100 to-sky-50 p-4 dark:from-slate-900 dark:to-slate-800">
-      <div className="mx-auto max-w-4xl">
-        <h1 className="mb-8 text-center text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-          Weather in {data.cityName} ({data.mainWeather})
-        </h1>
+    <main className="mx-auto max-w-11/12">
+      <h1 className="mb-8 text-center text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+        Weather in {data.cityName} ({data.mainWeather})
+      </h1>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          {/* Main Weather Card */}
-          <Card className="col-span-full bg-white/50 backdrop-blur-sm dark:bg-slate-800/50">
-            <CardHeader className="text-center">
-              <CardTitle className="flex items-center justify-center gap-2 text-3xl">
-                <WeatherIcon weather={data.icon} iconSet={data.graphic} />
-                {data.weatherDescription}
-              </CardTitle>
-              <CardDescription className="text-4xl font-bold text-slate-900 dark:text-slate-100">
-                {data.temperature}°C
-              </CardDescription>
-            </CardHeader>
-            <CardFooter>
-              <p className="text-sm text-gray-500">
-                Last updated: {data.dataTime}
-              </p>
-            </CardFooter>
-          </Card>
+      <div className="grid gap-4 md:grid-cols-3">
+        {/* Main Weather Card */}
+        <Card className="col-span-full bg-white/50 backdrop-blur-sm dark:bg-slate-800/50">
+          <CardHeader className="text-center">
+            <CardTitle className="flex items-center justify-center gap-2 text-3xl">
+              <WeatherIcon weather={data.icon} iconSet={data.graphic} />
+              {data.weatherDescription}
+            </CardTitle>
+            <CardDescription className="text-4xl font-bold text-slate-900 dark:text-slate-100">
+              {data.temperature}°C
+            </CardDescription>
+          </CardHeader>
+          <CardFooter>
+            <p className="text-sm text-gray-500">
+              Last updated: {data.dataTime}
+            </p>
+          </CardFooter>
+        </Card>
 
-          {/* Weather Feels like */}
+        {/* Weather Feels like */}
+        <Card className="bg-white/50 backdrop-blur-sm dark:bg-slate-800/50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-2xl">
+              <ThermometerSun className="size-8 text-orange-500" />
+              Feels Like
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-semibold">{data.feelsLike}°C</p>
+          </CardContent>
+        </Card>
+
+        {/* Humidity */}
+        <Card className="bg-white/50 backdrop-blur-sm dark:bg-slate-800/50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-2xl">
+              <Droplets className="size-8 text-blue-500" />
+              Humidity
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-semibold">{data.humidity}%</p>
+          </CardContent>
+        </Card>
+
+        {/* Max / Min Temp */}
+        <Card className="bg-white/50 backdrop-blur-sm dark:bg-slate-800/50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-2xl">
+              <ArrowUp className="size-8 text-red-500" />
+              <ArrowDown className="mt-4 text-blue-500" />
+              Max / <span className="mt-4">Min Temp</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex items-center gap-2">
+            <p className="text-3xl font-semibold">{data.tempMax}°C / </p>
+            <p className="mt-4 text-xl font-semibold">{data.tempMin}°C</p>
+          </CardContent>
+        </Card>
+
+        {/* Wind Speed */}
+        <Card className="bg-white/50 backdrop-blur-sm dark:bg-slate-800/50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-2xl">
+              <Wind className="size-8 text-sky-500" />
+              Wind Speed
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-semibold">{data.windSpeed} km/h</p>
+          </CardContent>
+        </Card>
+
+        {/* QR Code */}
+        {data.qrcode && (
           <Card className="bg-white/50 backdrop-blur-sm dark:bg-slate-800/50">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-2xl">
-                <ThermometerSun className="size-8 text-orange-500" />
-                Feels Like
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-semibold">{data.feelsLike}°C</p>
-            </CardContent>
-          </Card>
-
-          {/* Humidity */}
-          <Card className="bg-white/50 backdrop-blur-sm dark:bg-slate-800/50">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-2xl">
-                <Droplets className="size-8 text-blue-500" />
-                Humidity
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-semibold">{data.humidity}%</p>
-            </CardContent>
-          </Card>
-
-          {/* Max / Min Temp */}
-          <Card className="bg-white/50 backdrop-blur-sm dark:bg-slate-800/50">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-2xl">
-                <ArrowUp className="size-8 text-red-500" />
-                <ArrowDown className="mt-4 text-blue-500" />
-                Max / <span className="mt-4">Min Temp</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="flex items-center gap-2">
-              <p className="text-3xl font-semibold">{data.tempMax}°C / </p>
-              <p className="mt-4 text-xl font-semibold">{data.tempMin}°C</p>
-            </CardContent>
-          </Card>
-
-          {/* Wind Speed */}
-          <Card className="bg-white/50 backdrop-blur-sm dark:bg-slate-800/50">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-2xl">
-                <Wind className="size-8 text-sky-500" />
-                Wind Speed
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-semibold">{data.windSpeed} km/h</p>
-            </CardContent>
-          </Card>
-
-          {/* QR Code */}
-          {data.qrcode && (
-            <Card className="bg-white/50 backdrop-blur-sm dark:bg-slate-800/50">
-              <CardHeader>
+            {/* <CardHeader>
                 <CardTitle className="flex items-center justify-center gap-2 text-2xl">
                   <QrCode className="size-8 text-sky-500" />
                   QR Code
                 </CardTitle>
-              </CardHeader>
-              <CardContent className="flex items-center justify-center">
-                <QRCodeSVG
-                  value={`https://openweathermap.org/city/${data.cityId}`}
-                />
-              </CardContent>
-            </Card>
-          )}
-        </div>
+              </CardHeader> */}
+            <CardContent className="flex items-center justify-center">
+              <QRCodeSVG
+                value={`https://openweathermap.org/city/${data.cityId}`}
+              />
+            </CardContent>
+          </Card>
+        )}
       </div>
     </main>
   );
