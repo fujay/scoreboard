@@ -1,4 +1,10 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { SocialMediaData } from "@/lib/definitions";
 import { QrCode } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
@@ -27,7 +33,7 @@ export default function SocialMediaDisplay({
             {data.title}
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex grow justify-center text-slate-900 dark:text-slate-100">
+        <CardContent className="flex grow items-center justify-center gap-4 text-slate-900 dark:text-slate-100">
           {data.platform === "Facebook" ? (
             <FacebookEmbed url={data.url} />
           ) : data.platform === "Instagram" ? (
@@ -52,11 +58,16 @@ export default function SocialMediaDisplay({
               }}
             />
           ) : null}
+          {data.qrcode && (
+            <>
+              <QRCodeSVG value={data.url} />
+            </>
+          )}
         </CardContent>
       </Card>
 
       {/* QR Code */}
-      {data.qrcode && (
+      {/* {data.qrcode && (
         <div className="mt-6 flex flex-col items-center gap-4">
           <div className="flex items-center justify-center gap-2 text-2xl">
             <QrCode className="size-8 text-sky-500" />
@@ -64,7 +75,7 @@ export default function SocialMediaDisplay({
           </div>
           <QRCodeSVG value={data.url} />
         </div>
-      )}
+      )} */}
     </main>
   );
 }
