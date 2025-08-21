@@ -19,7 +19,7 @@ export default function SocialMediaDisplay({
   data: SocialMediaData;
 }) {
   return (
-    <main className="bg-gradient-to-b from-sky-100 to-sky-50 p-4 dark:from-slate-900 dark:to-slate-800">
+    <main className="">
       {/* Main Card */}
       <Card className="bg-white/50 backdrop-blur-sm dark:bg-slate-800/50">
         <CardHeader className="text-center">
@@ -27,11 +27,11 @@ export default function SocialMediaDisplay({
             {data.title}
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex justify-center text-4xl font-bold text-slate-900 dark:text-slate-100">
+        <CardContent className="flex grow justify-center text-slate-900 dark:text-slate-100">
           {data.platform === "Facebook" ? (
             <FacebookEmbed url={data.url} />
           ) : data.platform === "Instagram" ? (
-            <InstagramEmbed url={data.url} captioned />
+            <InstagramEmbed url={data.url} /* captioned */ />
           ) : data.platform === "LinkedIn" ? (
             <LinkedInEmbed url={data.url} />
           ) : data.platform === "Pinterest" ? (
@@ -52,14 +52,19 @@ export default function SocialMediaDisplay({
               }}
             />
           ) : null}
-          {data.qrcode && (
-            <>
-              <QrCode className="size-8 text-sky-500" />
-              <QRCodeSVG value={data.url} />
-            </>
-          )}
         </CardContent>
       </Card>
+
+      {/* QR Code */}
+      {data.qrcode && (
+        <div className="mt-6 flex flex-col items-center gap-4">
+          <div className="flex items-center justify-center gap-2 text-2xl">
+            <QrCode className="size-8 text-sky-500" />
+            QR Code
+          </div>
+          <QRCodeSVG value={data.url} />
+        </div>
+      )}
     </main>
   );
 }
