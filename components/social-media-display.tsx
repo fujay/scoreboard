@@ -1,12 +1,5 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SocialMediaData } from "@/lib/definitions";
-import { QrCode } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import {
   FacebookEmbed,
