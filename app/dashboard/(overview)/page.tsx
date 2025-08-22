@@ -1,4 +1,6 @@
+import { fetchDataCategoriesChart } from "@/lib/data";
 import CardWrapper from "@/ui/cards";
+import { DataCategoriesChart } from "@/ui/data-categories-chart";
 import { lusitana } from "@/ui/fonts";
 import {
   CardsSkeleton,
@@ -13,6 +15,13 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
+  const {
+    numberOfMessages,
+    numberOfScrapers,
+    numberOfSocialMedia,
+    numberOfNews,
+  } = await fetchDataCategoriesChart();
+
   return (
     <main>
       <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
@@ -28,7 +37,12 @@ export default async function Page() {
           {/* <DataChart /> */}
         </Suspense>
         <Suspense fallback={<DataCategoriesChartSkeleton />}>
-          {/* <DataCategoriesChart /> */}
+          <DataCategoriesChart
+            numberOfMessages={numberOfMessages}
+            numberOfScrapers={numberOfScrapers}
+            numberOfSocialMedia={numberOfSocialMedia}
+            numberOfNews={numberOfNews}
+          />
         </Suspense>
       </div>
     </main>

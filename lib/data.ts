@@ -71,6 +71,45 @@ export async function fetchCardData() {
   }
 }
 
+// export async function fetchDataChart() {
+//   try {
+//   } catch (error) {
+//     console.error("Database Error:", error);
+//     throw new Error("Failed to fetch data chart.");
+//   }
+// }
+
+export async function fetchDataCategoriesChart() {
+  try {
+    const messagesListPromise = sql`SELECT COUNT(*) FROM messages`;
+    const scrapersListPromise = sql`SELECT COUNT(*) FROM scrapers`;
+    const socialMediaListPromise = sql`SELECT COUNT(*) FROM social_media`;
+    const newsListPromise = sql`SELECT COUNT(*) FROM news`;
+
+    const data = await Promise.all([
+      messagesListPromise,
+      scrapersListPromise,
+      socialMediaListPromise,
+      newsListPromise,
+    ]);
+
+    const numberOfMessages = data[0][0].count ?? "0";
+    const numberOfScrapers = data[1][0].count ?? "0";
+    const numberOfSocialMedia = data[2][0].count ?? "0";
+    const numberOfNews = data[3][0].count ?? "0";
+
+    return {
+      numberOfMessages,
+      numberOfScrapers,
+      numberOfSocialMedia,
+      numberOfNews,
+    };
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch categories data.");
+  }
+}
+
 export async function fetchScraperById(id: string) {
   try {
     const scraper = await sql<ScraperForm[]>`
