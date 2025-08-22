@@ -93,10 +93,10 @@ export async function fetchDataCategoriesChart() {
       newsListPromise,
     ]);
 
-    const numberOfMessages = data[0][0].count ?? "0";
-    const numberOfScrapers = data[1][0].count ?? "0";
-    const numberOfSocialMedia = data[2][0].count ?? "0";
-    const numberOfNews = data[3][0].count ?? "0";
+    const numberOfMessages: number = Number.parseInt(data[0][0].count) ?? 0;
+    const numberOfScrapers: number = Number.parseInt(data[1][0].count) ?? 0;
+    const numberOfSocialMedia: number = Number.parseInt(data[2][0].count) ?? 0;
+    const numberOfNews: number = Number.parseInt(data[3][0].count) ?? 0;
 
     return {
       numberOfMessages,
