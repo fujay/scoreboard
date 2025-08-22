@@ -43,13 +43,6 @@ export function DataCategoriesChart({
   numberOfSocialMedia: number;
   numberOfNews: number;
 }) {
-  console.log({
-    numberOfMessages,
-    numberOfScrapers,
-    numberOfSocialMedia,
-    numberOfNews,
-  });
-
   if (
     !numberOfMessages &&
     !numberOfScrapers &&
@@ -92,11 +85,11 @@ export function DataCategoriesChart({
   return (
     <div className="w-full md:col-span-4">
       <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
-        Data Categories
+        Data Charts
       </h2>
       <Card className="flex flex-col">
         <CardHeader className="items-center pb-0">
-          <CardTitle>Data Categories</CardTitle>
+          <CardTitle>Categories</CardTitle>
         </CardHeader>
         <CardContent className="flex-1 pb-0">
           <ChartContainer
