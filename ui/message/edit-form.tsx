@@ -5,9 +5,11 @@ import { StateMessage, updateMessage } from "@/lib/actions";
 import { MessageData } from "@/lib/definitions";
 import { Button } from "@/ui/button";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { CalendarDays, Eye, LinkIcon, Save } from "lucide-react";
+import { CalendarDays, LinkIcon, Save } from "lucide-react";
+import { MDXClient } from "next-mdx-remote-client";
+import { serialize, SerializeResult } from "next-mdx-remote-client/serialize";
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useEffect, useState } from "react";
 
 export default function EditMessageForm({ message }: { message: MessageData }) {
   const initialState: Omit<StateMessage, "inputs"> = {
@@ -17,15 +19,39 @@ export default function EditMessageForm({ message }: { message: MessageData }) {
 
   const updateMessageWithId = updateMessage.bind(null, message.id);
 
+  const [content, setContent] = useState<string>(message.content);
+  const [mdxSource, setMdxSource] = useState<
+    SerializeResult<Record<string, unknown>, Record<string, unknown>>
+  >({} as SerializeResult);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const compiled = await serialize({ source: message.content });
+        if (mounted) setMdxSource(compiled);
+      } catch {}
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, [message.content]);
+
   const [state, formAction, isPending] = useActionState(
     updateMessageWithId,
     initialState,
   );
 
+  const handleOnChange = async (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setContent(e.target.value);
+    const mdxSource = await serialize({ source: e.target.value });
+    setMdxSource(mdxSource);
+  };
+
   return (
     <>
       <form action={formAction}>
-        <div className="mt-6 flex justify-end gap-4">
+        <div className="my-6 flex justify-end gap-4">
           <Link
             href="/dashboard/message"
             className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
@@ -33,14 +59,10 @@ export default function EditMessageForm({ message }: { message: MessageData }) {
             <XMarkIcon className="h-6 w-6 sm:mr-1.5" />
             <span className="hidden sm:block">Cancel</span>
           </Link>
-          <Button>
-            <Eye className="h-6 w-6 sm:mr-1.5" />
-            <span className="hidden sm:block">Preview</span>
-          </Button>
           <Button type="submit" disabled={isPending}>
             <Save />
             <span className="hidden sm:block">
-              {isPending ? "Creating..." : "Create Message"}
+              {isPending ? "Saving..." : "Edit Message"}
             </span>
           </Button>
         </div>
@@ -107,6 +129,54 @@ export default function EditMessageForm({ message }: { message: MessageData }) {
                   </p>
                 ))}
             </div>
+          </div>
+
+          {/* Content */}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>Markdown Editor</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <textarea
+                  id="content"
+                  name="content"
+                  value={content}
+                  onChange={handleOnChange}
+                  placeholder={`Enter your markdown content here...
+
+Example:
+# Welcome Message
+
+This is a **bold** message with *italic* text.
+
+- List item 1
+- List item 2
+
+> This is a quote
+
+[Link text](https://example.com)`}
+                  className="min-h-[500px] w-full resize-none rounded-md border border-gray-300 p-3 font-mono text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Preview</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="min-h-[500px] rounded border bg-white p-4">
+                  {"compiledSource" in mdxSource ? (
+                    <MDXClient {...mdxSource} />
+                  ) : mdxSource && "error" in mdxSource ? (
+                    <div className="text-red-500 italic">
+                      Error rendering preview: {mdxSource.error.message}
+                    </div>
+                  ) : null}
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Errors */}
