@@ -1,5 +1,6 @@
 "use client";
 
+import { Card, CardContent } from "@/components/ui/card";
 import {
   createScraper,
   scrapeScreenshot,
@@ -15,6 +16,7 @@ import {
   QrCodeIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
+import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 import {
   Eye,
   LetterText,
@@ -41,6 +43,9 @@ export default function ScraperForm() {
     title: string;
     data: string;
   } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [displayUrl, setDisplayUrl] = useState("");
+  const [isSelectorInfoOpen, setIsSelectorInfoOpen] = useState(false);
 
   const [state, formAction, isPending] = useActionState(
     createScraper,
@@ -56,6 +61,19 @@ export default function ScraperForm() {
 
   const onChangeFormat = (e: ChangeEvent<HTMLInputElement>) => {
     setFormat(e.target.value);
+  };
+
+  const handleFramePreview = (e: ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    // Add https:// if not present
+    if (!/^https?:\/\//i.test(e.target.value)) {
+      setDisplayUrl(`https://${e.target.value}`);
+    } else {
+      setDisplayUrl(e.target.value);
+    }
+
+    setIsLoading(false);
   };
 
   const handlePreview = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -122,383 +140,571 @@ export default function ScraperForm() {
   };
 
   return (
-    <form action={formAction}>
-      <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        {/* url */}
-        <div className="mb-4">
-          <label htmlFor="url" className="mb-2 block text-sm font-medium">
-            URL of the website to scrape:
-          </label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                id="url"
-                name="url"
-                type="url"
-                placeholder="https://www.frankfurt-university.de/"
-                title="The URL of the website to scrape"
-                defaultValue={state.inputs?.url}
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                aria-label="The URL of the website to scrape"
-                aria-describedby="url-error"
-                required
-              />
-              <LinkIcon className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+    <div className="grid flex-1 grid-cols-1 gap-6 md:grid-cols-2">
+      <form action={formAction}>
+        <div className="rounded-md bg-gray-50 p-4 md:p-6">
+          {/* url */}
+          <div className="mb-4">
+            <label htmlFor="url" className="mb-2 block text-sm font-medium">
+              URL of the website to scrape:
+            </label>
+            <div className="relative mt-2 rounded-md">
+              <div className="relative">
+                <input
+                  id="url"
+                  name="url"
+                  type="url"
+                  placeholder="https://www.frankfurt-university.de/"
+                  title="The URL of the website to scrape"
+                  defaultValue={state.inputs?.url}
+                  onBlur={handleFramePreview}
+                  className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                  aria-label="The URL of the website to scrape"
+                  aria-describedby="url-error"
+                  required
+                />
+                <LinkIcon className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              </div>
+            </div>
+            <div id="url-error" aria-live="polite" aria-atomic="true">
+              {state.errors?.url &&
+                state.errors.url.map((error) => (
+                  <p className="mt-2 text-sm text-red-500" key={error}>
+                    {error}
+                  </p>
+                ))}
             </div>
           </div>
-          <div id="url-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.url &&
-              state.errors.url.map((error) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
-          </div>
-        </div>
 
-        {/* titleSelector */}
-        <div className="mb-4">
-          <label
-            htmlFor="titleSelector"
-            className="mb-2 block text-sm font-medium"
-          >
-            Selector or text for the title element on the website:
-          </label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                id="titleSelector"
-                name="titleSelector"
-                type="text"
-                placeholder="#c18317 > h2 or Semestertermine"
-                title="The selector for the title element on the website, e.g. #c18317 > h2."
-                defaultValue={state.inputs?.titleSelector}
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                aria-label="The selector for the title element on the website, e.g. #c18317 > h2."
-                aria-describedby="titleSelector-error"
-                required
-              />
-              <LetterText className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+          {/* titleSelector */}
+          <div className="mb-4">
+            <label
+              htmlFor="titleSelector"
+              className="mb-2 block text-sm font-medium"
+            >
+              Selector or text for the title element on the website:
+            </label>
+            <div className="relative mt-2 rounded-md">
+              <div className="relative">
+                <input
+                  id="titleSelector"
+                  name="titleSelector"
+                  type="text"
+                  placeholder="#c18317 > h2 or Semestertermine"
+                  title="The selector for the title element on the website, e.g. #c18317 > h2."
+                  defaultValue={state.inputs?.titleSelector}
+                  className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                  aria-label="The selector for the title element on the website, e.g. #c18317 > h2."
+                  aria-describedby="titleSelector-error"
+                  required
+                />
+                <LetterText className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              </div>
+            </div>
+            <div id="titleSelector-error" aria-live="polite" aria-atomic="true">
+              {state.errors?.titleSelector &&
+                state.errors.titleSelector.map((error) => (
+                  <p className="mt-2 text-sm text-red-500" key={error}>
+                    {error}
+                  </p>
+                ))}
             </div>
           </div>
-          <div id="titleSelector-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.titleSelector &&
-              state.errors.titleSelector.map((error) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
-          </div>
-        </div>
 
-        {/* selectors */}
-        <div className="mb-4">
-          <label htmlFor="selectors" className="mb-2 block text-sm font-medium">
-            Selectors for the data elements to scrape:
-          </label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                id="selectors"
-                name="selectors"
-                type="text"
-                placeholder="#c18317 > h2"
-                title="The selector for the data element on the website, e.g. #c18317 > h2."
-                defaultValue={state.inputs?.selectors}
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                aria-label="The selector for the data element on the website, e.g. #c18317 > h2."
-                aria-describedby="selectors-error"
-                required
-              />
-              <TextSelect className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+          {/* selectors */}
+          <div className="mb-4">
+            <label htmlFor="selectors" className="mb-2 text-sm font-medium">
+              Selectors for the data elements to scrape:
+            </label>
+            <button
+              type="button"
+              onClick={() => setIsSelectorInfoOpen(true)}
+              aria-label="More info about scraper output format"
+              className="inline-flex items-center rounded-full p-1 text-gray-500 hover:text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            >
+              <QuestionMarkCircleIcon className="h-4 w-4" />
+            </button>
+            <div className="relative mt-2 rounded-md">
+              <div className="relative">
+                <input
+                  id="selectors"
+                  name="selectors"
+                  type="text"
+                  placeholder="#c18317 > h2"
+                  title="The selector for the data element on the website, e.g. #c18317 > h2."
+                  defaultValue={state.inputs?.selectors}
+                  className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                  aria-label="The selector for the data element on the website, e.g. #c18317 > h2."
+                  aria-describedby="selectors-error"
+                  required
+                />
+                <TextSelect className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              </div>
+            </div>
+            <div id="selectors-error" aria-live="polite" aria-atomic="true">
+              {state.errors?.selectors &&
+                state.errors.selectors.map((error) => (
+                  <p className="mt-2 text-sm text-red-500" key={error}>
+                    {error}
+                  </p>
+                ))}
             </div>
           </div>
-          <div id="selectors-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.selectors &&
-              state.errors.selectors.map((error) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
-          </div>
-        </div>
 
-        {/* scraper */}
-        <div className="mb-4">
-          <label htmlFor="scraper" className="mb-2 block text-sm font-medium">
-            Scraper tool for parsing HTML:
-          </label>
-          <div className="relative">
-            <select
-              id="scraper"
-              name="scraper"
-              onChange={onChangeScraper}
-              defaultValue={state.inputs?.scraper}
-              className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              title={`The scraper tool for parsing HTML.
+          {isSelectorInfoOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center">
+              <div
+                className="absolute inset-0 bg-black/50"
+                onClick={() => setIsSelectorInfoOpen(false)}
+              />
+              <div
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="format-info-title"
+                className="relative z-10 w-full max-w-lg rounded-md bg-white p-6 shadow-lg"
+              >
+                <div className="flex items-start justify-between">
+                  <h3
+                    id="format-info-title"
+                    className="text-base font-semibold text-gray-900"
+                  >
+                    Selector for scraper: Chrome, Edge, or Firefox
+                  </h3>
+                  <button
+                    type="button"
+                    aria-label="Close"
+                    onClick={() => setIsSelectorInfoOpen(false)}
+                    className="rounded p-1 text-gray-500 hover:text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  >
+                    <XMarkIcon className="h-5 w-5" />
+                  </button>
+                </div>
+                <div className="mt-3 text-sm text-gray-700">
+                  <ol className="list-decimal space-y-2 pl-5">
+                    <li>
+                      <p className="font-medium">Open Developer Tools by:</p>
+                      <ul className="mt-1 list-disc space-y-1 pl-5">
+                        <li>
+                          Right-click on the page and select{" "}
+                          <span className="italic">&quot;Inspect&quot;</span> or{" "}
+                          <span className="italic">
+                            &quot;Inspect Element&quot;
+                          </span>
+                        </li>
+                        <li>Using keyboard shortcuts:</li>
+                        <ul className="mt-1 list-disc space-y-1 pl-5">
+                          <li>
+                            Windows/Linux:{" "}
+                            <kbd className="rounded border bg-gray-100 px-1.5 py-0.5 font-mono text-[11px]">
+                              Ctrl
+                            </kbd>
+                            +
+                            <kbd className="rounded border bg-gray-100 px-1.5 py-0.5 font-mono text-[11px]">
+                              Shift
+                            </kbd>
+                            +
+                            <kbd className="rounded border bg-gray-100 px-1.5 py-0.5 font-mono text-[11px]">
+                              I
+                            </kbd>{" "}
+                            or{" "}
+                            <kbd className="rounded border bg-gray-100 px-1.5 py-0.5 font-mono text-[11px]">
+                              F12
+                            </kbd>
+                          </li>
+                          <li>
+                            Mac:{" "}
+                            <kbd className="rounded border bg-gray-100 px-1.5 py-0.5 font-mono text-[11px]">
+                              Cmd
+                            </kbd>
+                            +
+                            <kbd className="rounded border bg-gray-100 px-1.5 py-0.5 font-mono text-[11px]">
+                              Option
+                            </kbd>
+                            +
+                            <kbd className="rounded border bg-gray-100 px-1.5 py-0.5 font-mono text-[11px]">
+                              I
+                            </kbd>
+                          </li>
+                        </ul>
+                      </ul>
+                    </li>
+
+                    <li>
+                      <p className="font-medium">
+                        Once Developer Tools is open, you can search for
+                        elements:
+                      </p>
+
+                      <div className="mt-3">
+                        <p className="font-semibold">Using CSS Selectors</p>
+                        <ul className="mt-1 list-disc space-y-1 pl-5">
+                          <li>
+                            In Chrome/Edge: Press{" "}
+                            <kbd className="rounded border bg-gray-100 px-1.5 py-0.5 font-mono text-[11px]">
+                              Ctrl
+                            </kbd>
+                            +
+                            <kbd className="rounded border bg-gray-100 px-1.5 py-0.5 font-mono text-[11px]">
+                              Shift
+                            </kbd>
+                            +
+                            <kbd className="rounded border bg-gray-100 px-1.5 py-0.5 font-mono text-[11px]">
+                              C
+                            </kbd>{" "}
+                            (Windows/Linux) or{" "}
+                            <kbd className="rounded border bg-gray-100 px-1.5 py-0.5 font-mono text-[11px]">
+                              Cmd
+                            </kbd>
+                            +
+                            <kbd className="rounded border bg-gray-100 px-1.5 py-0.5 font-mono text-[11px]">
+                              Shift
+                            </kbd>
+                            +
+                            <kbd className="rounded border bg-gray-100 px-1.5 py-0.5 font-mono text-[11px]">
+                              C
+                            </kbd>{" "}
+                            (Mac) to enable element selection mode
+                          </li>
+                          <li>
+                            In Firefox: Press{" "}
+                            <kbd className="rounded border bg-gray-100 px-1.5 py-0.5 font-mono text-[11px]">
+                              Ctrl
+                            </kbd>
+                            +
+                            <kbd className="rounded border bg-gray-100 px-1.5 py-0.5 font-mono text-[11px]">
+                              Shift
+                            </kbd>
+                            +
+                            <kbd className="rounded border bg-gray-100 px-1.5 py-0.5 font-mono text-[11px]">
+                              L
+                            </kbd>{" "}
+                          </li>
+                          <li>
+                            In the Console panel, use{" "}
+                            <code className="rounded bg-gray-100 px-1 py-0.5">
+                              document.querySelectorAll(&apos;div&apos;)
+                            </code>{" "}
+                            to find all divs
+                          </li>
+                          <li>
+                            Or use more specific selectors like{" "}
+                            <code className="rounded bg-gray-100 px-1 py-0.5">
+                              document.querySelectorAll(&apos;div.container&apos;)
+                            </code>{" "}
+                            for divs with class &quot;container&quot;
+                          </li>
+                        </ul>
+                      </div>
+                    </li>
+                  </ol>
+                </div>
+                <div className="mt-6 flex justify-end">
+                  <Button
+                    type="button"
+                    onClick={() => setIsSelectorInfoOpen(false)}
+                  >
+                    Close
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* scraper */}
+          <div className="mb-4">
+            <label htmlFor="scraper" className="mb-2 block text-sm font-medium">
+              Scraper tool for parsing HTML:
+            </label>
+            <div className="relative">
+              <select
+                id="scraper"
+                name="scraper"
+                onChange={onChangeScraper}
+                defaultValue={state.inputs?.scraper}
+                className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                title={`The scraper tool for parsing HTML.
                 -Cheerio is fast, flexible, and elegant library for parsing and manipulating HTML and XML.
 
                 -Puppeteer is a JavaScript library which provides a high-level API to control Chrome. Puppeteer runs headless (no visible UI).
 
                 --Only Puppeteer works with screenshots!`}
-              aria-describedby="scraper-error"
-              required
-            >
-              <option value="" disabled>
-                --Select a scraper option--
-              </option>
-              <option value="Puppeteer">Puppeteer</option>
-              <option value="Cheerio">Cheerio</option>
-            </select>
-            <Library className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
-          </div>
-          <div id="scraper-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.scraper &&
-              state.errors.scraper.map((error) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
-          </div>
-        </div>
-
-        {/* format */}
-        <fieldset className="mb-4">
-          <legend className="mb-2 block text-sm font-medium">
-            Scraper output format:
-          </legend>
-          <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3">
-            <div className="flex gap-4">
-              <div className="flex items-center">
-                <input
-                  id="text"
-                  name="format"
-                  onChange={onChangeFormat}
-                  checked={format === "Text"}
-                  type="radio"
-                  value="Text"
-                  className="h-4 w-4 cursor-pointer border-gray-300 focus:ring-2"
-                  aria-describedby="format-error"
-                />
-                <label
-                  htmlFor="text"
-                  className={`ml-2 flex cursor-pointer items-center gap-1.5 rounded-full ${
-                    format === "Text" ? "bg-blue-300" : "bg-gray-100"
-                  } px-3 py-1.5 text-xs font-medium text-gray-600`}
-                >
-                  Text <DocumentTextIcon className="h-4 w-4" />
-                </label>
-              </div>
-              <div className="flex items-center">
-                <input
-                  id="screenshot"
-                  name="format"
-                  onChange={onChangeFormat}
-                  checked={format === "Screenshot"}
-                  type="radio"
-                  value="Screenshot"
-                  disabled={scraper !== "Puppeteer"}
-                  className="h-4 w-4 cursor-pointer border-gray-300 focus:ring-2 disabled:cursor-not-allowed"
-                  aria-describedby="format-error"
-                />
-                <label
-                  htmlFor="screenshot"
-                  className={`ml-2 flex ${
-                    scraper !== "Puppeteer"
-                      ? "cursor-not-allowed"
-                      : "cursor-pointer"
-                  } items-center gap-1.5 rounded-full ${
-                    format === "Screenshot" ? "bg-blue-300" : "bg-gray-100"
-                  } px-3 py-1.5 text-xs font-medium text-gray-600`}
-                >
-                  Screenshot <PhotoIcon className="h-4 w-4" />
-                </label>
-              </div>
+                aria-describedby="scraper-error"
+                required
+              >
+                <option value="" disabled>
+                  --Select a scraper option--
+                </option>
+                <option value="Puppeteer">Puppeteer</option>
+                <option value="Cheerio">Cheerio</option>
+              </select>
+              <Library className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+            </div>
+            <div id="scraper-error" aria-live="polite" aria-atomic="true">
+              {state.errors?.scraper &&
+                state.errors.scraper.map((error) => (
+                  <p className="mt-2 text-sm text-red-500" key={error}>
+                    {error}
+                  </p>
+                ))}
             </div>
           </div>
-          <div id="format-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.format &&
-              state.errors.format.map((error) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
-          </div>
-        </fieldset>
 
-        {/* qrcode */}
-        <fieldset className="mb-4">
-          <legend className="mb-2 block text-sm font-medium">QR Code:</legend>
-          <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3">
-            <div className="flex gap-4">
-              <div className="flex items-center">
-                <input
-                  id="qrcode"
-                  name="qrcode"
-                  type="checkbox"
-                  title="Activate to show the QR code for the website url"
-                  defaultChecked={state.inputs?.qrcode}
-                  className="h-4 w-4 cursor-pointer border-gray-300 focus:ring-2"
-                  aria-describedby="qrcode-error"
-                  aria-label="Activate to show the QR code for the website url"
-                />
-                <label
-                  htmlFor="qrcode"
-                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
-                >
-                  QR Code <QrCodeIcon className="h-4 w-4" />
-                </label>
+          {/* format */}
+          <fieldset className="mb-4">
+            <legend className="mb-2 block text-sm font-medium">
+              Scraper output format:
+            </legend>
+            <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3">
+              <div className="flex gap-4">
+                <div className="flex items-center">
+                  <input
+                    id="text"
+                    name="format"
+                    onChange={onChangeFormat}
+                    checked={format === "Text"}
+                    type="radio"
+                    value="Text"
+                    className="h-4 w-4 cursor-pointer border-gray-300 focus:ring-2"
+                    aria-describedby="format-error"
+                  />
+                  <label
+                    htmlFor="text"
+                    className={`ml-2 flex cursor-pointer items-center gap-1.5 rounded-full ${
+                      format === "Text" ? "bg-blue-300" : "bg-gray-100"
+                    } px-3 py-1.5 text-xs font-medium text-gray-600`}
+                  >
+                    Text <DocumentTextIcon className="h-4 w-4" />
+                  </label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    id="screenshot"
+                    name="format"
+                    onChange={onChangeFormat}
+                    checked={format === "Screenshot"}
+                    type="radio"
+                    value="Screenshot"
+                    disabled={scraper !== "Puppeteer"}
+                    className="h-4 w-4 cursor-pointer border-gray-300 focus:ring-2 disabled:cursor-not-allowed"
+                    aria-describedby="format-error"
+                  />
+                  <label
+                    htmlFor="screenshot"
+                    className={`ml-2 flex ${
+                      scraper !== "Puppeteer"
+                        ? "cursor-not-allowed"
+                        : "cursor-pointer"
+                    } items-center gap-1.5 rounded-full ${
+                      format === "Screenshot" ? "bg-blue-300" : "bg-gray-100"
+                    } px-3 py-1.5 text-xs font-medium text-gray-600`}
+                  >
+                    Screenshot <PhotoIcon className="h-4 w-4" />
+                  </label>
+                </div>
               </div>
             </div>
-          </div>
-          <div id="qrcode-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.qrcode &&
-              state.errors.qrcode.map((error) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
-          </div>
-        </fieldset>
+            <div id="format-error" aria-live="polite" aria-atomic="true">
+              {state.errors?.format &&
+                state.errors.format.map((error) => (
+                  <p className="mt-2 text-sm text-red-500" key={error}>
+                    {error}
+                  </p>
+                ))}
+            </div>
+          </fieldset>
 
-        {/* width */}
-        <datalist id="defaultWidths">
-          <option value="800"></option>
-          <option value="1024"></option>
-          <option value="1280"></option>
-          <option value="1600"></option>
-          <option value="1920"></option>
-        </datalist>
-        <div className="mb-4">
-          <label htmlFor="width" className="mb-2 block text-sm font-medium">
-            Page width in pixels (100-2000):
-          </label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                id="width"
-                name="width"
-                type="number"
-                step="1"
-                min="100"
-                max="2000"
-                list="defaultWidths"
-                defaultValue={state.inputs?.width || 1920}
-                placeholder="1920"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                title="The page width in CSS pixels."
-                aria-label="The page width in CSS pixels."
-                aria-describedby="width-error"
-              />
-              <MoveHorizontal className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+          {/* qrcode */}
+          <fieldset className="mb-4">
+            <legend className="mb-2 block text-sm font-medium">QR Code:</legend>
+            <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3">
+              <div className="flex gap-4">
+                <div className="flex items-center">
+                  <input
+                    id="qrcode"
+                    name="qrcode"
+                    type="checkbox"
+                    title="Activate to show the QR code for the website url"
+                    defaultChecked={state.inputs?.qrcode}
+                    className="h-4 w-4 cursor-pointer border-gray-300 focus:ring-2"
+                    aria-describedby="qrcode-error"
+                    aria-label="Activate to show the QR code for the website url"
+                  />
+                  <label
+                    htmlFor="qrcode"
+                    className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
+                  >
+                    QR Code <QrCodeIcon className="h-4 w-4" />
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div id="qrcode-error" aria-live="polite" aria-atomic="true">
+              {state.errors?.qrcode &&
+                state.errors.qrcode.map((error) => (
+                  <p className="mt-2 text-sm text-red-500" key={error}>
+                    {error}
+                  </p>
+                ))}
+            </div>
+          </fieldset>
+
+          {/* width */}
+          <datalist id="defaultWidths">
+            <option value="800"></option>
+            <option value="1024"></option>
+            <option value="1280"></option>
+            <option value="1600"></option>
+            <option value="1920"></option>
+          </datalist>
+          <div className="mb-4">
+            <label htmlFor="width" className="mb-2 block text-sm font-medium">
+              Page width in pixels (100-2000):
+            </label>
+            <div className="relative mt-2 rounded-md">
+              <div className="relative">
+                <input
+                  id="width"
+                  name="width"
+                  type="number"
+                  step="1"
+                  min="100"
+                  max="2000"
+                  list="defaultWidths"
+                  defaultValue={state.inputs?.width || 1920}
+                  placeholder="1920"
+                  className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                  title="The page width in CSS pixels."
+                  aria-label="The page width in CSS pixels."
+                  aria-describedby="width-error"
+                />
+                <MoveHorizontal className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              </div>
+            </div>
+
+            <div id="width-error" aria-live="polite" aria-atomic="true">
+              {state.errors?.width &&
+                state.errors.width.map((error) => (
+                  <p className="mt-2 text-sm text-red-500" key={error}>
+                    {error}
+                  </p>
+                ))}
             </div>
           </div>
 
-          <div id="width-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.width &&
-              state.errors.width.map((error) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
-          </div>
-        </div>
+          {/* height */}
+          <datalist id="defaultHeights">
+            <option value="600"></option>
+            <option value="768"></option>
+            <option value="800"></option>
+            <option value="900"></option>
+            <option value="1080"></option>
+          </datalist>
+          <div className="mb-4">
+            <label htmlFor="height" className="mb-2 block text-sm font-medium">
+              Page height in pixels (100-2000):
+            </label>
+            <div className="relative mt-2 rounded-md">
+              <div className="relative">
+                <input
+                  id="height"
+                  name="height"
+                  type="number"
+                  step="1"
+                  min="100"
+                  max="2000"
+                  list="defaultHeights"
+                  defaultValue={state.inputs?.height || 1080}
+                  placeholder="1080"
+                  className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                  title="The page height in CSS pixels."
+                  aria-label="The page height in CSS pixels."
+                  aria-describedby="height-error"
+                />
+                <MoveVertical className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              </div>
+            </div>
 
-        {/* height */}
-        <datalist id="defaultHeights">
-          <option value="600"></option>
-          <option value="768"></option>
-          <option value="800"></option>
-          <option value="900"></option>
-          <option value="1080"></option>
-        </datalist>
-        <div className="mb-4">
-          <label htmlFor="height" className="mb-2 block text-sm font-medium">
-            Page height in pixels (100-2000):
-          </label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                id="height"
-                name="height"
-                type="number"
-                step="1"
-                min="100"
-                max="2000"
-                list="defaultHeights"
-                defaultValue={state.inputs?.height || 1080}
-                placeholder="1080"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                title="The page height in CSS pixels."
-                aria-label="The page height in CSS pixels."
-                aria-describedby="height-error"
-              />
-              <MoveVertical className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+            <div id="height-error" aria-live="polite" aria-atomic="true">
+              {state.errors?.height &&
+                state.errors.height.map((error) => (
+                  <p className="mt-2 text-sm text-red-500" key={error}>
+                    {error}
+                  </p>
+                ))}
             </div>
           </div>
 
-          <div id="height-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.height &&
-              state.errors.height.map((error) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
-          </div>
-        </div>
-
-        {/* Errors */}
-        <div aria-live="polite" aria-atomic="true">
-          {state.message && (
-            <p className="mt-2 text-sm text-red-500">{state.message}</p>
-          )}
-        </div>
-
-        {/* Preview */}
-        {previewResult && (
-          <div className="mt-4 rounded-md bg-gray-100 p-4">
-            <h3 className="text-sm font-medium">
-              Preview Result: {previewResult.title}
-            </h3>
-            {format === "Screenshot" ? (
-              <Image
-                src={previewResult.data}
-                alt="Screenshot Preview"
-                width={800}
-                height={600}
-              />
-            ) : (
-              <p className="mt-2 text-xs">{previewResult.data}</p>
+          {/* Errors */}
+          <div aria-live="polite" aria-atomic="true">
+            {state.message && (
+              <p className="mt-2 text-sm text-red-500">{state.message}</p>
             )}
           </div>
-        )}
-      </div>
-      <div className="mt-6 flex justify-end gap-4">
-        <Link
-          href="/dashboard/scraper"
-          className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
-        >
-          <XMarkIcon className="h-6 w-6 sm:mr-1.5" />
-          <span className="hidden sm:block">Cancel</span>
-        </Link>
-        <Button
-          onClick={handlePreview}
-          className="bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground"
-          type="submit"
-          disabled={isPending}
-        >
-          <Eye />
-          <span className="hidden sm:block">
-            {isPending ? "Loading..." : "Preview"}
-          </span>
-        </Button>
-        <Button type="submit" disabled={isPending}>
-          <Save />
-          <span className="hidden sm:block">
-            {isPending ? "Creating..." : "Create Scraper"}
-          </span>
-        </Button>
-      </div>
-    </form>
+
+          {/* Preview */}
+          {previewResult && (
+            <div className="mt-4 rounded-md bg-gray-100 p-4">
+              <h3 className="text-sm font-medium">
+                Preview Result: {previewResult.title}
+              </h3>
+              {format === "Screenshot" ? (
+                <Image
+                  src={previewResult.data}
+                  alt="Screenshot Preview"
+                  width={800}
+                  height={600}
+                />
+              ) : (
+                <p className="mt-2 text-xs">{previewResult.data}</p>
+              )}
+            </div>
+          )}
+        </div>
+        <div className="mt-6 flex justify-end gap-4">
+          <Link
+            href="/dashboard/scraper"
+            className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
+          >
+            <XMarkIcon className="h-6 w-6 sm:mr-1.5" />
+            <span className="hidden sm:block">Cancel</span>
+          </Link>
+          <Button
+            onClick={handlePreview}
+            className="bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground"
+            type="submit"
+            disabled={isPending}
+          >
+            <Eye />
+            <span className="hidden sm:block">
+              {isPending ? "Loading..." : "Preview"}
+            </span>
+          </Button>
+          <Button type="submit" disabled={isPending}>
+            <Save />
+            <span className="hidden sm:block">
+              {isPending ? "Creating..." : "Create Scraper"}
+            </span>
+          </Button>
+        </div>
+      </form>
+      <Card className="flex h-full flex-col">
+        <CardContent className="min-h-[500px] flex-1 p-0">
+          {isLoading ? (
+            <div className="flex h-full items-center justify-center">
+              <div className="size-16 animate-spin rounded-full border-b-2 border-primary-color"></div>
+            </div>
+          ) : (
+            <div className="relative h-full min-h-[500px] w-full">
+              <iframe
+                src={displayUrl}
+                className="absolute inset-0 h-full w-full border-0"
+                sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 }
