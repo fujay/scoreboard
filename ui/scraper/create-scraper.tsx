@@ -396,6 +396,10 @@ export default function ScraperForm() {
                         </ul>
                       </div>
                     </li>
+                    <li>
+                      <span className="italic">&quot;Copy selector&quot;</span>{" "}
+                      and paste it in the input field
+                    </li>
                   </ol>
                 </div>
                 <div className="mt-6 flex justify-end">
