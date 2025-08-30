@@ -2,6 +2,7 @@ import { fetchFilteredScrapers } from "@/lib/data";
 import { formatDateToLocal } from "@/lib/utils";
 import { DeleteScraper, UpdateScraper } from "@/ui/scraper/buttons";
 import { DocumentTextIcon, PhotoIcon } from "@heroicons/react/24/outline";
+import Image from "next/image";
 
 export default async function ScrapersTable({
   query,
@@ -107,7 +108,16 @@ export default async function ScrapersTable({
                     {scraper.title}
                   </td>
                   <td title={scraper.selectors} className="px-3 py-3">
-                    {scraper.data}
+                    {scraper.format === "Text" ? (
+                      scraper.data
+                    ) : (
+                      <Image
+                        src={scraper.data}
+                        alt={scraper.title}
+                        width={640}
+                        height={480}
+                      />
+                    )}
                   </td>
                   <td className="px-3 py-3">
                     {
