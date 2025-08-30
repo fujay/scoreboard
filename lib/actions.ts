@@ -967,7 +967,7 @@ export async function scrapeScreenshot(
     height: height,
   });
 
-  await page.goto(url);
+  await page.goto(url, { waitUntil: "networkidle2" });
 
   const element = await page.$(selector);
 
