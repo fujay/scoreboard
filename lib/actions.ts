@@ -4,7 +4,6 @@ import * as cheerio from "cheerio";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import postgres from "postgres";
-import puppeteer from "puppeteer";
 import { z } from "zod";
 import { uploadImage } from "@/lib/cloudinary";
 import type { Settings } from "@/lib/definitions";
@@ -890,8 +889,25 @@ export async function scrapeViaPuppeteer(
   let browser;
 
   try {
-    browser = await puppeteer.launch();
+    const isVercel = !!process.env.VERCEL_ENV;
+    let puppeteer: any,
+      launchOptions: any = {
+        headless: true,
+      };
 
+    if (isVercel) {
+      const chromium = (await import("@sparticuz/chromium")).default;
+      puppeteer = await import("puppeteer-core");
+      launchOptions = {
+        ...launchOptions,
+        args: chromium.args,
+        executablePath: await chromium.executablePath(),
+      };
+    } else {
+      puppeteer = await import("puppeteer");
+    }
+
+    browser = await puppeteer.launch(launchOptions);
     const page = await browser.newPage();
 
     await page.setViewport({
@@ -959,7 +975,26 @@ export async function scrapeScreenshot(
   width: number = 1080,
   height: number = 1768,
 ) {
-  const browser = await puppeteer.launch();
+  const isVercel = !!process.env.VERCEL_ENV;
+  let browser;
+  let puppeteer: any,
+    launchOptions: any = {
+      headless: true,
+    };
+  if (isVercel) {
+    const chromium = (await import("@sparticuz/chromium")).default;
+    puppeteer = await import("puppeteer-core");
+    launchOptions = {
+      ...launchOptions,
+      args: chromium.args,
+      executablePath: await chromium.executablePath(),
+    };
+  } else {
+    puppeteer = await import("puppeteer");
+  }
+
+  browser = await puppeteer.launch(launchOptions);
+
   const page = await browser.newPage();
 
   await page.setViewport({
@@ -967,7 +1002,7 @@ export async function scrapeScreenshot(
     height: height,
   });
 
-  await page.goto(url);
+  await page.goto(url, { waitUntil: "networkidle2" });
 
   const element = await page.$(selector);
 
