@@ -91,3 +91,36 @@ The repository includes a seed route at `/seed` that creates the required tables
 - Dashboard routes require authentication.
 - Runtime display settings are stored in `/app/settings.json`.
 - Building in a restricted network may fail because `next/font` fetches Google Fonts during the build.
+
+## Screens
+
+### Dashboard
+<img width="1919" height="964" alt="Dashboard" src="https://github.com/user-attachments/assets/d0cc4cc3-5b51-4c04-88be-c3c5d5420726" />
+
+### News
+<img width="1915" height="392" alt="News" src="https://github.com/user-attachments/assets/315c5d07-10be-4d0e-8d21-3858d3ee8756" />
+
+### Create News
+<img width="1891" height="454" alt="CreateNews" src="https://github.com/user-attachments/assets/0689f38b-eeee-4bdc-a4a2-daefa6730dff" />
+
+### Messages
+<img width="1901" height="368" alt="Message" src="https://github.com/user-attachments/assets/ca812beb-26c4-4068-9ae6-ef8210b698e9" />
+
+### Create Messages
+<img width="1883" height="968" alt="CreateMessage" src="https://github.com/user-attachments/assets/a284b4c2-01c2-4aee-b7d7-66ffaff92fd2" />
+
+### Scrapers
+<img width="1897" height="688" alt="Scrapers" src="https://github.com/user-attachments/assets/f4b2dec0-52bd-45ff-8033-1e91af17c3b4" />
+
+### Create Scrapers
+<img width="1905" height="747" alt="CreateScraper" src="https://github.com/user-attachments/assets/bf5eab97-0599-4055-82c6-722b18e27f3f" />
+
+### Social
+<img width="1895" height="380" alt="Social" src="https://github.com/user-attachments/assets/2c9e04bb-b47e-49cc-a2c4-478ba7f6f389" />
+
+### Create Social
+<img width="1895" height="500" alt="CreateSocial" src="https://github.com/user-attachments/assets/47120746-867a-4551-91fc-f69ed1378630" />
+
+### Settings
+<img width="1892" height="761" alt="Settings" src="https://github.com/user-attachments/assets/49f78e7e-6cd4-4cfe-964f-b84ce930f05e" />
+
